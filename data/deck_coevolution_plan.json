@@ -1,0 +1,166 @@
+{
+  "version": "m5_initial",
+  "status": "proxy_screened_not_battle_promoted",
+  "next_steps": [
+    "Copy one elite deck into a temporary submission/deck.csv clone.",
+    "Run M2 league against Random, Sample, Exploiter-FirstMin, V0-best.",
+    "Record deck-only, strategy-only, and deck+strategy results separately.",
+    "Promote only if external baselines improve and exploiter does not regress."
+  ],
+  "strategy_weight_suggestions": [
+    {
+      "condition": "energy_count < 30",
+      "suggestion": "Increase avoid_deckout importance and reduce Hammer-lanche prior."
+    },
+    {
+      "condition": "tech_count > 6",
+      "suggestion": "Increase search/draw priority to offset card-hand risk."
+    },
+    {
+      "condition": "aggressive_prize archetype promoted",
+      "suggestion": "Raise damage_boost and take_prize weights; add tactical tests for Maximum Belt lines."
+    }
+  ],
+  "top_elite_summaries": [
+    {
+      "rank": 1,
+      "archetype": "abomasnow_high_energy",
+      "score": 1831.0,
+      "features": {
+        "archetype": "abomasnow_high_energy",
+        "energy_count": 34,
+        "draw_count": 10,
+        "search_count": 17,
+        "tech_count": 2,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    },
+    {
+      "rank": 2,
+      "archetype": "abomasnow_high_energy",
+      "score": 1822.2,
+      "features": {
+        "archetype": "abomasnow_high_energy",
+        "energy_count": 35,
+        "draw_count": 8,
+        "search_count": 16,
+        "tech_count": 0,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    },
+    {
+      "rank": 3,
+      "archetype": "stable_setup",
+      "score": 1812.6,
+      "features": {
+        "archetype": "stable_setup",
+        "energy_count": 33,
+        "draw_count": 11,
+        "search_count": 22,
+        "tech_count": 3,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    },
+    {
+      "rank": 4,
+      "archetype": "aggressive_prize",
+      "score": 1809.8,
+      "features": {
+        "archetype": "aggressive_prize",
+        "energy_count": 30,
+        "draw_count": 11,
+        "search_count": 17,
+        "tech_count": 5,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    },
+    {
+      "rank": 5,
+      "archetype": "abomasnow_high_energy",
+      "score": 1807.4,
+      "features": {
+        "archetype": "abomasnow_high_energy",
+        "energy_count": 34,
+        "draw_count": 12,
+        "search_count": 18,
+        "tech_count": 4,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    },
+    {
+      "rank": 6,
+      "archetype": "defensive_recovery",
+      "score": 1806.8,
+      "features": {
+        "archetype": "defensive_recovery",
+        "energy_count": 31,
+        "draw_count": 11,
+        "search_count": 19,
+        "tech_count": 5,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    },
+    {
+      "rank": 7,
+      "archetype": "defensive_recovery",
+      "score": 1806.6,
+      "features": {
+        "archetype": "defensive_recovery",
+        "energy_count": 31,
+        "draw_count": 12,
+        "search_count": 18,
+        "tech_count": 6,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    },
+    {
+      "rank": 8,
+      "archetype": "abomasnow_high_energy",
+      "score": 1806.2,
+      "features": {
+        "archetype": "abomasnow_high_energy",
+        "energy_count": 36,
+        "draw_count": 8,
+        "search_count": 14,
+        "tech_count": 0,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    },
+    {
+      "rank": 9,
+      "archetype": "stable_setup",
+      "score": 1805.4,
+      "features": {
+        "archetype": "stable_setup",
+        "energy_count": 32,
+        "draw_count": 12,
+        "search_count": 21,
+        "tech_count": 4,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    },
+    {
+      "rank": 10,
+      "archetype": "aggressive_prize",
+      "score": 1802.0,
+      "features": {
+        "archetype": "aggressive_prize",
+        "energy_count": 30,
+        "draw_count": 13,
+        "search_count": 19,
+        "tech_count": 6,
+        "ace_spec_count": 1,
+        "deckout_risk": 6.0
+      }
+    }
+  ]
+}

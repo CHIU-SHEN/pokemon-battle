@@ -1,0 +1,39 @@
+{
+  "version": "m5_initial",
+  "status": "do_not_replace_main_deck_yet",
+  "records": [
+    {
+      "name": "elite001_v2_vs_random_200",
+      "deck": "data/deck_elites/elite_001_abomasnow_high_energy.csv",
+      "agent": "experiments/20260706_m5_elite001_v2_submission/main.py",
+      "baseline": "random",
+      "games": 200,
+      "wins": 190,
+      "losses": 10,
+      "draws": 0,
+      "win_rate": 0.95,
+      "comparison": "current deck same seed vs random: 186/14/0, win_rate 0.93",
+      "out_dir": "experiments/20260706_m5_elite001_v2_vs_random_200"
+    },
+    {
+      "name": "elite001_v2_league_500",
+      "deck": "data/deck_elites/elite_001_abomasnow_high_energy.csv",
+      "agent": "experiments/20260706_m5_elite001_v2_submission/main.py",
+      "games_per_matchup": 500,
+      "results": {
+        "Random": "447/53/0, win_rate 0.894",
+        "Sample": "460/40/0, win_rate 0.920",
+        "Exploiter-FirstMin": "394/106/0, win_rate 0.788",
+        "V0-best": "309/191/0, win_rate 0.618"
+      },
+      "interpretation": "Stable and legal, but not clearly stronger than current main deck across the matrix.",
+      "out_dir": "experiments/20260706_m5_elite001_v2_league_500"
+    }
+  ],
+  "promotion_gate": [
+    "Run at least 1000-3000 games per matchup against Random, Sample, Exploiter-FirstMin, and V0-best.",
+    "Compare against current deck on the same seeds.",
+    "Promote only if external baselines improve without exploiter regression.",
+    "Record deck-only, strategy-only, and deck+strategy changes separately."
+  ]
+}
