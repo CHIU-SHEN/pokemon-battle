@@ -1,0 +1,33 @@
+{
+  "schema_version": "high_score_deck_selection_v1",
+  "source": "实际比赛Top10与Kaggle高分回放卡组汇总.md#三、Kaggle-高分回放去重卡组",
+  "status": "awaiting_card_id_mapping",
+  "candidate_count": 10,
+  "candidates": [
+    {"candidate_id": "alakazam_nighttime_mine", "archetype": "Alakazam Dudunsparce", "variant": "Nighttime Mine", "replays": [85216002, 85222378, 85220459, 85220950, 85218535, 85220501, 85219491, 85213633, 85302664]},
+    {"candidate_id": "alakazam_neutralization_zone", "archetype": "Alakazam Dudunsparce", "variant": "Neutralization Zone", "replays": [85221901, 85220459]},
+    {"candidate_id": "alakazam_battle_cage_split", "archetype": "Alakazam Dudunsparce", "variant": "Battle Cage / split Alakazam", "replays": [85221910], "mapping_note": "Preserve replay card IDs 245 and 743 separately."},
+    {"candidate_id": "cynthia_garchomp_roserade", "archetype": "Cynthia's Garchomp ex", "variant": "Roserade", "replays": [85222378, 85221419]},
+    {"candidate_id": "crustle_kangaskhan_cage", "archetype": "Crustle / Mega Kangaskhan ex", "variant": "Cage", "replays": [85221419, 85221910, 85302664]},
+    {"candidate_id": "crustle_kangaskhan_petrel", "archetype": "Crustle / Mega Kangaskhan ex", "variant": "Petrel control", "replays": [85218535]},
+    {"candidate_id": "marnie_grimmsnarl_froslass", "archetype": "Marnie's Grimmsnarl ex", "variant": "Spikemuth / Froslass", "replays": [85221901, 85220950]},
+    {"candidate_id": "marnie_grimmsnarl_dudunsparce", "archetype": "Marnie's Grimmsnarl ex", "variant": "Dunsparce / Dudunsparce", "replays": [85219491]},
+    {"candidate_id": "marnie_grimmsnarl_tatsugiri", "archetype": "Marnie's Grimmsnarl ex", "variant": "Tatsugiri / Petrel", "replays": [85213633]},
+    {"candidate_id": "mega_starmie_dusknoir", "archetype": "Mega Starmie ex", "variant": "Dusknoir", "replays": [85220501]}
+  ],
+  "stages": {
+    "static_validation": {"advance": 10},
+    "smoke_stability": {"advance_max": 8, "mirror_games": 50, "random_games": 100, "first_min_games": 100},
+    "generic_policy_screen": {"advance": 4, "games_per_opponent": 500, "opponents": ["Random", "Sample", "Exploiter-FirstMin", "V0-best"]},
+    "adapted_policy_semifinal": {"advance": 2, "games_per_opponent": 1000, "paired_seeds": true},
+    "final": {"advance": 1, "games_per_opponent_min": 3000, "head_to_head_games_min": 3000, "paired_seeds": true}
+  },
+  "promotion_hard_gates": [
+    "legal deck",
+    "zero illegal actions",
+    "zero unhandled exceptions",
+    "within submission latency budget",
+    "no hidden-information dependency",
+    "no unacceptable exploiter or V0-best regression"
+  ]
+}
