@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-07-13T00:00:00+08:00",
+  "status": "partial",
+  "sources": [
+    {
+      "source_id": "kagd_pokemon_tcg_battle_replay",
+      "source_type": "community_open_source_ptcgl_log",
+      "url": "https://github.com/kagd/pokemon-tcg-battle-replay",
+      "commit": "7402a50eeb840e80203105efe360fad6eeeb61f2",
+      "license": "ISC (declared in package.json)",
+      "retrieved_at": "2026-07-13",
+      "local_path": "data/external/kagd_pokemon_tcg_battle_replay",
+      "complete_matches": 1,
+      "files": [
+        {
+          "path": "sampleBattleReplays/battle.txt",
+          "sha256": "EB4A180AEE6ECE4C0289C0A8F6BDF34373C250107B9EF7C4AA4CEB36CA4BBB33",
+          "role": "raw_complete_ptcgl_battle_log",
+          "turns": 12
+        },
+        {
+          "path": "sampleBattleReplays/battle-short.txt",
+          "sha256": "F2C3C8FBF7A82C338EF3F3816472E91140AAD103D535414142D88FAB22593603",
+          "role": "truncated_sample_not_a_complete_match"
+        },
+        {
+          "path": "output/battle.battle-by-turn.json",
+          "sha256": "887DF34AEDA7C65D737140C297372AB934F399AC50AE0C79DBB1D080757BF815",
+          "role": "parsed_turn_by_turn_json",
+          "turns": 12,
+          "winner": "gklinsing"
+        },
+        {
+          "path": "output/battle.json",
+          "sha256": "049159E18279D76748B7BF97DA771A9B2FAD6A6D558DA80F95D399B1319A36D7",
+          "role": "battle_summary_json",
+          "turns": 0,
+          "warning": "Summary only; do not count as a second match."
+        }
+      ],
+      "quality_notes": [
+        "The raw log and both JSON outputs describe the same match and count as one complete match.",
+        "The parsed output was produced by an LLM-assisted parser and requires event-level verification before training.",
+        "Opponent hidden information is absent by design."
+      ]
+    },
+    {
+      "source_id": "ptcg_bench",
+      "source_type": "open_source_trajectory_generator",
+      "url": "https://github.com/zjunet/PTCG-Bench",
+      "commit": "d360a50b350808dde825fd9e529a63243dcbf03d",
+      "license": "MIT",
+      "retrieved_at": "2026-07-13",
+      "local_path": "data/external/ptcg_bench",
+      "complete_matches": 0,
+      "data_status": "No pre-generated battle logs were committed; the repository can generate complete trajectories after Python 3.12+ and dependencies are available.",
+      "replay_generator": "scripts/record_replay.py"
+    },
+    {
+      "source_id": "kaggle_pokemon_tcg_ai_battle",
+      "source_type": "official_competition",
+      "url": "https://www.kaggle.com/competitions/pokemon-tcg-ai-battle",
+      "retrieved_at": "2026-07-13",
+      "local_path": "data/external/kaggle_pokemon_tcg_ai_battle",
+      "complete_matches": 3799,
+      "status": "authenticated_files_and_official_replays_downloaded",
+      "competition_file_audit": "The Competition Data file list contains card CSV/PDF data, engine source, and sample_submission files, but no historical games. Complete historical episode JSON is available separately through the official Simulation Competition replay endpoint.",
+      "replay_source": {
+        "method": "official_kaggle_cli",
+        "command": "kaggle competitions replay <EPISODE_ID> -p data/external/kaggle_replays/raw",
+        "local_path": "data/external/kaggle_replays/raw",
+        "index": "data/external/kaggle_replays/replay_index.json",
+        "episodes_downloaded": 3814,
+        "complete_episodes": 3799,
+        "trajectory_steps": 550100,
+        "bytes": 15525009217,
+        "quality": "3799 of 3814 downloaded JSON files passed the complete-trajectory gate and ended with DONE for both agents. Training must use replay_index.json valid_complete_trajectory rather than accepting every downloaded file."
+      },
+      "files": [
+        {"path": "EN_Card_Data.csv", "sha256": "A0EA63CF7ADCB65D35436CE0EB390DE6E2E35654A7C67C065A45F4ABAA00F373", "role": "official_card_metadata"},
+        {"path": "JP_Card_Data.csv", "sha256": "2215BA62A8D33580AF1FEDC3DD4242B0C9FDBF9958132C5F54DBC8DA94C73C27", "role": "official_card_metadata"},
+        {"path": "game.py", "sha256": "3BD3D4F4A369A11E6D2F5DA9094CF15EBC410A2221835E6417B7CFF4883F1FC2", "role": "official_local_battle_and_visualize_api"},
+        {"path": "sim.py", "sha256": "1555F57F5D22BF4C09D70E0E667A916E575E68C9DD1DE9EAD34BA5E7E4968655", "role": "official_native_engine_binding"},
+        {"path": "deck.csv", "sha256": "42068A1803902756BADCFD418F6F348B7901365A281D78AF0692CBF2589F0799", "role": "official_sample_deck"},
+        {"path": "main.py", "sha256": "CD434298FFC02788D8BE9621E576687DA7CDC1FE4BE731E34AD686C6B9D8367A", "role": "official_sample_agent"}
+      ]
+    }
+  ],
+  "totals": {
+    "verified_complete_external_matches": 3800,
+    "verified_turns": 12,
+    "verified_kaggle_trajectory_steps": 550100,
+    "trajectory_generators": 1,
+    "kaggle_official_files_downloaded": 6,
+    "kaggle_replays_downloaded": 3814,
+    "kaggle_replays_complete": 3799,
+    "professional_video_matches_downloaded": 0
+  }
+}

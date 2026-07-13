@@ -1,5 +1,23 @@
 # Pokémon TCG AI Battle Agent
 
+## 本地运行环境
+
+Windows 本地开发统一使用现有 Conda 环境 `pokemon-tcg`，不创建或依赖项目内 `.venv`。该环境当前使用 Python 3.11。
+
+```powershell
+conda activate pokemon-tcg
+python --version
+uv --version
+```
+
+Python 依赖优先通过 `uv` 安装到这个 Conda 环境：
+
+```powershell
+uv pip install --python "$env:CONDA_PREFIX\python.exe" <package>
+```
+
+非交互执行统一使用 `conda run -n pokemon-tcg <command>`。Kaggle CLI 同样安装在该环境中。新版凭据文件为 `%USERPROFILE%\.kaggle\access_token`，其内容必须只有 Kaggle 设置页生成的原始 API token，不能包含标签、说明文字或命令。
+
 这是一个面向 **Pokémon TCG AI Battle Challenge** 的卡牌对战智能体项目。项目从稳定、低延迟的卡组特化规则策略出发，逐步加入局面解析、隐藏信息信念采样、有限预算搜索、卡牌知识库、卡组优化和轻量策略蒸馏，并配套本地对战、联赛评估、坏例回放和提交包冻结工具。
 
 当前推荐的正式提交物是：
