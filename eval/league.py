@@ -39,7 +39,8 @@ def write_json(path: Path, data: object) -> None:
         f.write("\n")
 
 
-def run_match(agent0: str, agent1: str, games: int, seed: int, out_dir: Path, bad_case_dir: Path | None) -> dict[str, Any]:
+def run_match(agent0: str, agent1: str, games: int, seed: int, out_dir: Path, bad_case_dir: Path | None,
+              deck0: Path | None = None) -> dict[str, Any]:
     cmd = [
         sys.executable,
         str(PROJECT_ROOT / "eval" / "run_match.py"),
@@ -56,6 +57,8 @@ def run_match(agent0: str, agent1: str, games: int, seed: int, out_dir: Path, ba
     ]
     if bad_case_dir is not None:
         cmd.extend(["--bad-case-dir", str(bad_case_dir)])
+    if deck0 is not None:
+        cmd.extend(["--deck0", str(deck0)])
     subprocess.run(cmd, cwd=PROJECT_ROOT, check=True)
     return load_json(out_dir / "summary.json")
 
@@ -80,6 +83,7 @@ def markdown_matrix(matrix: dict[str, dict[str, Any]]) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", default="submission")
+    parser.add_argument("--candidate-deck", type=Path, default=None)
     parser.add_argument("--games", type=int, default=500)
     parser.add_argument("--seed", type=int, default=20260706)
     parser.add_argument("--baselines", default="Random,Sample,Exploiter-FirstMin")
@@ -103,7 +107,10 @@ def main() -> int:
     for offset, name in enumerate(selected):
         match_dir = out_dir / f"candidate_vs_{name}"
         bad_case_dir = bad_case_root / name if bad_case_root else None
-        summary = run_match(args.candidate, BASELINES[name], args.games, args.seed + offset, match_dir, bad_case_dir)
+        summary = run_match(
+            args.candidate, BASELINES[name], args.games, args.seed + offset,
+            match_dir, bad_case_dir, args.candidate_deck,
+        )
         matrix[name] = summary
         labels[name] = label_summary(summary, baseline_win_rate=0.5)
         if BASELINES[name] == args.candidate:
@@ -112,6 +119,7 @@ def main() -> int:
 
     report = {
         "candidate": args.candidate,
+        "candidate_deck": str(args.candidate_deck) if args.candidate_deck else None,
         "games_per_matchup": args.games,
         "seed": args.seed,
         "baselines": selected,

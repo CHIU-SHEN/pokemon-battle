@@ -15,6 +15,7 @@ import sys
 import time
 import traceback
 from typing import Callable
+import hashlib
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +43,23 @@ def pushd(path: Path):
 def read_deck(path: Path = SUBMISSION_DIR / "deck.csv") -> list[int]:
     with path.open("r", encoding="utf-8") as f:
         return [int(line.strip()) for line in f if line.strip()]
+
+
+def deck_sha256(deck: list[int]) -> str:
+    canonical = "\n".join(str(card_id) for card_id in sorted(deck))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def with_deck(agent: Agent, deck: list[int] | None) -> Agent:
+    if deck is None:
+        return agent
+
+    def wrapped(obs_dict: dict | None) -> list[int]:
+        if obs_dict is None or obs_dict.get("select") is None:
+            return list(deck)
+        return agent(obs_dict)
+
+    return wrapped
 
 
 def random_agent(obs_dict: dict | None) -> list[int]:
@@ -283,6 +301,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--agent0", default="submission", help="submission, random, first-min, or /path/to/main.py")
     parser.add_argument("--agent1", default="random", help="submission, random, first-min, or /path/to/main.py")
+    parser.add_argument("--deck0", default=None, help="optional deck.csv override for agent0")
+    parser.add_argument("--deck1", default=None, help="optional deck.csv override for agent1")
     parser.add_argument("--mirror", action="store_true", help="run agent0 against itself")
     parser.add_argument("--games", type=int, default=100)
     parser.add_argument("--seed", type=int, default=20260706)
@@ -296,9 +316,13 @@ def main() -> int:
     random.seed(args.seed)
     if args.mirror:
         args.agent1 = args.agent0
+        if args.deck1 is None:
+            args.deck1 = args.deck0
 
-    agent0 = load_agent(args.agent0)
-    agent1 = load_agent(args.agent1)
+    deck0 = read_deck(Path(args.deck0)) if args.deck0 else None
+    deck1 = read_deck(Path(args.deck1)) if args.deck1 else None
+    agent0 = with_deck(load_agent(args.agent0), deck0)
+    agent1 = with_deck(load_agent(args.agent1), deck1)
     started = time.strftime("%Y%m%d_%H%M%S")
     matchup = f"{Path(args.agent0).stem}_vs_{Path(args.agent1).stem}".replace(os.sep, "_")
     out_dir = Path(args.out_dir) if args.out_dir else PROJECT_ROOT / "experiments" / f"{started}_{matchup}"
@@ -309,6 +333,10 @@ def main() -> int:
         for _ in range(args.games)
     ]
     summary = summarize(records, args.agent0, args.agent1, args.seed)
+    summary["deck0"] = args.deck0
+    summary["deck1"] = args.deck1
+    summary["deck0_sha256"] = deck_sha256(deck0) if deck0 else None
+    summary["deck1_sha256"] = deck_sha256(deck1) if deck1 else None
     summary["started_at"] = started
     summary["out_dir"] = str(out_dir)
 

@@ -174,7 +174,8 @@ def main() -> int:
     parser.add_argument("--temperature", type=float, default=150.0)
     args = parser.parse_args()
 
-    target_hash = str(load_json(args.target_profile)["sha256_sorted_ids"])
+    target_profile = load_json(args.target_profile)
+    target_hash = str(target_profile["sha256_sorted_ids"])
     v1_labels = {row["sample_id"]: row for row in iter_jsonl(args.v1)}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     digest = hashlib.sha256()
@@ -212,6 +213,8 @@ def main() -> int:
     unused_v1 = sorted(set(v1_labels) - sample_ids)
     manifest = {
         "schema_version": SCHEMA_VERSION,
+        "target_deck_sha256": target_hash,
+        "target_deck_role": target_profile.get("role", "unspecified"),
         "output": display_path(args.output),
         "sha256": digest.hexdigest().upper(),
         "bytes": args.output.stat().st_size,

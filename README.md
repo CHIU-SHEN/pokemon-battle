@@ -18,7 +18,7 @@ uv pip install --python "$env:CONDA_PREFIX\python.exe" <package>
 
 非交互执行统一使用 `conda run -n pokemon-tcg <command>`。Kaggle CLI 同样安装在该环境中。新版凭据文件为 `%USERPROFILE%\.kaggle\access_token`，其内容必须只有 Kaggle 设置页生成的原始 API token，不能包含标签、说明文字或命令。
 
-这是一个面向 **Pokémon TCG AI Battle Challenge** 的卡牌对战智能体项目。当前唯一研发主线见 `docs/plan/建模方案.md`，数据状态和下一步见 `docs/plan/数据进度与待办.md`。项目从稳定的卡组特化规则策略出发，逐步构建跨卡组监督预训练、目标卡组 V0/V1 老师、自比赛强化和固定评估晋级闭环。
+这是一个面向 **Pokémon TCG AI Battle Challenge** 的卡牌对战智能体项目。根目录 [`项目进度.md`](项目进度.md) 提供总进度条和未完成事项；当前唯一研发主线见 `docs/plan/建模方案.md`，详细数据状态见 `docs/plan/数据进度与待办.md`。项目从稳定的卡组特化规则策略出发，逐步构建跨卡组监督预训练、Top10 轻量适配择优、冠军卡组强化和固定评估晋级闭环。
 
 当前推荐的正式提交物是：
 
@@ -35,8 +35,9 @@ final_submissions/submission_flat_safe_v0.zip
 | Flat Safe V0 | 卡组特化规则 + 安全兜底 | 推荐主提交 |
 | Multi-module V0 | 模块化规则策略 | 本地开发与备份 |
 | Search V1 | 信念采样 + 有限预算搜索 | 实验版，默认关闭 |
-| 学习模型 | 跨卡组预训练 + 目标卡组适配 | 正在整理第一版正式训练集 |
-| M5 Elite Decks | MAP-Elites 卡组候选 | 候选池，未替换主卡组 |
+| 学习模型 | 共享主干 + Top10 轻量 Adapter | 正式训练集已完成，训练入口尚未实现 |
+| 排行榜 Top10 | 10 套候选牌表 | 10/10 静态合法且通过阶段 B，等待 Adapter 训练与循环赛 |
+| M5 Elite Decks | MAP-Elites 历史候选 | 辅助候选池，未替换主卡组 |
 
 旧 M0～M6 最小验证文档已移至 `docs/archive/mvp/`，只用于解释历史代码来源，不再作为当前路线或数据状态依据。
 

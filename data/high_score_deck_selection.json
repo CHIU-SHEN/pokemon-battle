@@ -1,7 +1,11 @@
 {
   "schema_version": "high_score_deck_selection_v1",
   "source": "实际比赛Top10与Kaggle高分回放卡组汇总.md#三、Kaggle-高分回放去重卡组",
-  "status": "awaiting_card_id_mapping",
+  "status": "stage_b_complete_awaiting_shared_model_and_ten_adapters",
+  "materialized_manifest": "data/high_score_decks/selection_manifest.json",
+  "stage_b_report": "experiments/high_score_deck_selection/stage_b/stage_b_report.json",
+  "stage_b_hard_gate_pass_count": 10,
+  "incumbent_note": "submission/deck.csv remains the legacy Abomasnow baseline until the common-policy and adapted-policy stages produce a winner.",
   "candidate_count": 10,
   "candidates": [
     {"candidate_id": "alakazam_nighttime_mine", "archetype": "Alakazam Dudunsparce", "variant": "Nighttime Mine", "replays": [85216002, 85222378, 85220459, 85220950, 85218535, 85220501, 85219491, 85213633, 85302664]},

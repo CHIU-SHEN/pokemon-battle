@@ -98,10 +98,15 @@ def main() -> None:
     v1_summary = load(v1_summary_path) if v1_summary_path.exists() else {}
     training_manifest_path = ROOT / "data/training/training_manifest_v1.json"
     training_manifest = load(training_manifest_path) if training_manifest_path.exists() else {}
+    deck_selection_path = ROOT / "data/high_score_decks/selection_manifest.json"
+    deck_selection = load(deck_selection_path) if deck_selection_path.exists() else {}
+    stage_b_path = ROOT / "experiments/high_score_deck_selection/stage_b/stage_b_report.json"
+    stage_b = load(stage_b_path) if stage_b_path.exists() else {}
     deck_hash = hashlib.sha256("\n".join(map(str, sorted(target))).encode()).hexdigest()
     result = {
         "audit_version": "local_data_audit_v1",
         "target_deck": {"cards": len(target), "unique_cards": len(counts), "sha256_sorted_ids": deck_hash,
+                        "role": "incumbent_submission_pending_top10_selection",
                         "missing_card_records": missing_cards, "missing_tag_records": missing_tags,
                         "valid_60_cards": len(target) == 60, "cards": target_rows},
         "card_database": {"card_count": len(cards), "tagged_card_count": len(tags),
@@ -145,6 +150,17 @@ def main() -> None:
             "cross_split_games": training_manifest.get("cross_split_games", []),
             "unused_v1_labels": training_manifest.get("unused_v1_labels"),
             "ok": training_manifest.get("ok", False),
+        },
+        "high_score_deck_selection": {
+            "candidate_count": deck_selection.get("candidate_count", 0),
+            "static_valid_count": deck_selection.get("static_valid_count", 0),
+            "mapping_complete_count": deck_selection.get("mapping_complete_count", 0),
+            "replay_prior_leader": deck_selection.get("replay_prior_leader"),
+            "promotion_decision": deck_selection.get("promotion_decision"),
+            "stage_b_hard_gate_pass_count": stage_b.get("hard_gate_pass_count", 0),
+            "common_policy_priority": stage_b.get("common_policy_priority", stage_b.get("stage_c_candidates", [])),
+            "adapter_training_candidates": stage_b.get("adapter_training_candidates", []),
+            "ok": deck_selection.get("ok", False),
         },
         "experiments": {"summary_files": len(summaries), "game_files": len(game_files),
                         "game_records": game_records},
