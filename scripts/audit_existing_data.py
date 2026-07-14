@@ -79,14 +79,25 @@ def main() -> None:
     observed_summary_path = ROOT / "data/processed/bad_case_conversion_summary.json"
     kaggle_summary_path = ROOT / "data/processed/kaggle_conversion_summary.json"
     v1_summary_path = ROOT / "data/reanalysis/v1_labels_summary.json"
-    observed_docs = []
     observed_summary = {}
+    observed_samples = 0
+    observed_games: set[str] = set()
+    observed_splits = Counter()
     if observed_path.exists():
-        observed_docs = [json.loads(x) for x in observed_path.read_text(encoding="utf-8").splitlines() if x.strip()]
+        with observed_path.open(encoding="utf-8") as stream:
+            for line in stream:
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                observed_samples += 1
+                observed_games.add(row["game_id"])
+                observed_splits[row.get("split")] += 1
     if observed_summary_path.exists():
         observed_summary = load(observed_summary_path)
     kaggle_summary = load(kaggle_summary_path) if kaggle_summary_path.exists() else {}
     v1_summary = load(v1_summary_path) if v1_summary_path.exists() else {}
+    training_manifest_path = ROOT / "data/training/training_manifest_v1.json"
+    training_manifest = load(training_manifest_path) if training_manifest_path.exists() else {}
     deck_hash = hashlib.sha256("\n".join(map(str, sorted(target))).encode()).hexdigest()
     result = {
         "audit_version": "local_data_audit_v1",
@@ -100,9 +111,9 @@ def main() -> None:
                       "illegal_actions": illegal, "reasons": dict(reasons), "matchups": dict(matchups)},
         "observed_bad_case_decisions": {
             "schema_version": "observed_decision_v1",
-            "samples": len(observed_docs),
-            "games": len({x["game_id"] for x in observed_docs}),
-            "split_samples": dict(Counter(x.get("split") for x in observed_docs)),
+            "samples": observed_samples,
+            "games": len(observed_games),
+            "split_samples": dict(observed_splits),
             "teacher_status": observed_summary.get("teacher_status", "not_generated"),
             "v0_teacher_samples": observed_summary.get("v0_teacher_samples", 0),
         },
@@ -122,6 +133,18 @@ def main() -> None:
             "search_used": v1_summary.get("search_used", 0),
             "v1_changed_v0": v1_summary.get("v1_changed_v0", 0),
             "budget": v1_summary.get("budget", {}),
+        },
+        "formal_training_dataset": {
+            "schema_version": training_manifest.get("schema_version"),
+            "samples": training_manifest.get("samples", 0),
+            "games": training_manifest.get("games", 0),
+            "splits": training_manifest.get("splits", {}),
+            "policy_sources": training_manifest.get("policy_sources", {}),
+            "sha256": training_manifest.get("sha256"),
+            "unique_sample_ids": training_manifest.get("unique_sample_ids", 0),
+            "cross_split_games": training_manifest.get("cross_split_games", []),
+            "unused_v1_labels": training_manifest.get("unused_v1_labels"),
+            "ok": training_manifest.get("ok", False),
         },
         "experiments": {"summary_files": len(summaries), "game_files": len(game_files),
                         "game_records": game_records},

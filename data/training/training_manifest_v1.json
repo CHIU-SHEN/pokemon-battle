@@ -1,0 +1,39 @@
+{
+  "schema_version": "training_decision_v1",
+  "output": "data/training/training_decisions_v1.jsonl",
+  "sha256": "E2D373B7C8CA4274E2AB6CFA089FCEC1F5D4790BC6846A874C1EE831D018AD6F",
+  "bytes": 727727936,
+  "samples": 120373,
+  "games": 1326,
+  "splits": {
+    "train": 98038,
+    "valid": 11094,
+    "test": 11241
+  },
+  "policy_sources": {
+    "v1_search": 5000,
+    "v0_rules": 4832,
+    "kaggle_agent": 100141,
+    "observed_opponent": 10400
+  },
+  "forced_single_option_samples": 8368,
+  "empty_action_targets": 958,
+  "exact_target_deck_samples": 53,
+  "v1_labels_loaded": 5000,
+  "unused_v1_labels": 0,
+  "unique_sample_ids": 120373,
+  "cross_split_games": [],
+  "temperature": 150.0,
+  "weighting": {
+    "v1_search": 2.0,
+    "v0_rules": 1.4,
+    "kaggle_exact_target": 1.25,
+    "kaggle_other": 0.7,
+    "observed_opponent": 0.6,
+    "forced_single_option_multiplier": 0.15,
+    "value_head_multiplier": 0.5,
+    "risk_head": "disabled until a reliable target exists"
+  },
+  "errors": [],
+  "ok": true
+}
