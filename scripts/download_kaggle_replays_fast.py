@@ -35,6 +35,12 @@ def main() -> None:
     parser.add_argument("--submission-id", type=int, action="append", required=True)
     parser.add_argument("--limit", type=int, default=5000)
     parser.add_argument(
+        "--target-total",
+        type=int,
+        default=0,
+        help="Stop when the output directory contains this many unique episode files; 0 disables.",
+    )
+    parser.add_argument(
         "--delay",
         type=float,
         default=2.0,
@@ -76,6 +82,9 @@ def main() -> None:
         if path.name.split("-")[1].isdigit()
     }
     missing = [episode_id for episode_id in ordered if episode_id not in existing]
+    if args.target_total > 0:
+        remaining_slots = max(args.target_total - len(existing), 0)
+        missing = missing[:remaining_slots]
     failures: list[dict] = []
     downloaded = 0
 
@@ -83,6 +92,8 @@ def main() -> None:
         document = {
             "updated_at": datetime.now(timezone.utc).isoformat(),
             "target_unique_episodes": len(ordered),
+            "target_total_files": args.target_total or None,
+            "existing_unique_files": len(existing),
             "already_present_at_start": len(ordered) - len(missing),
             "downloaded_this_run": downloaded,
             "failed": failures,
