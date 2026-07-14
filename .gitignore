@@ -25,6 +25,8 @@ access_token
 data/external/kaggle_replays/raw/
 data/external/kaggle_replays/download*.log
 data/external/kaggle_replays/download_progress.json
+data/external/kaggle_replays/restore_progress.json
+data/external/kaggle_replays/restore_audit_summary.json
 
 # Generated replay-derived indexes can be rebuilt locally.
 # Keep replay_index.json and core_combo_candidates.json intentionally trackable.
@@ -36,6 +38,10 @@ data/training/*.jsonl
 
 # Local smoke tests and one-off training artifacts must not mix with formal data.
 artifacts/dev_smoke/
+
+# Local staging area for GitHub Release assets. Contents may be hard links to
+# large generated datasets and must never be added to the normal Git history.
+release_assets/
 
 # Reproducible third-party source checkouts
 data/external/kaggle_cli_official/
