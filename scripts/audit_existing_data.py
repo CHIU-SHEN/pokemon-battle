@@ -75,8 +75,18 @@ def main() -> None:
         except (OSError, ValueError, TypeError):
             pass
 
-    smoke = (ROOT / "data/distill/smoke_samples.jsonl").read_text(encoding="utf-8").splitlines()
-    smoke_docs = [json.loads(x) for x in smoke if x.strip()]
+    observed_path = ROOT / "data/processed/bad_case_decisions.jsonl"
+    observed_summary_path = ROOT / "data/processed/bad_case_conversion_summary.json"
+    kaggle_summary_path = ROOT / "data/processed/kaggle_conversion_summary.json"
+    v1_summary_path = ROOT / "data/reanalysis/v1_labels_summary.json"
+    observed_docs = []
+    observed_summary = {}
+    if observed_path.exists():
+        observed_docs = [json.loads(x) for x in observed_path.read_text(encoding="utf-8").splitlines() if x.strip()]
+    if observed_summary_path.exists():
+        observed_summary = load(observed_summary_path)
+    kaggle_summary = load(kaggle_summary_path) if kaggle_summary_path.exists() else {}
+    v1_summary = load(v1_summary_path) if v1_summary_path.exists() else {}
     deck_hash = hashlib.sha256("\n".join(map(str, sorted(target))).encode()).hexdigest()
     result = {
         "audit_version": "local_data_audit_v1",
@@ -88,7 +98,31 @@ def main() -> None:
         "bad_cases": {"files": len(bad_files), "parse_errors": parse_errors,
                       "complete_trace_files": complete_trace, "trace_decisions": total_steps,
                       "illegal_actions": illegal, "reasons": dict(reasons), "matchups": dict(matchups)},
-        "distill": {"samples": len(smoke_docs), "games": len({x["game_id"] for x in smoke_docs})},
+        "observed_bad_case_decisions": {
+            "schema_version": "observed_decision_v1",
+            "samples": len(observed_docs),
+            "games": len({x["game_id"] for x in observed_docs}),
+            "split_samples": dict(Counter(x.get("split") for x in observed_docs)),
+            "teacher_status": observed_summary.get("teacher_status", "not_generated"),
+            "v0_teacher_samples": observed_summary.get("v0_teacher_samples", 0),
+        },
+        "observed_kaggle_decisions": {
+            "schema_version": kaggle_summary.get("schema_version"),
+            "samples": kaggle_summary.get("converted_samples", 0),
+            "games": kaggle_summary.get("converted_games", 0),
+            "split_games": kaggle_summary.get("split_games", {}),
+            "teacher_status": kaggle_summary.get("teacher_status"),
+            "error_count": kaggle_summary.get("error_count"),
+        },
+        "v1_search_labels": {
+            "schema_version": v1_summary.get("schema_version"),
+            "requested": v1_summary.get("requested", 0),
+            "labelled": v1_summary.get("labelled", 0),
+            "failed": v1_summary.get("failed", 0),
+            "search_used": v1_summary.get("search_used", 0),
+            "v1_changed_v0": v1_summary.get("v1_changed_v0", 0),
+            "budget": v1_summary.get("budget", {}),
+        },
         "experiments": {"summary_files": len(summaries), "game_files": len(game_files),
                         "game_records": game_records},
         "deck_library": {"elite_decks": len(list((ROOT / "data/deck_elites").glob("*.csv")))},

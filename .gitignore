@@ -29,6 +29,13 @@ data/external/kaggle_replays/download_progress.json
 # Generated replay-derived indexes can be rebuilt locally.
 # Keep replay_index.json and core_combo_candidates.json intentionally trackable.
 
+# Large derived training datasets are reproducible from tracked summaries and source logs.
+data/processed/*.jsonl
+data/reanalysis/*.jsonl
+
+# Local smoke tests and one-off training artifacts must not mix with formal data.
+artifacts/dev_smoke/
+
 # Reproducible third-party source checkouts
 data/external/kaggle_cli_official/
 data/external/kagd_pokemon_tcg_battle_replay/

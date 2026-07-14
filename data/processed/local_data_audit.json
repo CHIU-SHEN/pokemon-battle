@@ -151,9 +151,44 @@
       "submission_vs_submission": 396
     }
   },
-  "distill": {
-    "samples": 50,
-    "games": 5
+  "observed_bad_case_decisions": {
+    "schema_version": "observed_decision_v1",
+    "samples": 20232,
+    "games": 600,
+    "split_samples": {
+      "train": 16832,
+      "test": 1730,
+      "valid": 1670
+    },
+    "teacher_status": "v0_rules_generated",
+    "v0_teacher_samples": 9832
+  },
+  "observed_kaggle_decisions": {
+    "schema_version": "observed_decision_v1",
+    "samples": 100141,
+    "games": 726,
+    "split_games": {
+      "train": 586,
+      "valid": 73,
+      "test": 67
+    },
+    "teacher_status": "observed_kaggle_agent_actions_only",
+    "error_count": 0
+  },
+  "v1_search_labels": {
+    "schema_version": "v1_search_label_summary_v1",
+    "requested": 5000,
+    "labelled": 5000,
+    "failed": 0,
+    "search_used": 5000,
+    "v1_changed_v0": 384,
+    "budget": {
+      "max_candidates": 6,
+      "particles": 3,
+      "node_budget": 64,
+      "time_budget_sec": 0.08,
+      "switch_margin": 175.0
+    }
   },
   "experiments": {
     "summary_files": 60,

@@ -18,7 +18,7 @@ uv pip install --python "$env:CONDA_PREFIX\python.exe" <package>
 
 非交互执行统一使用 `conda run -n pokemon-tcg <command>`。Kaggle CLI 同样安装在该环境中。新版凭据文件为 `%USERPROFILE%\.kaggle\access_token`，其内容必须只有 Kaggle 设置页生成的原始 API token，不能包含标签、说明文字或命令。
 
-这是一个面向 **Pokémon TCG AI Battle Challenge** 的卡牌对战智能体项目。项目从稳定、低延迟的卡组特化规则策略出发，逐步加入局面解析、隐藏信息信念采样、有限预算搜索、卡牌知识库、卡组优化和轻量策略蒸馏，并配套本地对战、联赛评估、坏例回放和提交包冻结工具。
+这是一个面向 **Pokémon TCG AI Battle Challenge** 的卡牌对战智能体项目。当前唯一研发主线见 `docs/plan/建模方案.md`，数据状态和下一步见 `docs/plan/数据进度与待办.md`。项目从稳定的卡组特化规则策略出发，逐步构建跨卡组监督预训练、目标卡组 V0/V1 老师、自比赛强化和固定评估晋级闭环。
 
 当前推荐的正式提交物是：
 
@@ -26,7 +26,7 @@ uv pip install --python "$env:CONDA_PREFIX\python.exe" <package>
 final_submissions/submission_flat_safe_v0.zip
 ```
 
-该版本是针对 Kaggle raw `exec` 运行方式构建的单文件规则策略，稳定、轻量且不依赖训练模型。搜索版和蒸馏版均保留为实验产物，默认不替换正式提交。
+该版本是当前历史基线提交包。新的学习模型尚未晋级，必须在固定评估中稳定超过基线后才能替换。
 
 ## 项目状态
 
@@ -35,10 +35,10 @@ final_submissions/submission_flat_safe_v0.zip
 | Flat Safe V0 | 卡组特化规则 + 安全兜底 | 推荐主提交 |
 | Multi-module V0 | 模块化规则策略 | 本地开发与备份 |
 | Search V1 | 信念采样 + 有限预算搜索 | 实验版，默认关闭 |
-| Distill V2 | NumPy 线性 policy/value/risk 模型 | 管线已跑通，未晋级 |
+| 学习模型 | 跨卡组预训练 + 目标卡组适配 | 正在整理第一版正式训练集 |
 | M5 Elite Decks | MAP-Elites 卡组候选 | 候选池，未替换主卡组 |
 
-最终冻结报告位于 `reports/final_freeze_report.json`。详细的阶段结论可参考根目录下的 `M0_交付说明.md` 至 `M6_小模型蒸馏说明.md`，以及 `FINAL_收尾交付说明.md`。
+旧 M0～M6 最小验证文档已移至 `docs/archive/mvp/`，只用于解释历史代码来源，不再作为当前路线或数据状态依据。
 
 ## 核心工作流
 
@@ -81,10 +81,18 @@ def agent(obs_dict):
 │   ├── cards/                  # 卡牌数据库、标签、卡组规则与优化器
 │   └── train/                  # 蒸馏数据、特征、训练与 reanalysis
 ├── tests/                      # 回归、战术、搜索、卡组和蒸馏测试
-├── scripts/                    # Flat 提交包构建与最终冻结
+├── scripts/                    # 数据审计、转换、V1 重分析和提交构建
 ├── jobs/                       # Slurm 批处理脚本
-├── data/                       # 卡牌数据、候选卡组及蒸馏数据
-├── models/                     # 实验性轻量模型
+├── data/
+│   ├── external/              # 外部原始数据及来源清单
+│   ├── processed/             # 统一决策样本、审计和转换摘要
+│   └── reanalysis/            # V1 候选队列与搜索标签
+├── docs/
+│   ├── plan/                  # 唯一主方案与数据进度
+│   ├── research/              # 数据源和卡组研究
+│   ├── operations/            # 发布与维护说明
+│   └── archive/mvp/           # 历史最小验证文档
+├── models/                     # 后续正式训练模型
 ├── experiments/               # 历史对局结果与联赛报告
 ├── logs/bad_cases/             # 可回放的失败对局
 ├── final_submissions/          # 冻结目录及 zip 提交包
@@ -252,22 +260,19 @@ python src/cards/deck_optimizer.py --per-archetype 150
 
 代理评分只用于缩小候选空间，不能替代真实对局评估。替换 `submission/deck.csv` 前应先检查合法性，再运行固定基线联赛和完整回归测试。
 
-## V2 蒸馏实验
+## 当前数据与老师链路
 
-当前蒸馏模型是纯 NumPy 线性 policy/value/risk 模型，产物状态为 `experimental_not_promoted`。
+正式数据链路不再使用旧的 50 条 fixture 训练产物：
 
 ```bash
-# 从测试 fixtures 采集 teacher 决策
-python src/train/collect_distill.py --max-samples 50 --search
-
-# 训练并导出 JSON 模型
-python src/train/train_distill.py
-
-# 生成高价值重分析队列
-python src/train/reanalysis.py
+python scripts/audit_existing_data.py
+python scripts/convert_bad_cases.py --with-v0
+python scripts/convert_kaggle_replays.py --max-samples 100000
+python scripts/select_v1_candidates.py --max-items 5000
+python scripts/run_v1_reanalysis.py --max-items 5000
 ```
 
-默认输出位于 `data/distill/`、`models/v2_policy_linear.json` 和 `data/reanalysis_queue.json`。现有数据仅达到 smoke test 规模，不能据此判断模型强于规则或搜索主线。
+主要摘要位于 `data/processed/` 和 `data/reanalysis/`。大体积 JSONL 可由原始日志重建，默认不提交 Git。`src/train/collect_distill.py`、`train_distill.py` 和 `reanalysis.py` 仅保留为开发回归工具，默认写入被忽略的 `artifacts/dev_smoke/`。
 
 ## 构建与冻结提交包
 
@@ -290,7 +295,7 @@ final_submissions/submission_flat_safe_v0.zip
 python scripts/freeze_final.py
 ```
 
-冻结操作会重新生成 `final_submissions/` 中的相关候选及 `reports/final_freeze_report.json`，建议仅在完整测试通过、准备交付时执行。
+冻结操作只重新生成当前基线 `submission_flat_safe_v0` 及 `reports/final_freeze_report.json`，建议仅在完整测试通过、准备交付时执行。
 
 Flat 包必须满足：
 
@@ -308,7 +313,7 @@ Flat 包必须满足：
 PROJECT_DIR=/path/to/project sbatch jobs/final_regression.slurm
 ```
 
-其他脚本包括 `m2_league.slurm`、`m3_search_eval.slurm`、`m5_deck_search.slurm` 和 `m6_distill.slurm`。除 `m3_gpu_train_template.slurm` 是预留模板外，当前主流程均可在 CPU 上运行。
+其他脚本包括 `m2_league.slurm`、`m3_search_eval.slurm` 和 `m5_deck_search.slurm`。旧 `m6_distill.slurm` 已随最小验证产物移除；正式训练作业将在训练集 schema 冻结后重新建立。
 
 ## 开发注意事项
 
@@ -319,13 +324,10 @@ PROJECT_DIR=/path/to/project sbatch jobs/final_regression.slurm
 - 修改搜索后额外运行 `test_m3_search.py`；修改卡组后运行卡组合法性与优化器测试；修改提交构建逻辑后运行 `test_flat_submission.py`。
 - 正式上传优先使用已经冻结和复验的 `submission_flat_safe_v0.zip`。
 
-## 进一步阅读
+## 文档入口
 
-- `执行文档.md`：完整阶段规划与技术路线。
-- `M1_卡组策略说明.md`：V0 卡组特化规则。
-- `M2_评估系统说明.md`：评估纪律、统计指标和晋级规则。
-- `M3_搜索系统说明.md`：belief 与有限预算搜索设计。
-- `M4_卡牌知识库与战术测试说明.md`：卡牌数据和战术测试。
-- `M5_卡组优化与协同进化说明.md`：MAP-Elites 与卡组候选。
-- `M6_小模型蒸馏说明.md`：数据 schema、模型与 reanalysis。
-- `FINAL_收尾交付说明.md`：最终冻结结论和提交建议。
+- `docs/plan/建模方案.md`：唯一研发主线、训练路线和晋级原则。
+- `docs/plan/数据进度与待办.md`：当前数据数量、已完成事项和下一步。
+- `docs/research/`：回放数据源、真实比赛和高分卡组研究。
+- `docs/operations/`：数据发布与仓库维护说明。
+- `docs/archive/mvp/`：旧 M0～M6 最小验证文档，仅供历史参考。

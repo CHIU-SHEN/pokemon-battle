@@ -165,6 +165,17 @@ class SearchManager:
             return v0_action
 
         scored.sort(key=lambda x: x[0], reverse=True)
+        def score_report(score: float, candidate: ActionCandidate) -> dict[str, Any]:
+            samples = values[candidate.action]
+            return {
+                "action": candidate.as_list(),
+                "source": candidate.source,
+                "score": score,
+                "visits": len(samples),
+                "mean_score": sum(samples) / len(samples) if samples else None,
+                "worst_score": min(samples) if samples else None,
+            }
+
         v0_key = tuple(v0_action)
         v0_score = next((score for score, candidate in scored if candidate.action == v0_key), None)
         if scored[0][1].action != v0_key and (v0_score is None or scored[0][0] < v0_score + self.config.switch_margin):
@@ -177,10 +188,7 @@ class SearchManager:
                 "chosen_source": "v0_margin_guard",
                 "v0_action": v0_action,
                 "chosen_action": v0_action,
-                "scores": [
-                    {"action": c.as_list(), "source": c.source, "score": score}
-                    for score, c in scored[:5]
-                ],
+                "scores": [score_report(score, c) for score, c in scored[:5]],
             }
             return v0_action
 
@@ -198,9 +206,6 @@ class SearchManager:
             "chosen_source": scored[0][1].source,
             "v0_action": v0_action,
             "chosen_action": best,
-            "scores": [
-                {"action": c.as_list(), "source": c.source, "score": score}
-                for score, c in scored[:5]
-            ],
+            "scores": [score_report(score, c) for score, c in scored[:5]],
         }
         return best

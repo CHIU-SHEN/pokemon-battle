@@ -86,9 +86,9 @@ def score_samples(samples: list[dict[str, Any]], model: dict[str, Any]) -> list[
 
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data", type=Path, default=PROJECT_ROOT / "data" / "distill" / "smoke_samples.jsonl")
-    parser.add_argument("--model", type=Path, default=PROJECT_ROOT / "models" / "v2_policy_linear.json")
-    parser.add_argument("--out", type=Path, default=PROJECT_ROOT / "data" / "reanalysis_queue.json")
+    parser.add_argument("--data", type=Path, default=PROJECT_ROOT / "artifacts" / "dev_smoke" / "samples.jsonl")
+    parser.add_argument("--model", type=Path, default=PROJECT_ROOT / "artifacts" / "dev_smoke" / "model.json")
+    parser.add_argument("--out", type=Path, default=PROJECT_ROOT / "artifacts" / "dev_smoke" / "reanalysis_queue.json")
     parser.add_argument("--max-items", type=int, default=100)
     return parser
 

@@ -227,10 +227,10 @@ def evaluate(
 
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data", type=Path, default=PROJECT_ROOT / "data" / "distill" / "smoke_samples.jsonl")
-    parser.add_argument("--model-out", type=Path, default=PROJECT_ROOT / "models" / "v2_policy_linear.json")
-    parser.add_argument("--metrics-out", type=Path, default=PROJECT_ROOT / "data" / "distill" / "train_metrics.json")
-    parser.add_argument("--splits-out", type=Path, default=PROJECT_ROOT / "data" / "distill" / "splits.json")
+    parser.add_argument("--data", type=Path, default=PROJECT_ROOT / "artifacts" / "dev_smoke" / "samples.jsonl")
+    parser.add_argument("--model-out", type=Path, default=PROJECT_ROOT / "artifacts" / "dev_smoke" / "model.json")
+    parser.add_argument("--metrics-out", type=Path, default=PROJECT_ROOT / "artifacts" / "dev_smoke" / "train_metrics.json")
+    parser.add_argument("--splits-out", type=Path, default=PROJECT_ROOT / "artifacts" / "dev_smoke" / "splits.json")
     parser.add_argument("--epochs", type=int, default=80)
     parser.add_argument("--lr", type=float, default=0.04)
     parser.add_argument("--lr-value", type=float, default=0.02)

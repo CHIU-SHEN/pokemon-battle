@@ -1,22 +1,15 @@
 {
-  "version": "2026-07-07-final-freeze",
+  "version": "2026-07-14-clean-baseline-freeze",
   "primary_submission": "final_submissions/submission_flat_safe_v0.zip",
   "primary_reason": "Flat single-file V0 is the safest Kaggle candidate because it is raw-exec compatible: no __file__, no agent package imports, no training dependencies.",
   "frozen_paths": {
-    "flat_safe_v0_dir": "final_submissions/submission_flat_safe_v0",
-    "flat_safe_v0_zip": "final_submissions/submission_flat_safe_v0.zip",
-    "safe_v0_dir": "final_submissions/submission_safe_v0",
-    "search_v1_dir": "final_submissions/submission_search_v1_experimental",
-    "v2_distill_dir": "final_submissions/v2_distill_experimental",
-    "safe_v0_zip": "final_submissions/submission_safe_v0.zip",
-    "search_v1_zip": "final_submissions/submission_search_v1_experimental.zip",
-    "v2_distill_zip": "final_submissions/v2_distill_experimental.zip"
+    "flat_safe_v0_dir": "final_submissions\\submission_flat_safe_v0",
+    "flat_safe_v0_zip": "final_submissions\\submission_flat_safe_v0.zip"
   },
   "promotion_decisions": {
     "flat_v0_rules": "promoted_primary",
-    "multi_module_v0_rules": "local_backup_only",
-    "v1_search": "experimental_backup_only",
-    "v2_distill": "not_kaggle_submission",
+    "multi_module_v0_rules": "source_only_not_packaged",
+    "v1_search": "source_only_not_packaged",
     "m5_deck_elite": "not_promoted"
   },
   "key_evidence": {
@@ -171,14 +164,6 @@
           0
         ]
       }
-    },
-    "m6_distill_smoke": {
-      "train_samples": 40,
-      "valid_samples": 10,
-      "valid_policy_top1": 0.9,
-      "valid_policy_top3": 1.0,
-      "valid_value_corr": -0.22453773506804298,
-      "latency_ms_per_select": 0.009314645547419786
     }
   },
   "submission_package_rules": [
@@ -186,7 +171,6 @@
     "main.py must pass raw exec without __file__ in globals.",
     "No agent/ package imports in the primary Kaggle package.",
     "No training scripts, local data dependencies, pycache, pyc, or .DS_Store files.",
-    "Multi-module V0 and Search V1 are local/experimental backups only.",
-    "V2 distillation archive is reproducibility-only and not meant for upload."
+    "Multi-module V0 and Search V1 remain source-level research components and are not frozen as duplicate packages."
   ]
 }
