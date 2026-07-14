@@ -63,7 +63,7 @@
       "url": "https://www.kaggle.com/competitions/pokemon-tcg-ai-battle",
       "retrieved_at": "2026-07-13",
       "local_path": "data/external/kaggle_pokemon_tcg_ai_battle",
-      "complete_matches": 3799,
+      "complete_matches": 5952,
       "status": "authenticated_files_and_official_replays_downloaded",
       "competition_file_audit": "The Competition Data file list contains card CSV/PDF data, engine source, and sample_submission files, but no historical games. Complete historical episode JSON is available separately through the official Simulation Competition replay endpoint.",
       "replay_source": {
@@ -71,11 +71,11 @@
         "command": "kaggle competitions replay <EPISODE_ID> -p data/external/kaggle_replays/raw",
         "local_path": "data/external/kaggle_replays/raw",
         "index": "data/external/kaggle_replays/replay_index.json",
-        "episodes_downloaded": 3814,
-        "complete_episodes": 3799,
-        "trajectory_steps": 550100,
-        "bytes": 15525009217,
-        "quality": "3799 of 3814 downloaded JSON files passed the complete-trajectory gate and ended with DONE for both agents. Training must use replay_index.json valid_complete_trajectory rather than accepting every downloaded file."
+        "episodes_downloaded": 5974,
+        "complete_episodes": 5952,
+        "trajectory_steps": 867659,
+        "bytes": 24486237674,
+        "quality": "5952 of 5974 downloaded JSON files passed the complete-trajectory gate and ended with DONE for both agents. Training must use replay_index.json valid_complete_trajectory rather than accepting every downloaded file."
       },
       "files": [
         {"path": "EN_Card_Data.csv", "sha256": "A0EA63CF7ADCB65D35436CE0EB390DE6E2E35654A7C67C065A45F4ABAA00F373", "role": "official_card_metadata"},
@@ -88,13 +88,13 @@
     }
   ],
   "totals": {
-    "verified_complete_external_matches": 3800,
+    "verified_complete_external_matches": 5953,
     "verified_turns": 12,
-    "verified_kaggle_trajectory_steps": 550100,
+    "verified_kaggle_trajectory_steps": 867659,
     "trajectory_generators": 1,
     "kaggle_official_files_downloaded": 6,
-    "kaggle_replays_downloaded": 3814,
-    "kaggle_replays_complete": 3799,
+    "kaggle_replays_downloaded": 5974,
+    "kaggle_replays_complete": 5952,
     "professional_video_matches_downloaded": 0
   }
 }

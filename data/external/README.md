@@ -41,7 +41,7 @@ python scripts/audit_kaggle_replays.py
 
 去掉 `--limit` 会拉取该 submission 返回的全部公开完整 episode；可重复提供 `--submission-id`，脚本会跨提交按 episode ID 去重并断点续传。
 
-大规模下载使用 `scripts/download_kaggle_replays_fast.py`。它在单一进程中复用官方 Kaggle API 认证、对网络错误指数退避重试，并将状态写入 `kaggle_replays/download_progress.json`。当前 5000 局任务日志为 `kaggle_replays/download.log`，错误日志为 `kaggle_replays/download.err.log`。任务完成后运行审计脚本，届时再更新最终 manifest 统计。
+大规模下载使用 `scripts/download_kaggle_replays_fast.py`。它在单一进程中复用官方 Kaggle API 认证、对网络错误指数退避重试，并将状态写入 `kaggle_replays/download_progress.json`。截至 2026-07-14，磁盘共有 5,974 个 replay JSON；全量审计确认其中 5,952 局为完整轨迹、22 局未通过完整性门槛，共 867,659 个 step。训练必须以 `kaggle_replays/replay_index.json` 的 `valid_complete_trajectory` 为准，不能直接接受 raw 目录中的全部文件。
 
 与项目高分目标卡组相近的核心学习样本使用 `scripts/select_core_combo_replays.py` 生成。它从已知高分 seed replay 恢复完整 60 张牌表，并对排行榜回放双方牌表计算多重集合加权 Jaccard；结果写入 `kaggle_replays/core_combo_candidates.json`。默认阈值为 0.70，优先排序目标方获胜、相似度高且轨迹较完整的对局。
 
