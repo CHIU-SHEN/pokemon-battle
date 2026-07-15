@@ -268,7 +268,7 @@ python src/cards/deck_optimizer.py --per-archetype 150
 ```bash
 python scripts/audit_existing_data.py
 python scripts/convert_bad_cases.py --with-v0
-python scripts/convert_kaggle_replays.py --max-samples 100000
+python scripts/convert_kaggle_replays.py
 python scripts/select_v1_candidates.py --max-items 5000
 python scripts/run_v1_reanalysis.py --max-items 5000
 ```
