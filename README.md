@@ -35,7 +35,7 @@ final_submissions/submission_flat_safe_v0.zip
 | Flat Safe V0 | 卡组特化规则 + 安全兜底 | 推荐主提交 |
 | Multi-module V0 | 模块化规则策略 | 本地开发与备份 |
 | Search V1 | 信念采样 + 有限预算搜索 | 实验版，默认关闭 |
-| 学习模型 | 共享主干 + Top10 轻量 Adapter | 正式训练集已完成，训练入口尚未实现 |
+| 学习模型 | 共享主干 + Top10 轻量 Adapter | 正式训练集与 `SL-0-shared` 训练入口已完成，等待服务器 GPU 冒烟 |
 | 排行榜 Top10 | 10 套候选牌表 | 10/10 静态合法且通过阶段 B，等待 Adapter 训练与循环赛 |
 | M5 Elite Decks | MAP-Elites 历史候选 | 辅助候选池，未替换主卡组 |
 

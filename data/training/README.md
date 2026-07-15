@@ -8,3 +8,13 @@
 JSONL 是可重建的大型派生数据，默认不提交 Git；manifest、schema、构建脚本和来源摘要应提交。
 
 本版 V1/V0 目标方来自当时的 Abomasnow 旧基线。它们仍是合法的跨卡组监督样本，但不能表述为 Top10 最终冠军的专属老师数据。Top10 冠军确定后，需要补充冠军卡组轨迹并生成新的数据版本，不能静默覆盖本版语义。
+
+## SL-0-shared 训练入口
+
+- 流式数据与动态 batch：`src/train/shared_data.py`
+- State/Option/Deck 模型：`src/train/shared_model.py`
+- 单 GPU/DDP 训练入口：`python -m src.train.train_shared`
+- CPU/GPU 冒烟测试：`python tests/test_shared_training.py`
+- 服务器操作指南：`docs/operations/服务器共享模型训练指南.md`
+
+训练入口支持动态合法 option mask、加权 soft policy/value、AMP、梯度累积、checkpoint 和数据哈希约束的断点续训。当前没有可靠 risk target，因此仍不训练 risk head。
