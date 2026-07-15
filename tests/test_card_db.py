@@ -25,6 +25,9 @@ def main() -> int:
 
     require(cards_db["metadata"]["unique_card_ids"] == 1267, "CardDB unique count mismatch")
     require(cards_db["metadata"]["engine_card_count"] == 1267, "engine card count mismatch")
+    require(cards_db["metadata"]["ruleset"]["id"] == "ptcg_abc_2026_simulation_designated_pool_v1", "ruleset mismatch")
+    require(cards_db["metadata"]["ruleset"]["designated_card_count"] == 1267, "ruleset card pool mismatch")
+    require(cards_db["metadata"]["ruleset"]["player_time_limit_seconds"] == 600, "ruleset clock mismatch")
     require(cards_db["metadata"]["row_counts"]["en_csv"] == 2022, "EN row count mismatch")
     require(cards_db["metadata"]["row_counts"]["jp_csv"] == 2022, "JP row count mismatch")
     require(len(cards_db["cards"]) == len(tags_db["cards"]) == 1267, "card/tag count mismatch")

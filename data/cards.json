@@ -1,10 +1,33 @@
 {
   "metadata": {
+    "ruleset": {
+      "id": "ptcg_abc_2026_simulation_designated_pool_v1",
+      "name": "Pokémon TCG AI Battle Challenge 2026 Simulation designated-card-pool rules",
+      "basis": "Standard format with tournament-specific adjustments",
+      "designated_card_pool_only": true,
+      "designated_card_count": 1267,
+      "deck_size": 60,
+      "player_time_limit_seconds": 600,
+      "competition_url": "https://www.kaggle.com/competitions/pokemon-tcg-ai-battle",
+      "competition_rules_url": "https://www.kaggle.com/competitions/pokemon-tcg-ai-battle/rules",
+      "rules_overview_url": "https://ptcg-abc.pokemon.co.jp/",
+      "retrieved_at": "2026-07-15",
+      "usage_terms": "Governed by the Kaggle Competition Rules; no separate open-data redistribution license is asserted.",
+      "note": "The organizer does not identify this environment as an unmodified real-world regulation mark; the supplied engine and designated card list are authoritative for simulation behavior."
+    },
     "source_files": {
-      "en_csv": "/Users/hank/Desktop/pokemon/pokemon-tcg-ai-battle/EN_Card_Data.csv",
-      "jp_csv": "/Users/hank/Desktop/pokemon/pokemon-tcg-ai-battle/JP_Card_Data.csv",
-      "en_pdf": "/Users/hank/Desktop/pokemon/pokemon-tcg-ai-battle/Card_ID List_EN.pdf",
-      "jp_pdf": "/Users/hank/Desktop/pokemon/pokemon-tcg-ai-battle/Card_ID List_JP.pdf",
+      "en_csv": {
+        "path": "data/external/kaggle_pokemon_tcg_ai_battle/EN_Card_Data.csv",
+        "sha256": "A0EA63CF7ADCB65D35436CE0EB390DE6E2E35654A7C67C065A45F4ABAA00F373",
+        "source_url": "https://www.kaggle.com/competitions/pokemon-tcg-ai-battle/data",
+        "retrieved_at": "2026-07-13"
+      },
+      "jp_csv": {
+        "path": "data/external/kaggle_pokemon_tcg_ai_battle/JP_Card_Data.csv",
+        "sha256": "2215BA62A8D33580AF1FEDC3DD4242B0C9FDBF9958132C5F54DBC8DA94C73C27",
+        "source_url": "https://www.kaggle.com/competitions/pokemon-tcg-ai-battle/data",
+        "retrieved_at": "2026-07-13"
+      },
       "engine_api": "submission/cg/api.py::all_card_data/all_attack"
     },
     "row_counts": {

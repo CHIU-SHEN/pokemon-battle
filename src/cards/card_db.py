@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 from dataclasses import asdict, dataclass, field
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -13,12 +14,25 @@ from typing import Any
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATA_DIR = PROJECT_ROOT / "pokemon-tcg-ai-battle"
+DATA_DIR = PROJECT_ROOT / "data" / "external" / "kaggle_pokemon_tcg_ai_battle"
 SUBMISSION_DIR = PROJECT_ROOT / "submission"
 if str(SUBMISSION_DIR) not in sys.path:
     sys.path.insert(0, str(SUBMISSION_DIR))
 
 from cg.api import all_attack, all_card_data  # noqa: E402
+
+
+RULESET_ID = "ptcg_abc_2026_simulation_designated_pool_v1"
+COMPETITION_URL = "https://www.kaggle.com/competitions/pokemon-tcg-ai-battle"
+RULES_OVERVIEW_URL = "https://ptcg-abc.pokemon.co.jp/"
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest().upper()
 
 
 EN_COLUMNS = {
@@ -190,11 +204,34 @@ def build_card_db(data_dir: Path = DATA_DIR) -> dict[str, Any]:
         records[str(card_id)] = asdict(record)
 
     metadata = {
+        "ruleset": {
+            "id": RULESET_ID,
+            "name": "Pokémon TCG AI Battle Challenge 2026 Simulation designated-card-pool rules",
+            "basis": "Standard format with tournament-specific adjustments",
+            "designated_card_pool_only": True,
+            "designated_card_count": len(records),
+            "deck_size": 60,
+            "player_time_limit_seconds": 600,
+            "competition_url": COMPETITION_URL,
+            "competition_rules_url": COMPETITION_URL + "/rules",
+            "rules_overview_url": RULES_OVERVIEW_URL,
+            "retrieved_at": "2026-07-15",
+            "usage_terms": "Governed by the Kaggle Competition Rules; no separate open-data redistribution license is asserted.",
+            "note": "The organizer does not identify this environment as an unmodified real-world regulation mark; the supplied engine and designated card list are authoritative for simulation behavior.",
+        },
         "source_files": {
-            "en_csv": str(data_dir / "EN_Card_Data.csv"),
-            "jp_csv": str(data_dir / "JP_Card_Data.csv"),
-            "en_pdf": str(data_dir / "Card_ID List_EN.pdf"),
-            "jp_pdf": str(data_dir / "Card_ID List_JP.pdf"),
+            "en_csv": {
+                "path": (data_dir / "EN_Card_Data.csv").relative_to(PROJECT_ROOT).as_posix(),
+                "sha256": sha256_file(data_dir / "EN_Card_Data.csv"),
+                "source_url": COMPETITION_URL + "/data",
+                "retrieved_at": "2026-07-13",
+            },
+            "jp_csv": {
+                "path": (data_dir / "JP_Card_Data.csv").relative_to(PROJECT_ROOT).as_posix(),
+                "sha256": sha256_file(data_dir / "JP_Card_Data.csv"),
+                "source_url": COMPETITION_URL + "/data",
+                "retrieved_at": "2026-07-13",
+            },
             "engine_api": "submission/cg/api.py::all_card_data/all_attack",
         },
         "row_counts": {"en_csv": sum(len(v) for v in en.values()), "jp_csv": sum(len(v) for v in jp.values())},

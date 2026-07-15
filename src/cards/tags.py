@@ -17,19 +17,22 @@ OVERRIDES_JSON = PROJECT_ROOT / "data" / "manual_overrides.json"
 
 
 TAG_PATTERNS: dict[str, list[str]] = {
-    "draw": [r"\bdraw\b", r"put .* into your hand"],
-    "search_pokemon": [r"search your deck .*pok[eé]mon", r"pok[eé]mon .* into your hand"],
-    "search_energy": [r"search your deck .*energy", r"basic energy card you find"],
-    "attach_energy": [r"attach .*energy", r"attach a basic energy"],
-    "switch": [r"\bswitch\b", r"switch your active"],
-    "gust": [r"opponent.*bench.*active", r"switch .* opponent"],
-    "discard": [r"\bdiscard\b"],
+    # Keep effect patterns action-specific. Earlier broad patterns such as
+    # "put ... into your hand" labelled deck searches as draw, and joining a
+    # whole card into one greedy regex caused unrelated clauses to leak tags.
+    "draw": [r"\bdraw(?:s)?\b"],
+    "search_pokemon": [r"search (?:your|their) deck for[^.]*pok[eé]mon"],
+    "search_energy": [r"search (?:your|their) deck for[^.]*energy"],
+    "attach_energy": [r"attach[^.]*\benergy\b(?! card is attached)"],
+    "switch": [r"switch (?:this|your)[^.]*pok[eé]mon with"],
+    "gust": [r"switch in[^.]*opponent[^.]*benched pok[eé]mon", r"switch[^.]*opponent[^.]*benched pok[eé]mon[^.]*active"],
+    "discard": [r"\bdiscard(?:s|ed|ing)?\b(?! pile)"],
     "damage_boost": [r"do \d+ more damage", r"does \d+ more damage"],
     "heal": [r"\bheal\b", r"recover .*hp"],
     "stadium_control": [r"\bstadium\b"],
     "deck_thinning": [r"search your deck", r"look at the top"],
-    "recursion": [r"from your discard pile", r"put .* discard .* into your hand", r"shuffle .* into your deck"],
-    "prize_acceleration": [r"prize card", r"take .* prize"],
+    "recursion": [r"(?:put|shuffle|attach)[^.]*from (?:your|the) discard pile", r"from (?:your|the) discard pile[^.]*(?:into your hand|into your deck|onto your bench|attach)"],
+    "prize_acceleration": [r"\btake (?:a|an|one|\d+) (?:more )?prize cards?"],
     "risk_deckout": [r"discard the top", r"mill"],
 }
 
