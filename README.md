@@ -18,7 +18,7 @@ uv pip install --python "$env:CONDA_PREFIX\python.exe" <package>
 
 非交互执行统一使用 `conda run -n pokemon-tcg <command>`。Kaggle CLI 同样安装在该环境中。新版凭据文件为 `%USERPROFILE%\.kaggle\access_token`，其内容必须只有 Kaggle 设置页生成的原始 API token，不能包含标签、说明文字或命令。
 
-这是一个面向 **Pokémon TCG AI Battle Challenge** 的卡牌对战智能体项目。根目录 [`项目进度.md`](项目进度.md) 提供总进度条和未完成事项；当前唯一研发主线见 `docs/plan/建模方案.md`，详细数据状态见 `docs/plan/数据进度与待办.md`。项目从稳定的卡组特化规则策略出发，逐步构建跨卡组监督预训练、Top10 轻量适配择优、冠军卡组强化和固定评估晋级闭环。
+这是一个面向 **Pokémon TCG AI Battle Challenge** 的卡牌对战智能体项目。根目录 [`项目进度.md`](项目进度.md) 提供总进度条和未完成事项；当前唯一研发主线见 `docs/plan/建模方案.md`，详细数据状态见 `docs/plan/数据进度与待办.md`。项目从稳定的卡组特化规则策略出发，逐步构建单步监督预训练、短决策序列与 Combo 学习、Top10 轻量适配择优、冠军卡组强化和固定评估晋级闭环。
 
 当前推荐的正式提交物是：
 
@@ -35,11 +35,13 @@ final_submissions/submission_flat_safe_v0.zip
 | Flat Safe V0 | 卡组特化规则 + 安全兜底 | 推荐主提交 |
 | Multi-module V0 | 模块化规则策略 | 本地开发与备份 |
 | Search V1 | 信念采样 + 有限预算搜索 | 实验版，默认关闭 |
-| 学习模型 | 共享主干 + Top10 轻量 Adapter | 正式训练集与 `SL-0-shared` 训练入口已完成，等待服务器 GPU 冒烟 |
+| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | `SL-0-shared` 训练入口已完成，等待服务器 GPU 冒烟；序列阶段尚未实现 |
 | 排行榜 Top10 | 10 套候选牌表 | 10/10 静态合法且通过阶段 B，等待 Adapter 训练与循环赛 |
 | M5 Elite Decks | MAP-Elites 历史候选 | 辅助候选池，未替换主卡组 |
 
 旧 M0～M6 最小验证文档已移至 `docs/archive/mvp/`，只用于解释历史代码来源，不再作为当前路线或数据状态依据。
+
+`SL-0-shared` 是必要的单步能力基线，不是学习模型的终点。它先学习“在当前局面选哪个合法动作”；通过验收后，还要把同局决策按时间顺序组成短窗口，训练模型理解检索、铺场、进化、贴能、换位和攻击等需要多步完成的 Combo。序列模型必须与单步基线做消融和 Arena 对比，确认整局胜率或 Combo 指标稳定提升后才能进入正式 Adapter 与冠军筛选链路。
 
 ## 核心工作流
 
