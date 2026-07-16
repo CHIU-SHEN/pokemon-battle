@@ -138,6 +138,8 @@ def collate_training_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     opponent_deck_mask = torch.zeros((batch_size, max_opponent_cards), dtype=torch.bool)
     sample_ids = []
     game_ids = []
+    policy_sources = []
+    forced_single_option = []
 
     for batch_index, row in enumerate(rows):
         if len(row["features"]) != global_dim:
@@ -171,6 +173,8 @@ def collate_training_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
             opponent_deck_mask[batch_index, : len(oids)] = True
         sample_ids.append(row["sample_id"])
         game_ids.append(row["game_id"])
+        policy_sources.append(str((row.get("supervision") or {}).get("policy_source") or "unknown"))
+        forced_single_option.append(bool((row.get("quality") or {}).get("forced_single_option", count == 1)))
 
     if not legal_mask.any(dim=1).all():
         raise ValueError("every sample must expose at least one legal option")
@@ -188,6 +192,8 @@ def collate_training_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "opponent_deck_mask": opponent_deck_mask,
         "sample_ids": sample_ids,
         "game_ids": game_ids,
+        "policy_sources": policy_sources,
+        "forced_single_option": forced_single_option,
     }
 
 
