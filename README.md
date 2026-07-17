@@ -35,7 +35,7 @@ final_submissions/submission_flat_safe_v0.zip
 | Flat Safe V0 | 卡组特化规则 + 安全兜底 | 推荐主提交 |
 | Multi-module V0 | 模块化规则策略 | 本地开发与备份 |
 | Search V1 | 信念采样 + 有限预算搜索 | 实验版，默认关闭 |
-| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | `SL-0-shared` 训练入口已完成，等待服务器 GPU 冒烟；序列阶段尚未实现 |
+| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | `SL-0-shared` 已完成 6 epoch 全量训练、冻结 test 评估并冻结为单步基线；序列阶段尚未实现 |
 | 排行榜 Top10 | 10 套候选牌表 | 10/10 静态合法且通过阶段 B，等待 Adapter 训练与循环赛 |
 | M5 Elite Decks | MAP-Elites 历史候选 | 辅助候选池，未替换主卡组 |
 
@@ -95,7 +95,8 @@ def agent(obs_dict):
 │   ├── research/              # 数据源和卡组研究
 │   ├── operations/            # 发布与维护说明
 │   └── archive/mvp/           # 历史最小验证文档
-├── models/                     # 后续正式训练模型
+├── artifacts/                  # 完整训练运行产物与开发冒烟产物
+├── models/                     # 历史模型目录说明；SL-0 以完整运行目录为准
 ├── experiments/               # 历史对局结果与联赛报告
 ├── logs/bad_cases/             # 可回放的失败对局
 ├── final_submissions/          # 冻结目录及 zip 提交包

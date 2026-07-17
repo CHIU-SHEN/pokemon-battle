@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import hashlib
 import json
+import pathlib
 from pathlib import Path
 import sys
 import time
@@ -95,6 +97,18 @@ def choose_device(requested: str) -> torch.device:
     return torch.device(requested)
 
 
+@contextmanager
+def portable_checkpoint_paths():
+    """Allow trusted Linux checkpoints containing pathlib.PosixPath on Windows."""
+    original = pathlib.PosixPath
+    if sys.platform == "win32":
+        pathlib.PosixPath = pathlib.WindowsPath  # type: ignore[misc,assignment]
+    try:
+        yield
+    finally:
+        pathlib.PosixPath = original  # type: ignore[misc,assignment]
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.batch_size <= 0 or args.num_workers < 0 or args.max_samples < 0:
@@ -102,7 +116,8 @@ def main(argv: list[str] | None = None) -> int:
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
     if not manifest.get("ok"):
         raise ValueError("training manifest is not valid")
-    checkpoint = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
+    with portable_checkpoint_paths():
+        checkpoint = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
     if checkpoint.get("schema_version") != "sl0_shared_checkpoint_v1":
         raise ValueError(f"unsupported checkpoint schema: {checkpoint.get('schema_version')!r}")
     checkpoint_sha = str(checkpoint.get("dataset_sha256", "")).upper()
