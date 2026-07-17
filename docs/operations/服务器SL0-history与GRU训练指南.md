@@ -1,6 +1,6 @@
 # 服务器 SL-0-history 与 GRU 训练指南
 
-本阶段先验证 24 维显式历史特征是否相对冻结的 `SL-0-shared` 基线有稳定增益。只有离线 A/B 和固定 Arena 都通过后，才进入 `SL-1-gru`。`SL-0-history` 已在本机完成小规模冒烟；正式全量训练建议放到服务器，因为需要与基线使用全量数据和可复现配置做公平比较。
+本阶段先验证 24 维显式历史特征是否相对冻结的 `SL-0-shared` 基线有稳定增益，再训练 `SL-1-gru`。GRU 不读取对手隐藏选择，而是编码“当前公开局面 + 上一步己方动作 + 相邻两次己方观察之间的公开局面差分”。`SL-0-history` 和新版 GRU 均已完成本机小规模冒烟；正式全量训练建议放到服务器。
 
 ## 1. 已完成的本机验证
 
@@ -43,6 +43,8 @@ SHA-256: 0D29DE10854F2354C589E4988C7D09BB706009DC8FE50070FD4597E589AC76A2
 sha256sum data/training/training_decisions_history_v1.jsonl
 python tests/test_shared_training.py
 python tests/test_history_training.py
+python tests/test_sequence_index.py
+python tests/test_sequence_model.py
 ```
 
 ## 3. 正式训练 SL-0-history
@@ -98,16 +100,72 @@ python -m src.train.eval_shared \
 
 若只有单次离线评估的小幅波动，不算稳定增益，应保留 SL-0 基线并停止扩大模型。
 
-## 5. GRU 的执行边界
+## 5. SL-1-gru 输入契约
 
-GRU 只在 SL-0-history 通过上述门槛后实现。本机仅做少量 batch 的 shape、mask、reset、padding、反向传播和 checkpoint 冒烟；全量短序列训练放服务器。
+每条轨迹仍按 `game_id + current_player` 构建，保证训练和比赛推理使用相同视角。每个时间步包含：
+
+- 当前 `SL-0` 状态与动态 options；
+- 上一步己方实际动作对应的 option 特征均值；
+- 当前与上一次己方观察之间的 24 维变化：前 22 个公开动态状态的差值、回合切换标志、可见日志存在标志。
+
+该差分会显式呈现对手造成的公开结果，例如对手手牌/牌库/弃牌、场上宝可梦、主动位 HP/能量、双方奖赏卡和我方受伤的变化。`public_history` 可能为空，因此只作为附加标志，不能作为唯一对手信息源。禁止把录像中对手不可见的 option 或隐藏手牌写入输入。
+
+实现位置：
+
+- `src/train/transition_features.py`：差分和上一动作编码；
+- `src/train/sequence_data.py`：窗口、前置样本、padding 和终点监督；
+- `src/train/sequence_model.py`：SL-0 编码器、单层 GRU 与时间残差；
+- `src/train/train_sequence.py`：训练、热启动、验证和 checkpoint。
+
+## 6. GRU 服务器训练
+
+先做冒烟：
+
+```bash
+python -m src.train.train_sequence \
+  --device cuda --epochs 1 --batch-size 8 --window-length 8 \
+  --num-workers 0 --max-train-windows 1000 --max-valid-windows 200 \
+  --output artifacts/sl1_gru_server_smoke
+```
+
+再做长度 16 的正式训练：
+
+```bash
+python -m src.train.train_sequence \
+  --device cuda --epochs 6 --batch-size 32 --window-length 16 \
+  --num-workers 4 --learning-rate 3e-4 \
+  --output artifacts/sl1_gru_full
+```
+
+默认从 `artifacts/sl0_shared_full/best.pt` 热启动。时间残差投影初始化为零，因此初始 policy/value 与 SL-0 一致；随后梯度才逐步启用差分、上一动作和循环状态。每个滑窗只在终点计算监督，避免同一历史样本在一个窗口内重复计权。
+
+断点续训：
+
+```bash
+python -m src.train.train_sequence \
+  --device cuda --epochs 8 --resume artifacts/sl1_gru_full/last.pt \
+  --output artifacts/sl1_gru_full
+```
+
+冻结 test 评估：
+
+```bash
+python -m src.train.eval_sequence \
+  --checkpoint artifacts/sl1_gru_full/best.pt \
+  --split test --device cuda --batch-size 64 --window-length 16 \
+  --output reports/sl1_gru_test.json
+```
+
+checkpoint 会同时校验原始训练集和序列索引哈希。对比时必须固定相同的 test endpoint 与窗口长度。
+
+## 7. 执行顺序
 
 ```text
 SL-0-shared 基线
   -> SL-0-history 全量 A/B
   -> 固定 Arena 验证
-  -> SL-1-gru 本机冒烟
+  -> SL-1-gru（公开局面差分 + 上一步己方动作）本机冒烟
   -> SL-1-gru 服务器全量训练与三模型 A/B
 ```
 
-不要在 SL-0-history 结果出来前直接训练 GRU，否则无法判断收益来自显式历史特征还是循环状态，也会浪费服务器训练预算。
+不要把双方训练记录简单交错后直接送入 GRU：比赛时看不到对手的隐藏选择。正式晋级仍比较 `SL-0-shared`、`SL-0-history` 和 `SL-1-gru`；GRU checkpoint 通过离线与 Arena 门槛后，才实现并验证 NumPy 在线运行时和提交包。

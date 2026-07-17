@@ -10,6 +10,7 @@ import torch
 from torch.utils.data import IterableDataset, get_worker_info
 
 from src.train.shared_data import _stable_bucket, collate_training_rows
+from src.train.transition_features import TRANSITION_DIM, previous_action_features, transition_features
 
 
 class SequenceWindowDataset(IterableDataset):
@@ -75,6 +76,10 @@ class SequenceWindowDataset(IterableDataset):
                 first_endpoint = self.window_length - 1 if self.require_full_window else 0
                 for endpoint in range(first_endpoint, count):
                     start = max(0, endpoint - self.window_length + 1)
+                    previous_row = (
+                        self._read_row(data, int(offsets[start - 1]), int(byte_lengths[start - 1]))
+                        if start > 0 else None
+                    )
                     rows = [
                         self._read_row(data, int(offsets[position]), int(byte_lengths[position]))
                         for position in range(start, endpoint + 1)
@@ -90,6 +95,7 @@ class SequenceWindowDataset(IterableDataset):
                         "end_position": endpoint,
                         "turns": [int(value) for value in turns[start : endpoint + 1]],
                         "rows": rows,
+                        "previous_row": previous_row,
                     }
                     yielded += 1
                     if self.max_windows and yielded >= self.max_windows:
@@ -108,6 +114,9 @@ def collate_sequence_windows(windows: list[dict[str, Any]]) -> dict[str, Any]:
     turn_boundary = torch.zeros((batch_size, length), dtype=torch.bool)
     flat_rows: list[dict[str, Any]] = []
     sequence_positions: list[tuple[int, int]] = []
+    transition_rows: list[list[float]] = []
+    previous_action_rows: list[list[float]] = []
+    endpoint_flat_indices: list[int] = []
     for batch_index, window in enumerate(windows):
         rows = window["rows"]
         turns = window["turns"]
@@ -117,16 +126,25 @@ def collate_sequence_windows(windows: list[dict[str, Any]]) -> dict[str, Any]:
         padding = length - valid_length
         valid_mask[batch_index, padding:] = True
         reset_mask[batch_index, padding] = True
+        prior = window.get("previous_row")
+        option_dim = len(rows[0]["option_features"][0])
         for local_index, (row, turn) in enumerate(zip(rows, turns)):
             time_index = padding + local_index
             if local_index == 0 or int(turn) != int(turns[local_index - 1]):
                 turn_boundary[batch_index, time_index] = True
             flat_rows.append(row)
             sequence_positions.append((batch_index, time_index))
+            transition_rows.append(transition_features(prior, row))
+            previous_action_rows.append(previous_action_features(prior, option_dim))
+            prior = row
+        endpoint_flat_indices.append(len(flat_rows) - 1)
     flat_batch = collate_training_rows(flat_rows)
     return {
         "flat_batch": flat_batch,
         "sequence_positions": torch.tensor(sequence_positions, dtype=torch.long),
+        "transition_features": torch.tensor(transition_rows, dtype=torch.float32),
+        "previous_action_features": torch.tensor(previous_action_rows, dtype=torch.float32),
+        "endpoint_flat_indices": torch.tensor(endpoint_flat_indices, dtype=torch.long),
         "valid_mask": valid_mask,
         "reset_mask": reset_mask,
         "turn_boundary": turn_boundary,
@@ -134,4 +152,5 @@ def collate_sequence_windows(windows: list[dict[str, Any]]) -> dict[str, Any]:
         "game_ids": [window["game_id"] for window in windows],
         "players": torch.tensor([window["player"] for window in windows], dtype=torch.long),
         "end_positions": torch.tensor([window["end_position"] for window in windows], dtype=torch.long),
+        "transition_dim": TRANSITION_DIM,
     }

@@ -20,7 +20,7 @@ def row(sample: str, game: str, player: int, step: int, turn: int, history: list
         "step": step,
         "turn": turn,
         "public_history": history,
-        "features": [float(step), float(turn)],
+        "features": [float(step), float(turn)] + [0.0] * 25,
         "select": {"option_count": 2},
         "option_features": [[0.0, 1.0], [1.0, 0.0]],
         "legal_mask": [True, True],
@@ -79,6 +79,9 @@ def main() -> int:
         assert batch["reset_mask"].tolist() == [[False, False, True], [True, False, False]]
         assert batch["turn_boundary"].tolist() == [[False, False, True], [True, True, False]]
         assert batch["sequence_positions"].tolist() == [[0, 2], [1, 0], [1, 1], [1, 2]]
+        assert batch["transition_features"].shape == (4, 24)
+        assert batch["previous_action_features"].shape == (4, 2)
+        assert batch["endpoint_flat_indices"].tolist() == [0, 3]
     print("OK: sequence index sorting, perspective split, windows and offsets")
     return 0
 
