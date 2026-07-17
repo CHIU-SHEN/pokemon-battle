@@ -74,6 +74,8 @@ def choose_device(requested: str, local_rank: int) -> torch.device:
         requested = f"cuda:{local_rank}" if torch.cuda.is_available() else "cpu"
     device = torch.device(requested)
     if device.type == "cuda":
+        if device.index is None:
+            device = torch.device(f"cuda:{local_rank}")
         torch.cuda.set_device(device)
     return device
 

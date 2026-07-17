@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import sys
 
 from src.train.train_shared import ROOT, main as train_main
@@ -16,8 +15,14 @@ def main(argv: list[str] | None = None) -> int:
         "--data", str(ROOT / "data/training/training_decisions_history_v1.jsonl"),
         "--manifest", str(ROOT / "data/training/training_history_manifest_v1.json"),
         "--output", str(ROOT / "artifacts/sl0_history"),
-        "--init-checkpoint", str(ROOT / "artifacts/sl0_shared_full/best.pt"),
     ]
+    # A resumed run already contains its initialization state.  Supplying both
+    # flags is intentionally rejected by train_shared, so only add the SL-0
+    # warm start for a fresh run.
+    if "--resume" not in user_args:
+        defaults.extend([
+            "--init-checkpoint", str(ROOT / "artifacts/sl0_shared_full/best.pt"),
+        ])
     return train_main(defaults + user_args)
 
 

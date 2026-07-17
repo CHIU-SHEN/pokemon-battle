@@ -43,7 +43,7 @@ final_submissions/sl0_shared_stage1.zip
 | Flat Safe V0 | 卡组特化规则 + 安全兜底 | 推荐主提交 |
 | Multi-module V0 | 模块化规则策略 | 本地开发与备份 |
 | Search V1 | 信念采样 + 有限预算搜索 | 实验版，默认关闭 |
-| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | `SL-0-shared` 已完成 6 epoch 全量训练、冻结 test 评估并冻结为单步基线；序列阶段尚未实现 |
+| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | `SL-0-shared` 已冻结为单步基线；`SL-0-history` 的 24 维历史数据、模型与本机冒烟已完成，等待服务器全量 A/B；GRU 暂不启动 |
 | 排行榜 Top10 | 10 套候选牌表 | 10/10 静态合法且通过阶段 B，等待 Adapter 训练与循环赛 |
 | M5 Elite Decks | MAP-Elites 历史候选 | 辅助候选池，未替换主卡组 |
 
