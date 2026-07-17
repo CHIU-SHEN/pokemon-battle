@@ -17,19 +17,22 @@ python -m src.train.train_history \
 
 ## 2. 服务器文件与校验
 
-优先上传自包含交接包：
+优先上传新版自包含交接包：
 
 ```text
-release_assets/pokemon-tcg-sl0-history-handoff-v1.tar.gz
-SHA-256: 0D29DE10854F2354C589E4988C7D09BB706009DC8FE50070FD4597E589AC76A2
+release_assets/pokemon-tcg-sl0-sl1-handoff-v2.tar.gz
+SHA-256 见同目录 pokemon-tcg-sl0-sl1-handoff-v2.tar.gz.sha256
 ```
 
-在服务器解压后，先阅读 `START_HERE.md`。该压缩包已经包含下面列出的数据、SL-0 最优 checkpoint、训练与评估代码、测试和本指南，不需要另外克隆仓库。
+在服务器解压后，先阅读 `START_HERE.md` 并运行 `sha256sum -c SHA256SUMS`。该压缩包已包含下面列出的两份数据视图、序列索引、Combo 标签、SL-0 最优 checkpoint、训练与评估代码、测试和本指南，不需要另外克隆仓库。
 
 需要以下文件：
 
 - `data/training/training_decisions_history_v1.jsonl`（约 5.20 GiB）；
 - `data/training/training_history_manifest_v1.json`；
+- `data/training/training_decisions_v1.jsonl`；
+- `data/training/sequence_trajectories_v1.jsonl`；
+- `data/training/sequence_manifest_v1.json`；
 - `artifacts/sl0_shared_full/best.pt`；
 - 当前仓库代码。
 
