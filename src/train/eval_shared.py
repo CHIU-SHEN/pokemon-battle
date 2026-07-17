@@ -118,7 +118,7 @@ def main(argv: list[str] | None = None) -> int:
         raise ValueError("training manifest is not valid")
     with portable_checkpoint_paths():
         checkpoint = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
-    if checkpoint.get("schema_version") != "sl0_shared_checkpoint_v1":
+    if checkpoint.get("schema_version") not in {"sl0_shared_checkpoint_v1", "sl0_history_checkpoint_v1"}:
         raise ValueError(f"unsupported checkpoint schema: {checkpoint.get('schema_version')!r}")
     checkpoint_sha = str(checkpoint.get("dataset_sha256", "")).upper()
     manifest_sha = str(manifest.get("sha256", "")).upper()
@@ -130,8 +130,14 @@ def main(argv: list[str] | None = None) -> int:
         if actual_sha != manifest_sha:
             raise ValueError(f"data hash mismatch: actual={actual_sha} manifest={manifest_sha}")
 
-    config = SharedModelConfig(**checkpoint["model_config"])
-    model = SharedPolicyValueNet(config)
+    if checkpoint.get("schema_version") == "sl0_history_checkpoint_v1":
+        from src.train.history_model import HistoryModelConfig, HistoryPolicyValueNet
+
+        config = HistoryModelConfig(**checkpoint["model_config"])
+        model = HistoryPolicyValueNet(config)
+    else:
+        config = SharedModelConfig(**checkpoint["model_config"])
+        model = SharedPolicyValueNet(config)
     model.load_state_dict(checkpoint["model_state"], strict=True)
     device = choose_device(args.device)
     model.to(device).eval()

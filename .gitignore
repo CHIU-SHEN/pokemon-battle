@@ -39,6 +39,14 @@ data/training/*.jsonl
 # Local smoke tests and one-off training artifacts must not mix with formal data.
 artifacts/dev_smoke/
 
+# Rebuildable expanded submission directories. Keep the reviewed zip artifact
+# itself trackable; its contents are produced by scripts/build_sl0_submission.py.
+final_submissions/sl0_shared_stage1/
+
+# Local stage-gate match outputs are summarized in the tracked report.
+experiments/sl0_stage1_vs_safe_v0_*/
+experiments/safe_v0_vs_sl0_stage1_*/
+
 # Local staging area for GitHub Release assets. Contents may be hard links to
 # large generated datasets and must never be added to the normal Git history.
 release_assets/

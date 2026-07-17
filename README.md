@@ -28,6 +28,14 @@ final_submissions/submission_flat_safe_v0.zip
 
 该版本是当前历史基线提交包。新的学习模型尚未晋级，必须在固定评估中稳定超过基线后才能替换。
 
+第一阶段 `SL-0-shared` 已生成可用于线上观测的实验包：
+
+```text
+final_submissions/sl0_shared_stage1.zip
+```
+
+该包使用纯 NumPy 模型推理、V0 规则回退和合法性安全门。本地与 Safe V0 交换先后手 200 局为 98:102，因此它仍是阶段实验包，不替换上述默认安全基线。详见 `reports/sl0_stage1_submission_report.md`。
+
 ## 项目状态
 
 | 版本 | 定位 | 当前状态 |

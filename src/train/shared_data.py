@@ -140,10 +140,17 @@ def collate_training_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     game_ids = []
     policy_sources = []
     forced_single_option = []
+    history_dim = len(rows[0].get("history_features") or [])
+    history_features = torch.zeros((batch_size, history_dim), dtype=torch.float32) if history_dim else None
 
     for batch_index, row in enumerate(rows):
         if len(row["features"]) != global_dim:
             raise ValueError("inconsistent global feature dimension")
+        row_history = row.get("history_features") or []
+        if len(row_history) != history_dim:
+            raise ValueError("inconsistent history feature dimension")
+        if history_features is not None:
+            history_features[batch_index] = torch.tensor(row_history, dtype=torch.float32)
         count = int(row["select"]["option_count"])
         if count <= 0 or len(row["option_features"]) != count:
             raise ValueError(f"invalid option count for {row.get('sample_id')}")
@@ -178,7 +185,7 @@ def collate_training_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
     if not legal_mask.any(dim=1).all():
         raise ValueError("every sample must expose at least one legal option")
-    return {
+    result = {
         "global_features": global_features,
         "option_features": option_features,
         "legal_mask": legal_mask,
@@ -195,6 +202,9 @@ def collate_training_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "policy_sources": policy_sources,
         "forced_single_option": forced_single_option,
     }
+    if history_features is not None:
+        result["history_features"] = history_features
+    return result
 
 
 def move_batch(batch: dict[str, Any], device: torch.device) -> dict[str, Any]:

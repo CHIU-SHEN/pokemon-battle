@@ -54,6 +54,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--device", default="auto", help="auto, cpu, cuda, cuda:0, etc.")
     parser.add_argument("--no-amp", action="store_true")
     parser.add_argument("--deterministic", action="store_true")
+    parser.add_argument("--model-kind", choices=("shared", "history"), default="shared")
+    parser.add_argument("--history-dim", type=int, default=24)
+    parser.add_argument("--init-checkpoint", type=Path, help="Warm-start history model from a frozen SL-0 checkpoint.")
     return parser.parse_args(argv)
 
 
@@ -188,8 +191,8 @@ def evaluate(
     }
 
 
-def raw_model(model: nn.Module) -> SharedPolicyValueNet:
-    return model.module if isinstance(model, DistributedDataParallel) else model  # type: ignore[return-value]
+def raw_model(model: nn.Module) -> nn.Module:
+    return model.module if isinstance(model, DistributedDataParallel) else model
 
 
 def save_checkpoint(
@@ -206,8 +209,9 @@ def save_checkpoint(
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save({
-        "schema_version": "sl0_shared_checkpoint_v1",
-        "model_config": raw_model(model).config.to_dict(),
+        "schema_version": "sl0_history_checkpoint_v1" if args.model_kind == "history" else "sl0_shared_checkpoint_v1",
+        "model_kind": args.model_kind,
+        "model_config": raw_model(model).config.to_dict(),  # type: ignore[attr-defined]
         "model_state": raw_model(model).state_dict(),
         "optimizer_state": optimizer.state_dict(),
         "scaler_state": scaler.state_dict(),
@@ -230,16 +234,47 @@ def main(argv: list[str] | None = None) -> int:
     seed_everything(args.seed, rank, args.deterministic)
     manifest = read_manifest(args.manifest)
     global_dim, option_dim = inspect_dimensions(args.data)
-    config = SharedModelConfig(
-        global_dim=global_dim,
-        option_dim=option_dim,
-        max_card_id=args.max_card_id,
-        hidden_dim=args.hidden_dim,
-        option_hidden_dim=args.option_hidden_dim,
-        deck_embedding_dim=args.deck_embedding_dim,
-        dropout=args.dropout,
-    )
-    model: nn.Module = SharedPolicyValueNet(config).to(device)
+    if args.resume and args.init_checkpoint:
+        raise ValueError("resume and init-checkpoint are mutually exclusive")
+    if args.model_kind == "history":
+        from src.train.history_model import HistoryModelConfig, HistoryPolicyValueNet, initialize_from_sl0
+
+        config = HistoryModelConfig(
+            global_dim=global_dim,
+            option_dim=option_dim,
+            history_dim=args.history_dim,
+            max_card_id=args.max_card_id,
+            hidden_dim=args.hidden_dim,
+            option_hidden_dim=args.option_hidden_dim,
+            deck_embedding_dim=args.deck_embedding_dim,
+            dropout=args.dropout,
+        )
+        model = HistoryPolicyValueNet(config).to(device)
+        if args.init_checkpoint:
+            import pathlib
+            original_posix = pathlib.PosixPath
+            if sys.platform == "win32":
+                pathlib.PosixPath = pathlib.WindowsPath  # type: ignore[misc,assignment]
+            try:
+                initial = torch.load(args.init_checkpoint, map_location="cpu", weights_only=False)
+            finally:
+                pathlib.PosixPath = original_posix  # type: ignore[misc,assignment]
+            if initial.get("schema_version") != "sl0_shared_checkpoint_v1":
+                raise ValueError("init-checkpoint must be an SL-0-shared checkpoint")
+            initialize_from_sl0(model, initial)
+    else:
+        if args.init_checkpoint:
+            raise ValueError("init-checkpoint is only valid for model-kind=history")
+        config = SharedModelConfig(
+            global_dim=global_dim,
+            option_dim=option_dim,
+            max_card_id=args.max_card_id,
+            hidden_dim=args.hidden_dim,
+            option_hidden_dim=args.option_hidden_dim,
+            deck_embedding_dim=args.deck_embedding_dim,
+            dropout=args.dropout,
+        )
+        model = SharedPolicyValueNet(config).to(device)
     if world_size > 1:
         model = DistributedDataParallel(model, device_ids=[local_rank] if device.type == "cuda" else None)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
@@ -263,6 +298,7 @@ def main(argv: list[str] | None = None) -> int:
         args.output.mkdir(parents=True, exist_ok=True)
         (args.output / "run_config.json").write_text(json.dumps({
             "model": config.to_dict(),
+            "model_kind": args.model_kind,
             "training": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
             "dataset_sha256": manifest.get("sha256"),
             "world_size": world_size,
