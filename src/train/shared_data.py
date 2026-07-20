@@ -208,4 +208,14 @@ def collate_training_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def move_batch(batch: dict[str, Any], device: torch.device) -> dict[str, Any]:
-    return {key: value.to(device, non_blocking=True) if torch.is_tensor(value) else value for key, value in batch.items()}
+    """Move tensors in ordinary and nested model batches to one device."""
+    return {
+        key: (
+            move_batch(value, device)
+            if isinstance(value, dict)
+            else value.to(device, non_blocking=True)
+            if torch.is_tensor(value)
+            else value
+        )
+        for key, value in batch.items()
+    }

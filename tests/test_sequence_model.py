@@ -11,6 +11,7 @@ from src.train.sequence_model import (
     endpoint_targets,
     initialize_from_sl0,
 )
+from src.train.shared_data import move_batch
 from src.train.shared_model import SharedModelConfig, SharedPolicyValueNet, weighted_losses
 
 
@@ -36,6 +37,8 @@ def main() -> int:
               "window_length": 3, "valid_length": 3, "start_position": 0, "end_position": 2,
               "turns": [0, 0, 1], "rows": rows, "previous_row": None}
     batch = collate_sequence_windows([window])
+    moved = move_batch(batch, torch.device("cpu"))
+    assert moved["flat_batch"]["global_features"].device.type == "cpu"
     shared = SharedPolicyValueNet(SharedModelConfig(
         global_dim=27, option_dim=2, hidden_dim=16, option_hidden_dim=16,
         deck_embedding_dim=8, dropout=0.0,
