@@ -2,6 +2,194 @@
 
 本阶段比较 24 维显式历史特征、冻结的 `SL-0-shared` 基线与 `SL-1-gru`。GRU 不读取对手隐藏选择，而是编码“当前公开局面 + 上一步己方动作 + 相邻两次己方观察之间的公开局面差分”。截至 2026-07-20，GRU 已完成服务器 6 epoch 全量训练和首次冻结 test；`SL-0-history` 全量 A/B、GRU 详细复评、第二 seed 与固定 Arena 仍待完成。
 
+## 阅读方式：第一次使用服务器的人先看这里
+
+本文中的命令分为两类：
+
+- 标注“在本地 Windows PowerShell 执行”的命令，在你自己的电脑上运行；
+- 标注“在服务器执行”的命令，先 SSH 登录服务器，再在服务器终端运行。
+
+代码块开头的 `$`、用户名、服务器地址等提示符不要照抄。`YOUR_USER`、`SERVER_HOST` 和 `/path/to/work` 是占位符，必须替换成管理员提供的真实值。
+
+几个常用词：
+
+- **交接包**：需要上传的 `.tar.gz` 大文件，里面已有代码、数据和首轮模型；
+- **checkpoint**：模型权重文件，扩展名为 `.pt`；
+- **seed**：控制随机性的数字，用另一个 seed 重跑可检查结果是否稳定；
+- **test**：冻结测试集，只用于最终比较，不能参与训练；
+- **CUDA**：让 PyTorch 使用 NVIDIA GPU；
+- **退出码 0**：命令成功完成；看到 traceback、`ERROR` 或非 0 状态就不要继续下一步。
+
+本轮需要上传的只有两个文件：
+
+```text
+pokemon-tcg-sl0-sl1-handoff-v3.tar.gz
+pokemon-tcg-sl0-sl1-handoff-v3.tar.gz.sha256
+```
+
+不要在本地解压交接包，也不要上传旧 V1/V2 包。`.tar.gz` 是实际内容，`.sha256` 是用于检查上传是否损坏的验货单。
+
+## A. 从本地上传并登录服务器
+
+### A.1 确认本地文件
+
+在本地 Windows PowerShell 中进入项目目录：
+
+```powershell
+cd "E:\学校文件\kaggle\pokemon-battle"
+Get-Item `
+  ".\release_assets\pokemon-tcg-sl0-sl1-handoff-v3.tar.gz", `
+  ".\release_assets\pokemon-tcg-sl0-sl1-handoff-v3.tar.gz.sha256"
+```
+
+应看到大包约 `400555601` 字节，校验文件约 `104` 字节。如果文件不存在，不要继续上传。
+
+### A.2 上传
+
+如果服务器支持 `scp`，在本地 PowerShell 执行下面命令。先把三个占位符替换掉：
+
+```powershell
+scp `
+  ".\release_assets\pokemon-tcg-sl0-sl1-handoff-v3.tar.gz" `
+  ".\release_assets\pokemon-tcg-sl0-sl1-handoff-v3.tar.gz.sha256" `
+  YOUR_USER@SERVER_HOST:/path/to/work/
+```
+
+例子仅用于理解格式：如果用户名是 `alice`、服务器是 `gpu.example.com`、目录是 `/home/alice/work`，最后一段应写成：
+
+```text
+alice@gpu.example.com:/home/alice/work/
+```
+
+如果服务器只能通过网页、堡垒机、WinSCP 或学校文件平台上传，就在对应界面把这两个文件上传到同一个目录。不要上传整个项目文件夹。
+
+### A.3 SSH 登录
+
+仍在本地 PowerShell 执行：
+
+```powershell
+ssh YOUR_USER@SERVER_HOST
+```
+
+成功后命令提示符会变成服务器的 Linux 提示符。后续命令都在服务器执行，直到明确写“回到本地”。
+
+## B. 服务器解压前检查
+
+进入刚才上传文件的目录：
+
+```bash
+cd /path/to/work
+pwd
+ls -lh pokemon-tcg-sl0-sl1-handoff-v3.tar.gz*
+```
+
+`pwd` 应显示预期目录；`ls` 应同时显示 `.tar.gz` 和 `.sha256`。
+
+校验上传完整性：
+
+```bash
+sha256sum -c pokemon-tcg-sl0-sl1-handoff-v3.tar.gz.sha256
+```
+
+唯一可接受的核心结果是：
+
+```text
+pokemon-tcg-sl0-sl1-handoff-v3.tar.gz: OK
+```
+
+如果显示 `FAILED`，删除服务器上损坏的两个文件并重新上传，不要尝试解压。
+
+检查磁盘空间：
+
+```bash
+df -h .
+```
+
+建议当前分区至少保留 15 GiB 可用空间，用于解压约 11 GiB 数据、训练 checkpoint 和报告。
+
+解压并进入项目：
+
+```bash
+tar -xzf pokemon-tcg-sl0-sl1-handoff-v3.tar.gz
+cd pokemon-tcg-sl0-sl1-handoff-v3
+pwd
+ls
+```
+
+`ls` 至少应看到：
+
+```text
+START_HERE.md
+SERVER_TRAINING_GUIDE.md
+SHA256SUMS
+data
+artifacts
+src
+tests
+```
+
+后续无论断线重连多少次，都要先执行：
+
+```bash
+cd /path/to/work/pokemon-tcg-sl0-sl1-handoff-v3
+```
+
+## C. 准备 Python 和 GPU 环境
+
+### C.1 优先使用服务器已有环境
+
+先检查：
+
+```bash
+python --version
+nvidia-smi
+```
+
+需要 Python 3.11 或兼容版本，并且 `nvidia-smi` 能看到 NVIDIA GPU。如果学校使用 Slurm，登录节点可能看不到 GPU；此时应先按管理员要求申请 GPU 计算节点，例如：
+
+```bash
+srun --gres=gpu:1 --cpus-per-task=8 --mem=32G --time=12:00:00 --pty bash
+```
+
+这只是常见示例，分区名、账户和资源参数必须服从服务器规定。如果管理员提供了专用提交命令，以管理员说明为准。
+
+### C.2 使用 Conda（推荐）
+
+如果服务器有 Conda：
+
+```bash
+conda create -n pokemon-tcg python=3.11 -y
+conda activate pokemon-tcg
+python -m pip install --upgrade pip
+python -m pip install -r requirements-train.txt
+```
+
+断线重连后要重新执行：
+
+```bash
+conda activate pokemon-tcg
+cd /path/to/work/pokemon-tcg-sl0-sl1-handoff-v3
+```
+
+如果服务器没有 Conda，可使用普通虚拟环境：
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements-train.txt
+```
+
+不要同时使用 Conda 和 `.venv`。
+
+### C.3 确认 PyTorch 真正识别 GPU
+
+```bash
+python -c "import torch; print('torch=', torch.__version__); print('cuda=', torch.cuda.is_available()); print('gpu=', torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)"
+```
+
+预期 `cuda=True`，并显示 GPU 名称。若为 `False`，不要开始全量训练；先检查是否仍在登录节点、是否申请了 GPU、PyTorch 是否为 CUDA 版本。
+
 ## 0. 当前起点与最短执行路线
 
 本指南保留了从零训练所需的完整命令，但当前服务器不应重跑已经完成的首轮 GRU。假定服务器已有：
@@ -26,6 +214,26 @@
 ```bash
 mkdir -p reports
 ```
+
+建议为本次终端保留完整日志。执行长命令时可以在命令末尾加：
+
+```text
+2>&1 | tee 对应日志名.log
+```
+
+例如：
+
+```bash
+python -m src.train.eval_sequence --help 2>&1 | tee logs_eval_help.log
+```
+
+`tee` 会同时在屏幕显示并保存日志。训练命令不要放到后台后就关闭终端；如果服务器没有作业系统，建议使用 `tmux`：
+
+```bash
+tmux new -s pokemon
+```
+
+临时离开按 `Ctrl+B`，再按 `D`；回来后运行 `tmux attach -t pokemon`。
 
 ## 1. 已完成的本机验证
 
@@ -115,6 +323,14 @@ python -m src.train.train_history \
 
 训练默认从 `artifacts/sl0_shared_full/best.pt` 热启动。新增 24 维输入对应的权重初始化为零，因此开始时输出与原 SL-0 一致。若显存不足，先减小 `--batch-size`，再用 `--grad-accum` 保持有效 batch。
 
+训练过程中每个 epoch 会打印一行 JSON。只要仍在持续输出且没有 traceback，就让它完成。结束后执行：
+
+```bash
+ls -lh artifacts/sl0_history_full/
+```
+
+至少应看到 `best.pt`、`last.pt`、`metrics.jsonl` 和 `run_config.json`。缺少 `best.pt` 或 `last.pt` 表示训练没有正常完成。
+
 断点续训不需要再次传初始化 checkpoint：
 
 ```bash
@@ -134,6 +350,14 @@ python -m src.train.eval_shared \
   --split test --device cuda --batch-size 256 \
   --output reports/sl0_history_test.json
 ```
+
+检查报告是否成功生成：
+
+```bash
+python -c "import json; r=json.load(open('reports/sl0_history_test.json')); print(json.dumps({'overall':r['overall'],'non_forced':r['non_forced'],'legality':r['legality']}, indent=2))"
+```
+
+看到格式化 JSON 且 `illegal_top1_predictions` 为数字，说明报告可用。不要手工修改 JSON。
 
 基线为 `reports/sl0_shared_test.json`：test loss `2.1134`、policy top-1 `60.27%`、非强制单选 top-1 `57.72%`、value MSE `0.8916`、非法 top-1 为 `0`。
 
@@ -236,6 +460,26 @@ python -m src.train.eval_sequence \
 python -c "import json; [json.load(open(p)) for p in ['reports/sl1_gru_best_detailed_test.json','reports/sl1_gru_last_detailed_test.json']]; print('OK: detailed GRU reports')"
 ```
 
+再打印最重要的字段：
+
+```bash
+python - <<'PY'
+import json
+for path in [
+    "reports/sl1_gru_best_detailed_test.json",
+    "reports/sl1_gru_last_detailed_test.json",
+]:
+    report = json.load(open(path))
+    print("\n", path)
+    print("overall =", report["overall"])
+    print("non_forced =", report["non_forced"])
+    print("legality =", report["legality"])
+    print("performance =", report["performance"])
+PY
+```
+
+这段命令只读取报告，不会修改 checkpoint。保留终端输出和两个 JSON。
+
 ### 6.3 首轮详细复评停止条件
 
 以 `reports/sl0_shared_test.json` 的非强制 top-1 `57.72%` 为主基线。best/last 至少有一个同时满足：
@@ -258,6 +502,14 @@ python -m src.train.train_sequence \
   --num-workers 4 --learning-rate 3e-4 --seed 20260721 \
   --output artifacts/sl1_gru_seed20260721
 ```
+
+训练结束后检查：
+
+```bash
+ls -lh artifacts/sl1_gru_seed20260721/
+```
+
+至少应看到 `best.pt` 和 `last.pt`。目录名必须是 `sl1_gru_seed20260721`，不能写成首轮目录 `sl1_gru_full`。
 
 训练结束后同样详细评估 best/last：
 
@@ -310,6 +562,50 @@ reports/sl1_gru_seed20260721_last_detailed_test.json
 
 若训练脚本实际没有生成某个 history 元数据文件，以目录中的真实产物为准，但 checkpoint 与 test JSON 必须保留。下载完成后计算 SHA-256，并与服务器端 `sha256sum` 输出一起保存。
 
+### 8.1 在服务器打包本轮结果
+
+为方便下载，在服务器项目根目录执行：
+
+```bash
+tar -czf pokemon-gru-validation-results-v1.tar.gz \
+  reports/sl1_gru_best_detailed_test.json \
+  reports/sl1_gru_last_detailed_test.json \
+  artifacts/sl0_history_full \
+  reports/sl0_history_test.json \
+  artifacts/sl1_gru_seed20260721/best.pt \
+  artifacts/sl1_gru_seed20260721/last.pt \
+  reports/sl1_gru_seed20260721_best_detailed_test.json \
+  reports/sl1_gru_seed20260721_last_detailed_test.json
+
+sha256sum pokemon-gru-validation-results-v1.tar.gz \
+  > pokemon-gru-validation-results-v1.tar.gz.sha256
+ls -lh pokemon-gru-validation-results-v1.tar.gz*
+```
+
+如果按停止条件提前结束，删除命令中尚不存在的路径后再打包。不要伪造空文件。
+
+### 8.2 回到本地下载
+
+在服务器执行 `exit` 回到本地 PowerShell，或另开一个本地 PowerShell。替换用户名、服务器和路径：
+
+```powershell
+scp `
+  YOUR_USER@SERVER_HOST:/path/to/work/pokemon-tcg-sl0-sl1-handoff-v3/pokemon-gru-validation-results-v1.tar.gz `
+  YOUR_USER@SERVER_HOST:/path/to/work/pokemon-tcg-sl0-sl1-handoff-v3/pokemon-gru-validation-results-v1.tar.gz.sha256 `
+  ".\"
+```
+
+本地收到后校验：
+
+```powershell
+$actual = (Get-FileHash -Algorithm SHA256 ".\pokemon-gru-validation-results-v1.tar.gz").Hash.ToLower()
+$expected = (Get-Content ".\pokemon-gru-validation-results-v1.tar.gz.sha256").Split()[0].ToLower()
+if ($actual -ne $expected) { throw "SHA-256 校验失败" }
+"OK: result archive SHA-256 verified"
+```
+
+校验成功后，把结果压缩包和校验文件交回本项目。
+
 ## 9. 本指南能够与不能够直接得到的结果
 
 严格照做可以得到：
@@ -326,3 +622,68 @@ reports/sl1_gru_seed20260721_last_detailed_test.json
 - NumPy 提交包表现。
 
 这三项依赖尚未实现的 GRU 在线运行时。离线结果通过后，下一份操作指南应先完成 PyTorch/NumPy 一致性测试和代理接入，再运行 Arena；不能把离线 top-1 当作最终实战结论。
+
+## 10. 常见问题与处理
+
+### 10.1 `No such file or directory`
+
+```bash
+pwd
+ls
+```
+
+必须位于 `pokemon-tcg-sl0-sl1-handoff-v3` 根目录。否则重新 `cd`，不要在上级目录运行训练。
+
+### 10.2 `ModuleNotFoundError: No module named 'src'`
+
+训练使用 `python -m src.train.模块名`。测试使用：
+
+```bash
+PYTHONPATH=. python tests/测试脚本.py
+```
+
+同时确认当前目录正确。
+
+### 10.3 `torch.cuda.is_available()` 为 `False`
+
+常见原因是仍在登录节点、没有申请 GPU，或者装了 CPU 版 PyTorch。先运行：
+
+```bash
+nvidia-smi
+```
+
+如果该命令失败，联系管理员或先申请 GPU 节点。不要改成 CPU 跑全量训练。
+
+### 10.4 CUDA out of memory
+
+先停止命令并运行 `nvidia-smi`，确认没有遗留进程。GRU 将 batch 从 `32` 降为 `16` 或 `8`；history 从 `256` 降为 `128`，必要时增加 `--grad-accum 2`。必须记录实际参数。
+
+### 10.5 终端断线
+
+若使用 Slurm，先检查作业状态；若使用 `tmux`：
+
+```bash
+tmux attach -t pokemon
+```
+
+只有进程确实停止且已有合法 `last.pt` 时才使用 `--resume`。不要重新写入首轮 GRU 目录。
+
+### 10.6 `dataset hash mismatch`
+
+数据、manifest 和 checkpoint 不是同一版本。不要关闭哈希检查或手改 JSON；重新解压 V3，确认没有混入旧 V2 文件。
+
+### 10.7 JSON 报告不存在或无法解析
+
+评估没有正常完成。查看 traceback 和日志，修复后重跑同一评估命令。评估是只读操作，可以安全重跑；不要创建空 JSON。
+
+### 10.8 不确定能否继续
+
+先停止，把以下信息交回：
+
+- 最后 50～100 行日志；
+- 已生成的 JSON；
+- `nvidia-smi` 输出；
+- 实际执行的完整命令；
+- `ls -lh` 产物目录输出。
+
+不要跳过哈希、测试或停止条件。
