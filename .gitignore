@@ -11,6 +11,8 @@ venv/
 .vscode/
 .idea/
 .DS_Store
+__MACOSX/
+._*
 Thumbs.db
 
 # Secrets and local authentication
@@ -39,9 +41,44 @@ data/training/*.jsonl
 # Local smoke tests and one-off training artifacts must not mix with formal data.
 artifacts/dev_smoke/
 
+# Model checkpoints and recovered server bundles are binary experiment outputs.
+# Publish selected frozen weights through a Release or model registry, not Git history.
+artifacts/**/*.pt
+artifacts/**/*.pth
+artifacts/**/*.ckpt
+artifacts/*.zip
+artifacts/_server_results_*/
+
+# Local trainer and profiler state.
+runs/
+wandb/
+lightning_logs/
+**/events.out.tfevents.*
+*.prof
+*.trace.json
+
 # Rebuildable expanded submission directories. Keep the reviewed zip artifact
 # itself trackable; its contents are produced by scripts/build_sl0_submission.py.
 final_submissions/sl0_shared_stage1/
+
+# All newly generated submission packages are reproducible from source + checkpoint.
+# Existing reviewed packages already tracked by Git are unaffected by these rules.
+final_submissions/*/
+final_submissions/*.zip
+
+# Raw Arena output is local and can grow to many thousands of games. Promote only
+# compact, reviewed conclusions into reports/.
+experiments/**/games.json
+experiments/gru_arena_campaign_*/
+experiments/gru_vs_sl0_local_*/
+experiments/*.stdout.log
+experiments/*.stderr.log
+
+# Failure replays and runtime logs can contain very large observations.
+logs/bad_cases/
+logs/**/*.log
+*.stdout.log
+*.stderr.log
 
 # Local stage-gate match outputs are summarized in the tracked report.
 experiments/sl0_stage1_vs_safe_v0_*/
