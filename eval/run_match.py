@@ -108,6 +108,9 @@ def load_agent(spec: str) -> Agent:
         with pushd(agent_dir):
             return raw_agent(obs_dict)
 
+    if hasattr(module, "action_source"):
+        wrapped.action_source = module.action_source
+
     return wrapped
 
 
@@ -157,6 +160,7 @@ def play_game(
         "agent_decision_times": [[], []],
         "agent_calls": [0, 0],
         "illegal_actions": [0, 0],
+        "action_sources": [{}, {}],
         "exceptions": [],
         "draw_by_max_steps": False,
         "trace": [] if trace else None,
@@ -190,6 +194,10 @@ def play_game(
             if fixtures is not None and len(fixtures) < fixture_limit:
                 fixtures.append(obs)
             action, elapsed = call_agent(agent0 if player_idx == 0 else agent1, obs)
+            active_agent = agent0 if player_idx == 0 else agent1
+            source_reader = getattr(active_agent, "action_source", None)
+            source = str(source_reader()) if source_reader is not None else "unreported"
+            record["action_sources"][player_idx][source] = record["action_sources"][player_idx].get(source, 0) + 1
             record["agent_time"][player_idx] += elapsed
             record["agent_decision_times"][player_idx].append(elapsed)
             record["agent_calls"][player_idx] += 1
@@ -266,12 +274,18 @@ def summarize(records: list[dict], agent0_name: str, agent1_name: str, seed: int
     exceptions = sum(len(r["exceptions"]) for r in records)
     illegal0 = sum(r["illegal_actions"][0] for r in records)
     illegal1 = sum(r["illegal_actions"][1] for r in records)
+    action_sources = [{}, {}]
+    for record in records:
+        for side in (0, 1):
+            for source, count in record.get("action_sources", [{}, {}])[side].items():
+                action_sources[side][source] = action_sources[side].get(source, 0) + int(count)
     total = len(records)
     non_draw = max(1, total - result_counts["draws"])
     return {
         "agent0": agent0_name,
         "agent1": agent1_name,
         "seed": seed,
+        "engine_seed_controlled": False,
         "games": total,
         **result_counts,
         "agent0_win_rate_all": result_counts["agent0_wins"] / total if total else 0.0,
@@ -287,6 +301,7 @@ def summarize(records: list[dict], agent0_name: str, agent1_name: str, seed: int
         "draw_by_max_steps": sum(1 for r in records if r["draw_by_max_steps"]),
         "exceptions": exceptions,
         "illegal_actions": [illegal0, illegal1],
+        "action_sources": action_sources,
     }
 
 
@@ -305,7 +320,10 @@ def main() -> int:
     parser.add_argument("--deck1", default=None, help="optional deck.csv override for agent1")
     parser.add_argument("--mirror", action="store_true", help="run agent0 against itself")
     parser.add_argument("--games", type=int, default=100)
-    parser.add_argument("--seed", type=int, default=20260706)
+    parser.add_argument(
+        "--seed", type=int, default=20260706,
+        help="seed for Python-side agents only; the bundled battle engine exposes no RNG seed control",
+    )
     parser.add_argument("--max-steps", type=int, default=2000)
     parser.add_argument("--out-dir", default=None, help="default: experiments/YYYYMMDD_HHMMSS_<matchup>")
     parser.add_argument("--save-fixtures", type=int, default=0, help="save up to N observations for regression tests")

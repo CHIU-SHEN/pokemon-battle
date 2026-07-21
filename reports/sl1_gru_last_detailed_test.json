@@ -1,0 +1,93 @@
+{
+  "schema_version": "sl1_gru_eval_v1",
+  "checkpoint": "artifacts/sl1_gru_full/last.pt",
+  "checkpoint_epoch": 5,
+  "checkpoint_best_valid_loss": 2.08414042824967,
+  "split": "test",
+  "window_length": 16,
+  "sequence_manifest_sha256": "99B5FBF8938F0944087B97D4F55DDAAF97B1B123308A966D016B07153C245419",
+  "dataset_sha256": "E8DC4DC2784A3505EAA159255A735A2C50B907DB66A5F9AB7759BEC326062370",
+  "model_config": {
+    "global_dim": 27,
+    "option_dim": 80,
+    "max_card_id": 1267,
+    "hidden_dim": 192,
+    "option_hidden_dim": 192,
+    "deck_embedding_dim": 64,
+    "dropout": 0.1,
+    "transition_dim": 24,
+    "gru_hidden_dim": 192
+  },
+  "overall": {
+    "rows": 87992,
+    "policy_loss": 1.1530239660270998,
+    "policy_top1": 0.6298510186854053,
+    "policy_count": 87662,
+    "value_loss": 0.8949250411154727,
+    "value_mse": 0.9001351120300115,
+    "value_count": 87992,
+    "loss": 2.0479490071425723
+  },
+  "non_forced": {
+    "rows": 82705,
+    "policy_loss": 1.16430772204934,
+    "policy_top1": 0.6060940819423368,
+    "policy_count": 82375,
+    "value_loss": 0.8959954271347433,
+    "value_mse": 0.906115686120163,
+    "value_count": 82705,
+    "loss": 2.0603031491840835
+  },
+  "by_policy_source": {
+    "kaggle_agent": {
+      "rows": 86262,
+      "policy_loss": 1.1586345486336913,
+      "policy_top1": 0.6242341095906337,
+      "policy_count": 86011,
+      "value_loss": 0.9220102408129562,
+      "value_mse": 0.9181860400398482,
+      "value_count": 86262,
+      "loss": 2.0806447894466475
+    },
+    "observed_opponent": {
+      "rows": 877,
+      "policy_loss": 0.7161040920179663,
+      "policy_top1": 0.8559423769507803,
+      "policy_count": 833,
+      "value_loss": 0.00012108622916050203,
+      "value_mse": 0.0001319528577537058,
+      "value_count": 877,
+      "loss": 0.7162251782471268
+    },
+    "v0_rules": {
+      "rows": 443,
+      "policy_loss": 0.12943020071663952,
+      "policy_top1": 0.9907407407407407,
+      "policy_count": 432,
+      "value_loss": 1.7652949069099605e-05,
+      "value_mse": 1.9604680769599588e-05,
+      "value_count": 443,
+      "loss": 0.12944785366570863
+    },
+    "v1_search": {
+      "rows": 410,
+      "policy_loss": 1.55008506432774,
+      "policy_top1": 0.9896373056994818,
+      "policy_count": 386,
+      "value_loss": 4.495062479158727e-07,
+      "value_mse": 4.495062479158727e-07,
+      "value_count": 410,
+      "loss": 1.550085513833988
+    }
+  },
+  "legality": {
+    "illegal_top1_predictions": 0
+  },
+  "performance": {
+    "batches": 1377,
+    "wall_seconds": 135.24983271211386,
+    "inference_seconds": 12.864720967132598,
+    "samples_per_second_wall": 650.5886050690757,
+    "samples_per_second_inference": 6839.790791017244
+  }
+}

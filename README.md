@@ -43,7 +43,7 @@ final_submissions/sl0_shared_stage1.zip
 | Flat Safe V0 | 卡组特化规则 + 安全兜底 | 推荐主提交 |
 | Multi-module V0 | 模块化规则策略 | 本地开发与备份 |
 | Search V1 | 信念采样 + 有限预算搜索 | 实验版，默认关闭 |
-| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | `SL-0-shared` 已冻结；`SL-1-gru` 已完成服务器 6 epoch 全量训练与首次冻结 test，policy top-1 由 60.27% 提升至 60.95%，等待详细同口径复评、第二 seed 和固定 Arena；`SL-0-history` 全量 A/B 仍待补 |
+| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | `SL-0-history` 对照、`SL-1-gru` 两个 seed 的详细 test、NumPy 在线运行时与代理接入均已完成。PyTorch/NumPy 动作一致，本地 p95 约 24ms、0 非法动作；两轮交换先后手初筛胜率为 58% 与 49%，尚需扩大固定多 seed Arena 后决定是否冻结 GRU |
 | 排行榜 Top10 | 10 套候选牌表 | 10/10 静态合法且通过阶段 B，等待 Adapter 训练与循环赛 |
 | M5 Elite Decks | MAP-Elites 历史候选 | 辅助候选池，未替换主卡组 |
 

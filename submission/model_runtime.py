@@ -139,7 +139,9 @@ class SL0Policy:
         self.tags = load_tags()
 
     def _linear(self, prefix: str, x: np.ndarray) -> np.ndarray:
-        return x @ self.weights[f"{prefix}.weight"].T + self.weights[f"{prefix}.bias"]
+        result = x @ self.weights[f"{prefix}.weight"].T
+        bias_key = f"{prefix}.bias"
+        return result + self.weights[bias_key] if bias_key in self.weights else result
 
     def _layer_norm(self, prefix: str, x: np.ndarray) -> np.ndarray:
         mean = x.mean(axis=-1, keepdims=True)
@@ -173,3 +175,112 @@ class SL0Policy:
     def choose(self, parsed: ParsedState) -> list[int]:
         logits = self.logits(parsed)
         return [int(np.argmax(logits))]
+
+
+class GRUPolicy(SL0Policy):
+    """Pure-NumPy SL-1 policy using the same rolling window as training."""
+
+    def __init__(self, deck: list[int], window_length: int = 16) -> None:
+        model_path = _candidate("sl1_gru_best.npz")
+        if model_path is None:
+            raise FileNotFoundError("sl1_gru_best.npz")
+        self.weights = np.load(model_path)
+        self.deck = np.asarray(deck, dtype=np.int64)
+        self.tags = load_tags()
+        self.window_length = int(window_length)
+        if self.window_length <= 0:
+            raise ValueError("window_length must be positive")
+        self.reset()
+
+    def reset(self) -> None:
+        self._temporal_inputs: list[np.ndarray] = []
+        self._previous_global: np.ndarray | None = None
+        self._previous_turn: int | None = None
+        self._previous_action: np.ndarray | None = None
+
+    @staticmethod
+    def _sigmoid(x: np.ndarray) -> np.ndarray:
+        positive = x >= 0
+        result = np.empty_like(x)
+        result[positive] = 1.0 / (1.0 + np.exp(-x[positive]))
+        exp_x = np.exp(x[~positive])
+        result[~positive] = exp_x / (1.0 + exp_x)
+        return result
+
+    def _gru_endpoint(self, inputs: list[np.ndarray]) -> np.ndarray:
+        weight_ih = self.weights["gru.weight_ih_l0"]
+        weight_hh = self.weights["gru.weight_hh_l0"]
+        bias_ih = self.weights["gru.bias_ih_l0"]
+        bias_hh = self.weights["gru.bias_hh_l0"]
+        hidden_size = weight_hh.shape[1]
+        hidden = np.zeros(hidden_size, dtype=np.float32)
+        for value in inputs[-self.window_length:]:
+            input_gates = value @ weight_ih.T + bias_ih
+            hidden_gates = hidden @ weight_hh.T + bias_hh
+            input_reset, input_update, input_new = np.split(input_gates, 3)
+            hidden_reset, hidden_update, hidden_new = np.split(hidden_gates, 3)
+            reset = self._sigmoid(input_reset + hidden_reset)
+            update = self._sigmoid(input_update + hidden_update)
+            new = np.tanh(input_new + reset * hidden_new)
+            hidden = (1.0 - update) * new + update * hidden
+        return hidden
+
+    def _transition(self, current_global: np.ndarray, turn: int, logs_present: bool) -> np.ndarray:
+        if self._previous_global is None:
+            return np.zeros(24, dtype=np.float32)
+        delta = np.clip(current_global[:22] - self._previous_global[:22], -1.0, 1.0)
+        suffix = np.asarray([
+            float(turn != self._previous_turn),
+            float(logs_present),
+        ], dtype=np.float32)
+        return np.concatenate([delta, suffix])
+
+    def _forward_step(
+        self,
+        global_vec: np.ndarray,
+        option_matrix: np.ndarray,
+        transition_vec: np.ndarray,
+        previous_action_vec: np.ndarray,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        state = self._mlp("state_encoder", global_vec)
+        deck = self._deck_context()
+        base_context = self._mlp("context", np.concatenate([state, deck]))
+        transition = self._mlp("transition_encoder", transition_vec)
+        previous_action = self._mlp("previous_action_encoder", previous_action_vec)
+        temporal_input = np.concatenate([base_context, transition, previous_action]).astype(np.float32)
+        temporal = self._gru_endpoint(self._temporal_inputs + [temporal_input])
+        context = base_context + self._linear("temporal_projection", temporal)
+        options = self._mlp("option_encoder", option_matrix)
+        logits = (options * context[None, :]).sum(axis=-1) / math.sqrt(float(context.shape[-1]))
+        logits += self._linear("option_bias", options).reshape(-1)
+        return logits, temporal_input
+
+    def logits(self, parsed: ParsedState) -> np.ndarray:
+        select = parsed.select
+        if select is None or select.min_count != 1 or select.max_count != 1 or len(select.options) <= 1:
+            raise ValueError("SL-1 is gated to non-trivial mandatory single-choice decisions")
+        global_vec, option_matrix = sample_features(parsed, self.tags)
+        previous_action = self._previous_action
+        if previous_action is None:
+            previous_action = np.zeros(option_matrix.shape[1], dtype=np.float32)
+        transition = self._transition(global_vec, parsed.turn, bool(parsed.logs))
+        logits, _ = self._forward_step(global_vec, option_matrix, transition, previous_action)
+        return logits
+
+    def choose(self, parsed: ParsedState) -> list[int]:
+        select = parsed.select
+        if select is None or select.min_count != 1 or select.max_count != 1 or len(select.options) <= 1:
+            raise ValueError("SL-1 is gated to non-trivial mandatory single-choice decisions")
+        global_vec, option_matrix = sample_features(parsed, self.tags)
+        previous_action = self._previous_action
+        if previous_action is None:
+            previous_action = np.zeros(option_matrix.shape[1], dtype=np.float32)
+        transition = self._transition(global_vec, parsed.turn, bool(parsed.logs))
+        logits, temporal_input = self._forward_step(global_vec, option_matrix, transition, previous_action)
+        choice = int(np.argmax(logits))
+        self._temporal_inputs.append(temporal_input)
+        self._temporal_inputs = self._temporal_inputs[-self.window_length:]
+        self._previous_global = global_vec.copy()
+        self._previous_turn = int(parsed.turn)
+        self._previous_action = option_matrix[choice].copy()
+        return [choice]

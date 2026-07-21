@@ -1,0 +1,95 @@
+{
+  "schema_version": "sl0_shared_evaluation_v1",
+  "checkpoint": "artifacts/sl0_history_full/best.pt",
+  "checkpoint_epoch": 4,
+  "checkpoint_global_step": 13475,
+  "checkpoint_best_valid_loss": 2.1900056029508215,
+  "split": "test",
+  "dataset_sha256": "35AF23BEC88280A879DD2A641A4EB315C3A5445EBA8FF5F3509A63EE13C80CE4",
+  "actual_data_sha256": null,
+  "hash_verified_against_manifest": true,
+  "full_file_hash_verified": false,
+  "device": "cuda",
+  "model_config": {
+    "global_dim": 27,
+    "option_dim": 80,
+    "history_dim": 24,
+    "max_card_id": 1267,
+    "hidden_dim": 192,
+    "option_hidden_dim": 192,
+    "deck_embedding_dim": 64,
+    "dropout": 0.1
+  },
+  "overall": {
+    "rows": 87992,
+    "policy_loss": 1.164039721521356,
+    "policy_top1": 0.6225274349204901,
+    "policy_count": 87662,
+    "value_loss": 0.9812963493447054,
+    "value_mse": 0.9881094190696714,
+    "value_count": 87992,
+    "loss": 2.1453360708660614
+  },
+  "non_forced": {
+    "rows": 82705,
+    "policy_loss": 1.1754312802441993,
+    "policy_top1": 0.5983004552352048,
+    "policy_count": 82375,
+    "value_loss": 0.9822657750969975,
+    "value_mse": 0.9933603554003746,
+    "value_count": 82705,
+    "loss": 2.1576970553411967
+  },
+  "by_policy_source": {
+    "kaggle_agent": {
+      "rows": 86262,
+      "policy_loss": 1.169257993947103,
+      "policy_top1": 0.6170838613665693,
+      "policy_count": 86011,
+      "value_loss": 1.0109968249925263,
+      "value_mse": 1.0079260538305712,
+      "value_count": 86262,
+      "loss": 2.1802548189396296
+    },
+    "observed_opponent": {
+      "rows": 877,
+      "policy_loss": 0.7461094594095387,
+      "policy_top1": 0.82953181272509,
+      "policy_count": 833,
+      "value_loss": 6.112154451122113e-06,
+      "value_mse": 7.684309642970086e-06,
+      "value_count": 877,
+      "loss": 0.7461155715639898
+    },
+    "v0_rules": {
+      "rows": 443,
+      "policy_loss": 0.1923434399566656,
+      "policy_top1": 0.9930555555555556,
+      "policy_count": 432,
+      "value_loss": 8.087207488915978e-09,
+      "value_mse": 1.0225627546116676e-08,
+      "value_count": 443,
+      "loss": 0.1923434480438731
+    },
+    "v1_search": {
+      "rows": 410,
+      "policy_loss": 1.550832877707682,
+      "policy_top1": 0.9740932642487047,
+      "policy_count": 386,
+      "value_loss": 8.722630942740091e-09,
+      "value_mse": 8.722630942740091e-09,
+      "value_count": 410,
+      "loss": 1.550832886430313
+    }
+  },
+  "legality": {
+    "illegal_top1_predictions": 0
+  },
+  "performance": {
+    "batches": 344,
+    "wall_seconds": 103.61457342421636,
+    "inference_seconds": 0.8763145473785698,
+    "samples_per_second_wall": 849.2241688796538,
+    "samples_per_second_inference": 100411.43361504332
+  }
+}
