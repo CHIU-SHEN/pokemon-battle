@@ -37,6 +37,7 @@ data/external/kaggle_replays/restore_audit_summary.json
 data/processed/*.jsonl
 data/reanalysis/*.jsonl
 data/training/*.jsonl
+data/adapter_views/**/*.jsonl
 
 # Local smoke tests and one-off training artifacts must not mix with formal data.
 artifacts/dev_smoke/
@@ -46,8 +47,19 @@ artifacts/dev_smoke/
 artifacts/**/*.pt
 artifacts/**/*.pth
 artifacts/**/*.ckpt
+artifacts/**/*.safetensors
+artifacts/**/*.onnx
+artifacts/**/*.npz
 artifacts/*.zip
 artifacts/_server_results_*/
+artifacts/adapter_*/
+
+# Adapter trainers may write these conventional output roots. Keep lightweight
+# configs, sampling views and reviewed reports elsewhere in the repository.
+adapter_runs/
+adapter_checkpoints/
+server_uploads/
+server_results/
 
 # Local trainer and profiler state.
 runs/
@@ -71,11 +83,15 @@ final_submissions/*.zip
 experiments/**/games.json
 experiments/gru_arena_campaign_*/
 experiments/gru_vs_sl0_local_*/
+experiments/adapter_exact_*/
+experiments/adapter_*/
 experiments/*.stdout.log
 experiments/*.stderr.log
 
 # Failure replays and runtime logs can contain very large observations.
 logs/bad_cases/
+logs/adapter_exact_*/
+logs/adapter_*/
 logs/**/*.log
 *.stdout.log
 *.stderr.log

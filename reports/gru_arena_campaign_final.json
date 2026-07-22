@@ -1,0 +1,42 @@
+{
+  "schema_version": "gru_arena_final_v1",
+  "status": "complete",
+  "decision": "keep_sl0_shared",
+  "decision_reason": "GRU seed1 best finished at 50.21% with a Wilson 95% interval crossing 50%, below the required greater-than-2-point promotion margin; other GRU checkpoints were below 50% in screening.",
+  "engine_seed_controlled": false,
+  "screening": {
+    "seed1_best": {
+      "games": 800,
+      "selected_for_final": true
+    },
+    "seed1_last": {
+      "games": 800,
+      "wins": 381,
+      "losses": 419,
+      "win_rate": 0.47625,
+      "wilson_95": [0.4418369916523319, 0.5108900132700309]
+    },
+    "seed2_epoch5": {
+      "games": 800,
+      "wins": 392,
+      "losses": 408,
+      "win_rate": 0.49,
+      "wilson_95": [0.45548933093621263, 0.5246062500837296]
+    }
+  },
+  "finalist": {
+    "checkpoint": "artifacts/sl1_gru_full/best.pt",
+    "games": 21800,
+    "wins": 10945,
+    "losses": 10855,
+    "draws": 0,
+    "win_rate": 0.5020642201834863,
+    "wilson_95": [0.4954271002615099, 0.5087006127191239],
+    "exceptions": 0,
+    "illegal_actions": 0,
+    "p95_decision_seconds_upper": 0.023691399954259396,
+    "model_action_rate": 0.7460106888210636
+  },
+  "total_campaign_games": 23400,
+  "next_step": "Freeze SL-0-shared as the common trunk and build the ten deck-specific Adapter sampling views before server training."
+}

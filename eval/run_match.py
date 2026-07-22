@@ -169,6 +169,7 @@ def play_game(
     try:
         deck0, deck0_time = call_agent(agent0, {"select": None, "logs": [], "current": None})
         deck1, deck1_time = call_agent(agent1, {"select": None, "logs": [], "current": None})
+        record["decks"] = [list(deck0), list(deck1)]
         record["agent_time"][0] += deck0_time
         record["agent_time"][1] += deck1_time
         record["agent_decision_times"][0].append(deck0_time)
@@ -391,6 +392,7 @@ def main() -> int:
                     "game_index": game_index,
                     "reasons": reasons,
                     "record": record,
+                    "deck_sha256": [deck_sha256(record["decks"][0]), deck_sha256(record["decks"][1])],
                 }
                 case_path = bad_case_dir / f"{case_id}.json"
                 write_json(case_path, case)

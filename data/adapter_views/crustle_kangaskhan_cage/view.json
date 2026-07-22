@@ -1,0 +1,832 @@
+{
+  "schema_version": "adapter_sampling_view_v1",
+  "candidate_id": "crustle_kangaskhan_cage",
+  "archetype": "Crustle / Mega Kangaskhan ex",
+  "variant": "Cage",
+  "target_deck_sha256_sorted_ids": "88d253a7c04af10afb914242370840c884065452595ddcd73decd4f2f8b73dbd",
+  "training_dataset_sha256": "E8DC4DC2784A3505EAA159255A735A2C50B907DB66A5F9AB7759BEC326062370",
+  "sources": [
+    {
+      "path": "E:\\学校文件\\kaggle\\pokemon-battle\\data\\training\\training_decisions_v1.jsonl",
+      "bytes": 5414300140,
+      "sha256": "E8DC4DC2784A3505EAA159255A735A2C50B907DB66A5F9AB7759BEC326062370",
+      "sha256_source": "E:\\学校文件\\kaggle\\pokemon-battle\\data\\training\\training_manifest_v1.json"
+    },
+    {
+      "path": "E:\\学校文件\\kaggle\\pokemon-battle\\data\\adapter_views\\alakazam_battle_cage_split\\exact_supplement_v1.jsonl",
+      "bytes": 32649075,
+      "sha256": "9002a50f6052d303199d86216d34f1500dc5c8fa7dc4369fff55a903ea694217"
+    }
+  ],
+  "base_checkpoint": "artifacts/sl0_shared_full/best.pt",
+  "classification": {
+    "exact": "deck hash equals target hash",
+    "similar": "multiset cosine >= 0.80 and weighted Jaccard >= 0.50",
+    "general": "known player deck below similar thresholds",
+    "unknown": "missing player deck; excluded from Adapter policy sampling"
+  },
+  "sampling": {
+    "target_mix": {
+      "exact": 0.4,
+      "similar": 0.3,
+      "general": 0.3
+    },
+    "replacement": {
+      "exact": true,
+      "similar": true,
+      "general": false
+    },
+    "split_contract": "use the existing row split; never resplit samples or games",
+    "unknown_policy": "exclude from Adapter policy; frozen shared trunk already learned general behavior"
+  },
+  "tiers": {
+    "exact": [
+      {
+        "deck_sha256_sorted_ids": "88d253a7c04af10afb914242370840c884065452595ddcd73decd4f2f8b73dbd",
+        "multiset_cosine": 1.0,
+        "weighted_jaccard": 1.0,
+        "unique_jaccard": 1.0,
+        "shared_cards": 60,
+        "samples": {
+          "test": 12424,
+          "train": 94082,
+          "valid": 11573
+        },
+        "games": {
+          "test": 237,
+          "train": 1784,
+          "valid": 223
+        }
+      }
+    ],
+    "similar": [
+      {
+        "deck_sha256_sorted_ids": "1e956e022087ad65f19133d4082cd6b3b6d8bf6fe2675ad761ffbe7054a474dc",
+        "multiset_cosine": 0.995485304256668,
+        "weighted_jaccard": 0.9672131147540983,
+        "unique_jaccard": 0.9473684210526315,
+        "shared_cards": 59,
+        "samples": {
+          "test": 2630,
+          "train": 25769,
+          "valid": 3954
+        },
+        "games": {
+          "test": 46,
+          "train": 455,
+          "valid": 59
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "06c2b38b2b05696f10e07f2078708ccede0bf5bc3b0dce6e76a34895f06d30cf",
+        "multiset_cosine": 0.9545454545454546,
+        "weighted_jaccard": 0.875,
+        "unique_jaccard": 0.85,
+        "shared_cards": 56,
+        "samples": {
+          "test": 1386,
+          "train": 13859,
+          "valid": 1543
+        },
+        "games": {
+          "test": 29,
+          "train": 268,
+          "valid": 32
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "93beb40f741e061a180eb3e0098331cbd21a1df9844093d38b5330459e71b7d2",
+        "multiset_cosine": 0.9146468976432496,
+        "weighted_jaccard": 0.6901408450704225,
+        "unique_jaccard": 0.7083333333333334,
+        "shared_cards": 49,
+        "samples": {
+          "train": 250
+        },
+        "games": {
+          "train": 4
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "5d3e3112c0f6aad054597df8fbb55ca20731a139abd6a49e6e5a779d412e1055",
+        "multiset_cosine": 0.8812755345055235,
+        "weighted_jaccard": 0.6666666666666666,
+        "unique_jaccard": 0.68,
+        "shared_cards": 48,
+        "samples": {
+          "test": 181,
+          "train": 1743,
+          "valid": 261
+        },
+        "games": {
+          "test": 3,
+          "train": 30,
+          "valid": 5
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "15202f6d1a22cad164ab796b1e0c35157696f937fa327d63ba29e52db420c0eb",
+        "multiset_cosine": 0.875517618599688,
+        "weighted_jaccard": 0.6438356164383562,
+        "unique_jaccard": 0.6538461538461539,
+        "shared_cards": 47,
+        "samples": {
+          "test": 245,
+          "train": 3145,
+          "valid": 975
+        },
+        "games": {
+          "test": 4,
+          "train": 65,
+          "valid": 16
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "c34bb6e2c25c66ee635f729dcd66243b5a97fc4ed82d49372889b680fb7d0762",
+        "multiset_cosine": 0.8608441389583525,
+        "weighted_jaccard": 0.6216216216216216,
+        "unique_jaccard": 0.5714285714285714,
+        "shared_cards": 46,
+        "samples": {
+          "train": 355
+        },
+        "games": {
+          "train": 8
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "3330db650bc4c335990b9f8739302eff7e89fc60fd2e980ef49633d63176222b",
+        "multiset_cosine": 0.8453339238521362,
+        "weighted_jaccard": 0.6,
+        "unique_jaccard": 0.6296296296296297,
+        "shared_cards": 45,
+        "samples": {
+          "train": 70
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "9a65159e6aa61a446d43f896a68924f109755f2e4921fa5004780b8df28f1844",
+        "multiset_cosine": 0.8368863649736373,
+        "weighted_jaccard": 0.6,
+        "unique_jaccard": 0.64,
+        "shared_cards": 45,
+        "samples": {
+          "test": 66,
+          "train": 176
+        },
+        "games": {
+          "test": 1,
+          "train": 3
+        }
+      }
+    ],
+    "general_rule": "all catalog hashes not listed in exact or similar",
+    "nearest_general": [
+      {
+        "deck_sha256_sorted_ids": "c758c5543bbdcca564f270db502866815d260a3f0af4a56312ddedf39337c1be",
+        "multiset_cosine": 0.7801455551360372,
+        "weighted_jaccard": 0.5384615384615384,
+        "unique_jaccard": 0.5,
+        "shared_cards": 42,
+        "samples": {
+          "train": 21
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "b3b273815ab40010e17ff544bd64f2e03bd2aaf927058b90471e82cb3f9e8bce",
+        "multiset_cosine": 0.7532386215885585,
+        "weighted_jaccard": 0.5,
+        "unique_jaccard": 0.5,
+        "shared_cards": 40,
+        "samples": {
+          "train": 163
+        },
+        "games": {
+          "train": 3
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "c06c096760904ffae20cf5e77dde50599ec95aa5f0c2d1d349ebe56d2a4a3b0b",
+        "multiset_cosine": 0.59336610396393,
+        "weighted_jaccard": 0.3953488372093023,
+        "unique_jaccard": 0.41379310344827586,
+        "shared_cards": 34,
+        "samples": {
+          "train": 47
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "82a4600d9f295d7121f88e88ed9fa9979987631beb5d5eb23e507bda70139481",
+        "multiset_cosine": 0.5818181818181818,
+        "weighted_jaccard": 0.36363636363636365,
+        "unique_jaccard": 0.3103448275862069,
+        "shared_cards": 32,
+        "samples": {
+          "train": 53
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "2b02439d23212f77e8dcede2ee45be9c0154c2d85fcf344a42372273158cf1c9",
+        "multiset_cosine": 0.5743366428160264,
+        "weighted_jaccard": 0.4634146341463415,
+        "unique_jaccard": 0.4782608695652174,
+        "shared_cards": 38,
+        "samples": {
+          "train": 104
+        },
+        "games": {
+          "train": 2
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "11fd2dd53b957025b2f8dde5bc4247ec04de10086a9f6f0736ceced27622a972",
+        "multiset_cosine": 0.5636363636363636,
+        "weighted_jaccard": 0.34831460674157305,
+        "unique_jaccard": 0.3103448275862069,
+        "shared_cards": 31,
+        "samples": {
+          "test": 29,
+          "train": 1120,
+          "valid": 165
+        },
+        "games": {
+          "test": 1,
+          "train": 23,
+          "valid": 4
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "428286a932aea411c5e02a7c3ecd7a962f8ea361210ce3e7fa13713b03d615e4",
+        "multiset_cosine": 0.5438307748185662,
+        "weighted_jaccard": 0.3333333333333333,
+        "unique_jaccard": 0.25806451612903225,
+        "shared_cards": 30,
+        "samples": {
+          "train": 44
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "fb068b754387dccdf423132d3503204beee475836eb14f93579a8edb4f972263",
+        "multiset_cosine": 0.5429919841400007,
+        "weighted_jaccard": 0.3333333333333333,
+        "unique_jaccard": 0.27586206896551724,
+        "shared_cards": 30,
+        "samples": {
+          "test": 69,
+          "train": 744,
+          "valid": 192
+        },
+        "games": {
+          "test": 1,
+          "train": 15,
+          "valid": 3
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "59ee5068871755f1dcdb556e89249f20ea5704beceb05b042a703dffb6810f6a",
+        "multiset_cosine": 0.5326621911152128,
+        "weighted_jaccard": 0.3953488372093023,
+        "unique_jaccard": 0.43478260869565216,
+        "shared_cards": 34,
+        "samples": {
+          "test": 13
+        },
+        "games": {
+          "test": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "d1bf9c02177fc31d5710e92bef3792cb747dfd7f43e66130b2b331ce96d01ea4",
+        "multiset_cosine": 0.5253958332992928,
+        "weighted_jaccard": 0.31868131868131866,
+        "unique_jaccard": 0.35714285714285715,
+        "shared_cards": 29,
+        "samples": {
+          "valid": 81
+        },
+        "games": {
+          "valid": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "29f80dbfd67ef8037e5938b87eb97eee1e6a36dc899e1556bf7a6d33b9f1bc18",
+        "multiset_cosine": 0.5222514079711889,
+        "weighted_jaccard": 0.3333333333333333,
+        "unique_jaccard": 0.32142857142857145,
+        "shared_cards": 30,
+        "samples": {
+          "test": 48,
+          "valid": 18
+        },
+        "games": {
+          "test": 1,
+          "valid": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "71b1fa5e67786b3e383aba24348e2ac5b743005f2cc592dac133ad8eb2b63ea8",
+        "multiset_cosine": 0.5000857559392293,
+        "weighted_jaccard": 0.30434782608695654,
+        "unique_jaccard": 0.26666666666666666,
+        "shared_cards": 28,
+        "samples": {
+          "train": 63
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "3addb5d3d2d77703259521b8364a4c4348f691c3a6dd1c060f1e7685335655f3",
+        "multiset_cosine": 0.495800546407708,
+        "weighted_jaccard": 0.2903225806451613,
+        "unique_jaccard": 0.25806451612903225,
+        "shared_cards": 27,
+        "samples": {
+          "valid": 26
+        },
+        "games": {
+          "valid": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "37ba9179a0ed1e7215958c844cf0d3bd9f757468b0dd4efa85bcc70e08e68197",
+        "multiset_cosine": 0.4910940454965818,
+        "weighted_jaccard": 0.31868131868131866,
+        "unique_jaccard": 0.34615384615384615,
+        "shared_cards": 29,
+        "samples": {
+          "train": 606,
+          "valid": 87
+        },
+        "games": {
+          "train": 12,
+          "valid": 2
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "69cfaca70a2ca1bca364183013e1dae13ec2a46590308b704f5bb4100e04acbf",
+        "multiset_cosine": 0.48744334040071785,
+        "weighted_jaccard": 0.2765957446808511,
+        "unique_jaccard": 0.375,
+        "shared_cards": 26,
+        "samples": {
+          "train": 78
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "87143b5e296079a1bd0af7a3ee8248356e57d2476e675e130969ef3644adcfac",
+        "multiset_cosine": 0.48728321735999164,
+        "weighted_jaccard": 0.42857142857142855,
+        "unique_jaccard": 0.5238095238095238,
+        "shared_cards": 36,
+        "samples": {
+          "test": 18
+        },
+        "games": {
+          "test": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "55ab1393c902aab74f68b17275a067700c0b51f55a90a52ae958d513cfc253e8",
+        "multiset_cosine": 0.47588326911657164,
+        "weighted_jaccard": 0.3953488372093023,
+        "unique_jaccard": 0.43478260869565216,
+        "shared_cards": 34,
+        "samples": {
+          "train": 4
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "07d01ddf9a3b73d30d1e342a9bd72f823f7eec230af5e2a151dac7421ce61ec3",
+        "multiset_cosine": 0.4696217142077712,
+        "weighted_jaccard": 0.2765957446808511,
+        "unique_jaccard": 0.3,
+        "shared_cards": 26,
+        "samples": {
+          "train": 67
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "aec5d8ee964faf6ddf6662fee625c5487f2c5af94dcab6be820232019f7b3126",
+        "multiset_cosine": 0.4584621464559471,
+        "weighted_jaccard": 0.30434782608695654,
+        "unique_jaccard": 0.3333333333333333,
+        "shared_cards": 28,
+        "samples": {
+          "train": 26
+        },
+        "games": {
+          "train": 1
+        }
+      },
+      {
+        "deck_sha256_sorted_ids": "a036639285e93dc4f3a6ca567a7212d6f9fe5c296ca9e97e4bad2b42866a1520",
+        "multiset_cosine": 0.45506169032175997,
+        "weighted_jaccard": 0.2903225806451613,
+        "unique_jaccard": 0.27586206896551724,
+        "shared_cards": 27,
+        "samples": {
+          "train": 68
+        },
+        "games": {
+          "train": 1
+        }
+      }
+    ]
+  },
+  "coverage": {
+    "exact": {
+      "deck_count": 1,
+      "samples": {
+        "test": 12424,
+        "train": 94082,
+        "valid": 11573
+      },
+      "games_sum_by_deck": {
+        "test": 237,
+        "train": 1784,
+        "valid": 223
+      }
+    },
+    "similar": {
+      "deck_count": 8,
+      "samples": {
+        "test": 4508,
+        "train": 45367,
+        "valid": 6733
+      },
+      "games_sum_by_deck": {
+        "test": 83,
+        "train": 834,
+        "valid": 112
+      }
+    },
+    "general": {
+      "deck_count": 395,
+      "samples": {
+        "test": 69665,
+        "train": 539132,
+        "valid": 65717
+      },
+      "games_sum_by_deck": {
+        "test": 874,
+        "train": 6778,
+        "valid": 851
+      }
+    },
+    "unknown": {
+      "samples": {
+        "test": 1730,
+        "train": 16832,
+        "valid": 1670
+      },
+      "excluded": true
+    }
+  },
+  "audit": {
+    "exact_hash_found_once": true,
+    "exact_train_samples_positive": true,
+    "exact_valid_samples_positive": true,
+    "cross_split_games": [],
+    "ok": true
+  },
+  "nearest_known_decks": [
+    {
+      "tier": "exact",
+      "deck_sha256_sorted_ids": "88d253a7c04af10afb914242370840c884065452595ddcd73decd4f2f8b73dbd",
+      "multiset_cosine": 1.0,
+      "weighted_jaccard": 1.0,
+      "unique_jaccard": 1.0,
+      "shared_cards": 60,
+      "samples": {
+        "test": 12424,
+        "train": 94082,
+        "valid": 11573
+      },
+      "games": {
+        "test": 237,
+        "train": 1784,
+        "valid": 223
+      }
+    },
+    {
+      "tier": "similar",
+      "deck_sha256_sorted_ids": "1e956e022087ad65f19133d4082cd6b3b6d8bf6fe2675ad761ffbe7054a474dc",
+      "multiset_cosine": 0.995485304256668,
+      "weighted_jaccard": 0.9672131147540983,
+      "unique_jaccard": 0.9473684210526315,
+      "shared_cards": 59,
+      "samples": {
+        "test": 2630,
+        "train": 25769,
+        "valid": 3954
+      },
+      "games": {
+        "test": 46,
+        "train": 455,
+        "valid": 59
+      }
+    },
+    {
+      "tier": "similar",
+      "deck_sha256_sorted_ids": "06c2b38b2b05696f10e07f2078708ccede0bf5bc3b0dce6e76a34895f06d30cf",
+      "multiset_cosine": 0.9545454545454546,
+      "weighted_jaccard": 0.875,
+      "unique_jaccard": 0.85,
+      "shared_cards": 56,
+      "samples": {
+        "test": 1386,
+        "train": 13859,
+        "valid": 1543
+      },
+      "games": {
+        "test": 29,
+        "train": 268,
+        "valid": 32
+      }
+    },
+    {
+      "tier": "similar",
+      "deck_sha256_sorted_ids": "93beb40f741e061a180eb3e0098331cbd21a1df9844093d38b5330459e71b7d2",
+      "multiset_cosine": 0.9146468976432496,
+      "weighted_jaccard": 0.6901408450704225,
+      "unique_jaccard": 0.7083333333333334,
+      "shared_cards": 49,
+      "samples": {
+        "train": 250
+      },
+      "games": {
+        "train": 4
+      }
+    },
+    {
+      "tier": "similar",
+      "deck_sha256_sorted_ids": "5d3e3112c0f6aad054597df8fbb55ca20731a139abd6a49e6e5a779d412e1055",
+      "multiset_cosine": 0.8812755345055235,
+      "weighted_jaccard": 0.6666666666666666,
+      "unique_jaccard": 0.68,
+      "shared_cards": 48,
+      "samples": {
+        "test": 181,
+        "train": 1743,
+        "valid": 261
+      },
+      "games": {
+        "test": 3,
+        "train": 30,
+        "valid": 5
+      }
+    },
+    {
+      "tier": "similar",
+      "deck_sha256_sorted_ids": "15202f6d1a22cad164ab796b1e0c35157696f937fa327d63ba29e52db420c0eb",
+      "multiset_cosine": 0.875517618599688,
+      "weighted_jaccard": 0.6438356164383562,
+      "unique_jaccard": 0.6538461538461539,
+      "shared_cards": 47,
+      "samples": {
+        "test": 245,
+        "train": 3145,
+        "valid": 975
+      },
+      "games": {
+        "test": 4,
+        "train": 65,
+        "valid": 16
+      }
+    },
+    {
+      "tier": "similar",
+      "deck_sha256_sorted_ids": "c34bb6e2c25c66ee635f729dcd66243b5a97fc4ed82d49372889b680fb7d0762",
+      "multiset_cosine": 0.8608441389583525,
+      "weighted_jaccard": 0.6216216216216216,
+      "unique_jaccard": 0.5714285714285714,
+      "shared_cards": 46,
+      "samples": {
+        "train": 355
+      },
+      "games": {
+        "train": 8
+      }
+    },
+    {
+      "tier": "similar",
+      "deck_sha256_sorted_ids": "3330db650bc4c335990b9f8739302eff7e89fc60fd2e980ef49633d63176222b",
+      "multiset_cosine": 0.8453339238521362,
+      "weighted_jaccard": 0.6,
+      "unique_jaccard": 0.6296296296296297,
+      "shared_cards": 45,
+      "samples": {
+        "train": 70
+      },
+      "games": {
+        "train": 1
+      }
+    },
+    {
+      "tier": "similar",
+      "deck_sha256_sorted_ids": "9a65159e6aa61a446d43f896a68924f109755f2e4921fa5004780b8df28f1844",
+      "multiset_cosine": 0.8368863649736373,
+      "weighted_jaccard": 0.6,
+      "unique_jaccard": 0.64,
+      "shared_cards": 45,
+      "samples": {
+        "test": 66,
+        "train": 176
+      },
+      "games": {
+        "test": 1,
+        "train": 3
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "c758c5543bbdcca564f270db502866815d260a3f0af4a56312ddedf39337c1be",
+      "multiset_cosine": 0.7801455551360372,
+      "weighted_jaccard": 0.5384615384615384,
+      "unique_jaccard": 0.5,
+      "shared_cards": 42,
+      "samples": {
+        "train": 21
+      },
+      "games": {
+        "train": 1
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "b3b273815ab40010e17ff544bd64f2e03bd2aaf927058b90471e82cb3f9e8bce",
+      "multiset_cosine": 0.7532386215885585,
+      "weighted_jaccard": 0.5,
+      "unique_jaccard": 0.5,
+      "shared_cards": 40,
+      "samples": {
+        "train": 163
+      },
+      "games": {
+        "train": 3
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "c06c096760904ffae20cf5e77dde50599ec95aa5f0c2d1d349ebe56d2a4a3b0b",
+      "multiset_cosine": 0.59336610396393,
+      "weighted_jaccard": 0.3953488372093023,
+      "unique_jaccard": 0.41379310344827586,
+      "shared_cards": 34,
+      "samples": {
+        "train": 47
+      },
+      "games": {
+        "train": 1
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "82a4600d9f295d7121f88e88ed9fa9979987631beb5d5eb23e507bda70139481",
+      "multiset_cosine": 0.5818181818181818,
+      "weighted_jaccard": 0.36363636363636365,
+      "unique_jaccard": 0.3103448275862069,
+      "shared_cards": 32,
+      "samples": {
+        "train": 53
+      },
+      "games": {
+        "train": 1
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "2b02439d23212f77e8dcede2ee45be9c0154c2d85fcf344a42372273158cf1c9",
+      "multiset_cosine": 0.5743366428160264,
+      "weighted_jaccard": 0.4634146341463415,
+      "unique_jaccard": 0.4782608695652174,
+      "shared_cards": 38,
+      "samples": {
+        "train": 104
+      },
+      "games": {
+        "train": 2
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "11fd2dd53b957025b2f8dde5bc4247ec04de10086a9f6f0736ceced27622a972",
+      "multiset_cosine": 0.5636363636363636,
+      "weighted_jaccard": 0.34831460674157305,
+      "unique_jaccard": 0.3103448275862069,
+      "shared_cards": 31,
+      "samples": {
+        "test": 29,
+        "train": 1120,
+        "valid": 165
+      },
+      "games": {
+        "test": 1,
+        "train": 23,
+        "valid": 4
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "428286a932aea411c5e02a7c3ecd7a962f8ea361210ce3e7fa13713b03d615e4",
+      "multiset_cosine": 0.5438307748185662,
+      "weighted_jaccard": 0.3333333333333333,
+      "unique_jaccard": 0.25806451612903225,
+      "shared_cards": 30,
+      "samples": {
+        "train": 44
+      },
+      "games": {
+        "train": 1
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "fb068b754387dccdf423132d3503204beee475836eb14f93579a8edb4f972263",
+      "multiset_cosine": 0.5429919841400007,
+      "weighted_jaccard": 0.3333333333333333,
+      "unique_jaccard": 0.27586206896551724,
+      "shared_cards": 30,
+      "samples": {
+        "test": 69,
+        "train": 744,
+        "valid": 192
+      },
+      "games": {
+        "test": 1,
+        "train": 15,
+        "valid": 3
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "59ee5068871755f1dcdb556e89249f20ea5704beceb05b042a703dffb6810f6a",
+      "multiset_cosine": 0.5326621911152128,
+      "weighted_jaccard": 0.3953488372093023,
+      "unique_jaccard": 0.43478260869565216,
+      "shared_cards": 34,
+      "samples": {
+        "test": 13
+      },
+      "games": {
+        "test": 1
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "d1bf9c02177fc31d5710e92bef3792cb747dfd7f43e66130b2b331ce96d01ea4",
+      "multiset_cosine": 0.5253958332992928,
+      "weighted_jaccard": 0.31868131868131866,
+      "unique_jaccard": 0.35714285714285715,
+      "shared_cards": 29,
+      "samples": {
+        "valid": 81
+      },
+      "games": {
+        "valid": 1
+      }
+    },
+    {
+      "tier": "general",
+      "deck_sha256_sorted_ids": "29f80dbfd67ef8037e5938b87eb97eee1e6a36dc899e1556bf7a6d33b9f1bc18",
+      "multiset_cosine": 0.5222514079711889,
+      "weighted_jaccard": 0.3333333333333333,
+      "unique_jaccard": 0.32142857142857145,
+      "shared_cards": 30,
+      "samples": {
+        "test": 48,
+        "valid": 18
+      },
+      "games": {
+        "test": 1,
+        "valid": 1
+      }
+    }
+  ]
+}

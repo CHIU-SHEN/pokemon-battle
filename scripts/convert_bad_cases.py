@@ -26,6 +26,7 @@ from src.train.observed_schema import (  # noqa: E402
     validate_sample,
     write_jsonl,
 )
+from eval.run_match import deck_sha256  # noqa: E402
 
 
 def _load(path: Path) -> Any:
@@ -76,6 +77,21 @@ def convert_file(path: Path, card_tags: dict[int, set[str]], with_v0: bool = Fal
                 raise ValueError(f"V0 produced illegal action: {v0_action}")
             global_vec, option_vecs, rule_scores, options = sample_features(parsed, card_tags)
             game_result, value_target = _result_targets(record.get("result"), player)
+            decks = record.get("decks") or []
+            player_cards = decks[player] if len(decks) > player else None
+            opponent_cards = decks[1 - player] if len(decks) > 1 - player else None
+            deck_info = {
+                "player": ({
+                    "cards": [int(value) for value in player_cards],
+                    "sha256_sorted_ids": deck_sha256([int(value) for value in player_cards]),
+                } if player_cards else None),
+                "opponent": ({
+                    "cards": [int(value) for value in opponent_cards],
+                    "sha256_sorted_ids": deck_sha256([int(value) for value in opponent_cards]),
+                } if opponent_cards else None),
+            }
+            if not player_cards:
+                deck_info["note"] = "deck ids were not stored in this bad case"
             row = {
                 "schema_version": SCHEMA_VERSION,
                 "sample_id": f"{game_id}:{int(item.get('step', ordinal)):04d}",
@@ -105,7 +121,7 @@ def convert_file(path: Path, card_tags: dict[int, set[str]], with_v0: bool = Fal
                 "option_features": option_vecs,
                 "rule_scores_unverified": rule_scores,
                 "public_history": _public_history(observation),
-                "deck": {"player": None, "opponent": None, "note": "deck ids were not stored in this bad case"},
+                "deck": deck_info,
                 "quality": {
                     "complete_game_trace": True,
                     "visible_observation_only": True,

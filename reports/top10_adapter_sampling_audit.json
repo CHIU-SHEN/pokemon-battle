@@ -1,0 +1,128 @@
+{
+  "schema_version": "adapter_sampling_audit_v1",
+  "training_dataset_sha256": "E8DC4DC2784A3505EAA159255A735A2C50B907DB66A5F9AB7759BEC326062370",
+  "sources": [
+    {
+      "path": "E:\\学校文件\\kaggle\\pokemon-battle\\data\\training\\training_decisions_v1.jsonl",
+      "bytes": 5414300140,
+      "sha256": "E8DC4DC2784A3505EAA159255A735A2C50B907DB66A5F9AB7759BEC326062370",
+      "sha256_source": "E:\\学校文件\\kaggle\\pokemon-battle\\data\\training\\training_manifest_v1.json"
+    },
+    {
+      "path": "E:\\学校文件\\kaggle\\pokemon-battle\\data\\adapter_views\\alakazam_battle_cage_split\\exact_supplement_v1.jsonl",
+      "bytes": 32649075,
+      "sha256": "9002a50f6052d303199d86216d34f1500dc5c8fa7dc4369fff55a903ea694217"
+    }
+  ],
+  "candidate_count": 10,
+  "dataset_audit": {
+    "rows": 869433,
+    "source_rows": {
+      "E:\\学校文件\\kaggle\\pokemon-battle\\data\\training\\training_decisions_v1.jsonl": 861939,
+      "E:\\学校文件\\kaggle\\pokemon-battle\\data\\adapter_views\\alakazam_battle_cage_split\\exact_supplement_v1.jsonl": 7494
+    },
+    "known_deck_rows": 849201,
+    "unknown_deck_rows": 20232,
+    "unknown_by_split": {
+      "test": 1730,
+      "train": 16832,
+      "valid": 1670
+    },
+    "unique_known_decks": 404,
+    "unique_games": 6652,
+    "cross_split_games": []
+  },
+  "views": [
+    {
+      "candidate_id": "alakazam_battle_cage_split",
+      "exact_train": 6386,
+      "exact_valid": 844,
+      "exact_test": 452,
+      "similar_decks": 79,
+      "similar_train": 335212,
+      "ok": true
+    },
+    {
+      "candidate_id": "alakazam_neutralization_zone",
+      "exact_train": 36222,
+      "exact_valid": 4428,
+      "exact_test": 5136,
+      "similar_decks": 78,
+      "similar_train": 305298,
+      "ok": true
+    },
+    {
+      "candidate_id": "alakazam_nighttime_mine",
+      "exact_train": 163475,
+      "exact_valid": 19261,
+      "exact_test": 21345,
+      "similar_decks": 79,
+      "similar_train": 178123,
+      "ok": true
+    },
+    {
+      "candidate_id": "crustle_kangaskhan_cage",
+      "exact_train": 94082,
+      "exact_valid": 11573,
+      "exact_test": 12424,
+      "similar_decks": 8,
+      "similar_train": 45367,
+      "ok": true
+    },
+    {
+      "candidate_id": "crustle_kangaskhan_petrel",
+      "exact_train": 3145,
+      "exact_valid": 975,
+      "exact_test": 245,
+      "similar_decks": 10,
+      "similar_train": 136488,
+      "ok": true
+    },
+    {
+      "candidate_id": "cynthia_garchomp_roserade",
+      "exact_train": 7960,
+      "exact_valid": 1061,
+      "exact_test": 960,
+      "similar_decks": 13,
+      "similar_train": 5491,
+      "ok": true
+    },
+    {
+      "candidate_id": "marnie_grimmsnarl_dudunsparce",
+      "exact_train": 840,
+      "exact_valid": 0,
+      "exact_test": 113,
+      "similar_decks": 25,
+      "similar_train": 71716,
+      "ok": true
+    },
+    {
+      "candidate_id": "marnie_grimmsnarl_froslass",
+      "exact_train": 22846,
+      "exact_valid": 2833,
+      "exact_test": 2580,
+      "similar_decks": 25,
+      "similar_train": 49710,
+      "ok": true
+    },
+    {
+      "candidate_id": "marnie_grimmsnarl_tatsugiri",
+      "exact_train": 1177,
+      "exact_valid": 113,
+      "exact_test": 195,
+      "similar_decks": 25,
+      "similar_train": 71379,
+      "ok": true
+    },
+    {
+      "candidate_id": "mega_starmie_dusknoir",
+      "exact_train": 7588,
+      "exact_valid": 930,
+      "exact_test": 965,
+      "similar_decks": 3,
+      "similar_train": 87,
+      "ok": true
+    }
+  ],
+  "all_ok": true
+}
