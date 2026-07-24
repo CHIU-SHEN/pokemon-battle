@@ -1,5 +1,9 @@
 # Top10 Adapter 服务器交接
 
+> 状态更新（2026-07-24）：首轮 10 套训练结果已回收、校验和离线复评。
+> 9 套通过，`alakazam_battle_cage_split` 需要在补充数据转换后重训。
+> 完整结果见 `reports/top10_adapter_offline_eval.md`。
+
 ## 目标
 
 在冻结的 `SL-0-shared` 主干上顺序训练 10 个轻量 Deck Adapter。采样视图已经 10/10 通过审计，869,433 条记录中没有跨 split 对局。
@@ -47,7 +51,6 @@ python tests/test_adapter_sampling_views.py
 python src/train/train_adapter.py \
   --view data/adapter_views/alakazam_battle_cage_split/view.json \
   --data data/training/training_decisions_v1.jsonl \
-  --data data/adapter_views/alakazam_battle_cage_split/exact_supplement_v1.jsonl \
   --base-checkpoint artifacts/sl0_shared_full/best.pt \
   --output artifacts/adapter_smoke \
   --epochs 1 --batch-size 8 --num-workers 0 --max-batches 1
@@ -62,6 +65,18 @@ EPOCHS=4 BATCH_SIZE=256 NUM_WORKERS=1 bash scripts/train_top10_adapters.sh
 
 默认顺序训练，避免十个任务争抢同一张 GPU 和磁盘。产物位于 `artifacts/adapters_top10/<candidate>/`，每套包含 `best.pt`、`last.pt` 和 `metrics.json`。
 
+### 补充数据修正
+
+检查发现 `exact_supplement_v1.jsonl` 是 `observed_decision_v1`，没有
+`supervision.soft_policy` 和 `supervision.head_weights`，不能直接传给
+`train_adapter.py`。`scripts/train_top10_adapters.sh` 已改为默认不加载补充
+文件；只有先把补充轨迹转换、校验为 `training_decision_v1` 后，才通过
+`SUPPLEMENT=<converted.jsonl>` 显式启用。
+
+当前回收 checkpoint 中 `alakazam_battle_cage_split` 在基础冻结 test 的
+117 条 exact 记录上 policy top-1 相对主干回退 5.98pp，因此必须按上述方式
+修复并单独重训；其他 9 套无需因该问题重复训练。
+
 ## 回传内容
 
 训练结束后打包并回传：
@@ -72,3 +87,6 @@ sha256sum adapters_top10_results.tar.gz > adapters_top10_results.tar.gz.sha256
 ```
 
 不要回传 5.4GB 基础训练 JSONL。收到结果后本地进行离线复评、非法动作检查、推理延迟检查和 Top10 循环赛。
+
+首轮结果包 SHA-256：
+`66702A8C85B1FFDDBB29293A33E750F023F671CC46B0B62800B7A9A4AF70FCB7`。

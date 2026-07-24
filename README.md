@@ -43,8 +43,8 @@ final_submissions/sl0_shared_stage1.zip
 | Flat Safe V0 | 卡组特化规则 + 安全兜底 | 推荐主提交 |
 | Multi-module V0 | 模块化规则策略 | 本地开发与备份 |
 | Search V1 | 信念采样 + 有限预算搜索 | 实验版，默认关闭 |
-| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | 主线已冻结 `SL-0-shared`；Top10 Adapter 采样 manifest 已全部生成并 10/10 通过数据审计，可以统一启动 10 个 Adapter 训练 |
-| 排行榜 Top10 | 10 套候选牌表 | 10/10 静态合法且通过阶段 B，等待 Adapter 训练与循环赛 |
+| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | 10 个 Adapter 已训练并完成统一离线复评；9 个通过，`alakazam_battle_cage_split` 因 exact test 负迁移和补充数据 schema 问题需要重训 |
+| 排行榜 Top10 | 10 套候选牌表 | 10/10 静态合法且通过阶段 B；9 套可进入 Arena，第 10 套修复重训后再启动正式 45 组循环赛 |
 | M5 Elite Decks | MAP-Elites 历史候选 | 辅助候选池，未替换主卡组 |
 
 旧 M0～M6 最小验证文档已移至 `docs/archive/mvp/`，只用于解释历史代码来源，不再作为当前路线或数据状态依据。
