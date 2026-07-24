@@ -1,7 +1,7 @@
 # Top10 Adapter 服务器交接
 
 > 状态更新（2026-07-24）：首轮 10 套训练结果已回收、校验和离线复评。
-> 9 套通过，`alakazam_battle_cage_split` 需要在补充数据转换后重训。
+> 补充数据转换和 `alakazam_battle_cage_split` 重训复核已完成，10/10 通过。
 > 完整结果见 `reports/top10_adapter_offline_eval.md`。
 
 ## 目标
@@ -73,9 +73,10 @@ EPOCHS=4 BATCH_SIZE=256 NUM_WORKERS=1 bash scripts/train_top10_adapters.sh
 文件；只有先把补充轨迹转换、校验为 `training_decision_v1` 后，才通过
 `SUPPLEMENT=<converted.jsonl>` 显式启用。
 
-当前回收 checkpoint 中 `alakazam_battle_cage_split` 在基础冻结 test 的
-117 条 exact 记录上 policy top-1 相对主干回退 5.98pp，因此必须按上述方式
-修复并单独重训；其他 9 套无需因该问题重复训练。
+正式转换已生成 7,494 条有效训练增量，0 重复、0 非法监督动作、0 跨
+split。RTX 5060 重训 4 epoch 用时 24 分 23 秒，新旧 checkpoint 参数最大
+差异仅 `3.5e-6`。纳入 335 条按整局隔离的补充 test 后，完整 452 条 exact
+记录上 policy top-1 相对主干提升 17.37pp，最终 10/10 通过离线门槛。
 
 ## 回传内容
 

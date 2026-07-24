@@ -15,15 +15,17 @@
 
 统一 test 复评覆盖基础训练集的 87,992 条记录。按 sampling view 排除
 1,730 条未知玩家牌表后，对每个候选分别统计 exact、similar 和 general。
-10/10 都是 0 个非法 top-1；9 个通过离线门槛，可以进入 Arena；
-`alakazam_battle_cage_split` 必须先修复补充数据并重训，不能以当前
-checkpoint 进入正式循环赛。
+10/10 都是 0 个非法 top-1。首轮只在基础训练集 test 上评估时，
+`alakazam_battle_cage_split` 的 exact 子集只有 117 条并显示负迁移；
+完成补充数据正式转换并纳入按整局隔离的 335 条补充 test 后，exact 共
+452 条，Top-1 相对主干提升 17.37pp。最终 10/10 均通过离线门槛，可以
+进入 Arena。
 
 ## 训练结果
 
 | 候选 | best epoch | best valid loss | valid top-1 | 训练判断 |
 | --- | ---: | ---: | ---: | --- |
-| alakazam_battle_cage_split | 4 | 2.1592 | 60.10% | 曲线仍改善，但冻结 test exact 明显负迁移 |
+| alakazam_battle_cage_split | 4 | 2.1592 | 60.10% | 完整 exact test +17.37pp，通过 |
 | alakazam_neutralization_zone | 4 | 2.1026 | 60.59% | 正常 |
 | alakazam_nighttime_mine | 3 | 2.1218 | 60.49% | epoch 3 最佳 |
 | crustle_kangaskhan_cage | 2 | 2.1514 | 60.45% | epoch 2 最佳 |
@@ -44,7 +46,7 @@ checkpoint 进入正式循环赛。
 
 | 候选 | exact | similar | general | 非法 | batch=1 p95 | 决定 |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| alakazam_battle_cage_split | **-5.98pp** (117) | -0.30pp (43,324) | -0.01pp (42,821) | 0 | 1.69ms | **重训** |
+| alakazam_battle_cage_split | **+17.37pp** (452) | -0.30pp (43,324) | -0.01pp (42,821) | 0 | 2.79ms | 晋级 Arena |
 | alakazam_neutralization_zone | +0.98pp (5,136) | +0.61pp (38,305) | +0.83pp (42,821) | 0 | 1.78ms | 晋级 Arena |
 | alakazam_nighttime_mine | +0.72pp (21,345) | +0.58pp (22,096) | +0.68pp (42,821) | 0 | 2.08ms | 晋级 Arena |
 | crustle_kangaskhan_cage | +0.56pp (12,424) | +1.58pp (4,508) | +0.57pp (69,330) | 0 | 1.81ms | 晋级 Arena |
@@ -62,26 +64,23 @@ Adapter p95 比主干略低解释为 Adapter 加速。
 
 ## 关键数据问题
 
-`data/adapter_views/alakazam_battle_cage_split/exact_supplement_v1.jsonl`
-实际是 `observed_decision_v1`，没有 `supervision.soft_policy` 和
-`supervision.head_weights`；而 `AdapterJsonlDataset` 及
-`collate_training_rows` 要求输入为 `training_decision_v1`。原训练命令直接
-把这份补充文件传给 `train_adapter.py`，按当前仓库代码会在读取 exact
-记录时触发 `KeyError: supervision`。
+原始 `exact_supplement_v1.jsonl` 是 `observed_decision_v1`，不能被当前
+Adapter DataLoader 直接消费。现已通过
+`scripts/convert_adapter_supplement.py` 转换为
+`exact_supplement_training_v1.jsonl`：7,494/7,494 条有效、100 局、
+0 重复、0 非法监督动作、0 跨 split，SHA-256 为
+`EFDA8273BD8AB3B349B1738AFC566633379D253BCF949FFC0360D56D562B6A5C`。
 
-因此当前 `alakazam_battle_cage_split` checkpoint 不能被视为已经正确使用
-6,386 条补充 train 记录。其基础 test exact 仅有 117 条，而 sampling view
-中的 452 条包含 335 条尚未转换为正式监督 schema 的补充 test 记录。完整
-离线复评严格只使用冻结的 `training_decision_v1`，没有伪造补充标签。
+RTX 5060 上使用正式增量重训 4 epoch，用时 24 分 23 秒。新旧 best
+checkpoint 的参数最大绝对差仅 `3.5e-6`，训练曲线逐轮等价，证明服务器
+回传模型与正式转换后的训练结果实质一致。完整复评见
+`reports/alakazam_battle_cage_split_retrain_eval.json`。
 
 ## 下一步动作
 
-1. 将 7,494 条补充轨迹转换并审计为独立的
-   `training_decision_v1` 增量文件，保留原有 game-level split。
-2. 只重训 `alakazam_battle_cage_split`，至少保留一个“不使用补充数据”的
-   对照；按 exact test 表现选 checkpoint，不能只按混合 valid loss。
-3. 重训通过后再启动完整 10 套单循环。当前可先用已晋级的 9 套跑预筛，
-   但最终 45 组正式矩阵必须等待第 10 套复评合格。
-4. Arena 仍需共同对局设置、交换先后手、固定外部对手和完整异常/非法动作
+1. 10 套 Adapter 均可进入完整单循环。
+2. Arena 仍需共同对局设置、交换先后手、固定外部对手和完整异常/非法动作
    统计。离线 top-1 提升不等价于整局胜率提升。
-
+3. `alakazam_battle_cage_split` 在基础来源 117 条 exact 子集和完整 452 条
+   exact test 上方向相反，后续 Arena 应重点检查其跨来源泛化，不能只依据
+   +17.37pp 离线结果直接判为冠军。

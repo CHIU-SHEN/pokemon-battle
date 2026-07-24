@@ -1,0 +1,129 @@
+{
+  "schema_version": "top10_adapter_offline_eval_v1",
+  "created_at": "2026-07-24T13:43:09+0800",
+  "split": "test",
+  "data": [
+    "data\\training\\training_decisions_v1.jsonl",
+    "data\\adapter_views\\alakazam_battle_cage_split\\exact_supplement_training_v1.jsonl"
+  ],
+  "rows": 88327,
+  "unknown_rows_excluded_from_tiers": 1730,
+  "batches": 173,
+  "device": "cuda",
+  "amp": true,
+  "elapsed_seconds": 68.90674880000006,
+  "base_checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\sl0_shared_full\\best.pt",
+  "base_dataset_sha256": "E8DC4DC2784A3505EAA159255A735A2C50B907DB66A5F9AB7759BEC326062370",
+  "base_latency_ms_per_row": 0.029310792849326618,
+  "base_online_latency_batch1": {
+    "repeats": 100,
+    "mean_ms": 1.5308600000753358,
+    "p50_ms": 1.4870999993945588,
+    "p95_ms": 1.7812999994930578,
+    "max_ms": 3.722600000401144
+  },
+  "decision_policy": {
+    "hard_gate": "0 illegal predictions",
+    "retrain": "exact/similar top-1 < -0.5pp or general top-1 < -0.3pp",
+    "advance": "exact rows >= 100 and exact top-1 >= +0.3pp, exact policy loss <= -0.01, or similar top-1 >= +0.2pp",
+    "note": "offline gate only; Arena remains mandatory"
+  },
+  "candidates": {
+    "alakazam_battle_cage_split": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 452,
+            "policy_count": 380,
+            "policy_loss": 0.9274544374723184,
+            "policy_top1": 0.6026315789473684,
+            "value_count": 452,
+            "value_mse": 1.3152960550732318,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 452,
+            "policy_count": 380,
+            "policy_loss": 0.7150387553099886,
+            "policy_top1": 0.7763157894736842,
+            "value_count": 452,
+            "value_mse": 1.2865396668161966,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.21241568216232976,
+            "policy_top1": 0.17368421052631577,
+            "value_mse": -0.028756388257035193
+          },
+          "rows": 452
+        },
+        "similar": {
+          "base": {
+            "rows": 43324,
+            "policy_count": 43250,
+            "policy_loss": 1.169909120028245,
+            "policy_top1": 0.6228439306358382,
+            "value_count": 43324,
+            "value_mse": 0.865046460257487,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 43324,
+            "policy_count": 43250,
+            "policy_loss": 1.1752776886442418,
+            "policy_top1": 0.6198843930635838,
+            "value_count": 43324,
+            "value_mse": 0.8426768137124006,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": 0.005368568615996772,
+            "policy_top1": -0.0029595375722544226,
+            "value_mse": -0.02236964654508644
+          },
+          "rows": 43324
+        },
+        "general": {
+          "base": {
+            "rows": 42821,
+            "policy_count": 42644,
+            "policy_loss": 1.1661674300135887,
+            "policy_top1": 0.5735390676296782,
+            "value_count": 42821,
+            "value_mse": 0.9502395483193667,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 42821,
+            "policy_count": 42644,
+            "policy_loss": 1.1692779596934089,
+            "policy_top1": 0.573468717756308,
+            "value_count": 42821,
+            "value_mse": 0.934281733774832,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": 0.003110529679820173,
+            "policy_top1": -7.034987337017906e-05,
+            "value_mse": -0.01595781454453471
+          },
+          "rows": 42821
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.02581704801465386,
+      "latency_delta_ms_per_row": -0.003493744834672756,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.907132999986061,
+        "p50_ms": 1.7529500000819098,
+        "p95_ms": 2.793300000121235,
+        "max_ms": 4.557399999612244
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    }
+  }
+}
