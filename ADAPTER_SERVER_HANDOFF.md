@@ -87,7 +87,7 @@ tar -czf adapters_top10_results.tar.gz artifacts/adapters_top10
 sha256sum adapters_top10_results.tar.gz > adapters_top10_results.tar.gz.sha256
 ```
 
-不要回传 5.4GB 基础训练 JSONL。收到结果后本地进行离线复评、非法动作检查、推理延迟检查和 Top10 循环赛。
+不要回传 5.4GB 基础训练 JSONL。收到结果后本地进行离线复评、非法动作检查、推理延迟检查和 Top10 循环赛。循环赛最终冻结 Top2：第 1 名为主卡组、第 2 名为备选卡组；两套都保留独立 Adapter、牌表、提交包和报告哈希。
 
 首轮结果包 SHA-256：
 `66702A8C85B1FFDDBB29293A33E750F023F671CC46B0B62800B7A9A4AF70FCB7`。

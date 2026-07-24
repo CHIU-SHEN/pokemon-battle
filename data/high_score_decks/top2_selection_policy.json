@@ -1,0 +1,46 @@
+{
+  "schema_version": "top2_selection_policy_v1",
+  "finalist_count": 2,
+  "roles": [
+    {
+      "rank": 1,
+      "role": "primary",
+      "description": "主卡组；通过最终发布门槛后可更新 submission/deck.csv"
+    },
+    {
+      "rank": 2,
+      "role": "reserve",
+      "description": "备选卡组；保留独立牌表、Adapter、提交包和回归报告，不覆盖主包"
+    }
+  ],
+  "score_weights": {
+    "internal_round_robin": 0.5,
+    "external_baseline_score": 0.3,
+    "worst_matchup_score": 0.1,
+    "stability_and_latency": 0.1
+  },
+  "hard_gates": {
+    "illegal_actions": 0,
+    "unhandled_exceptions": 0,
+    "hidden_information_dependency": false,
+    "submission_package_self_check": true
+  },
+  "ranking_rules": [
+    "先按综合分排序",
+    "综合差距小于 1 个百分点且置信区间无法区分时，以最差对局、异常、延迟和策略复杂度确定 primary/reserve 顺序",
+    "第 2 名与第 3 名无法区分时追加对局，不提前冻结 Top2"
+  ],
+  "required_artifacts_per_role": [
+    "deck.csv",
+    "adapter checkpoint",
+    "submission package",
+    "evaluation report",
+    "SHA-256 manifest"
+  ],
+  "post_selection_training": {
+    "primary_budget_share": "主要预算",
+    "reserve_budget_relative_to_primary": "30%-50%",
+    "separate_deck_id_data_streams": true,
+    "separate_version_registry": true
+  }
+}
