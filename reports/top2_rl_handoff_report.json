@@ -1,0 +1,56 @@
+{
+  "schema_version": "top2_rl_handoff_report_v1",
+  "created_at": "2026-07-29T05:35:47Z",
+  "status": "built_and_independently_verified",
+  "package": {
+    "name": "pokemon-tcg-top2-rl-handoff-v1.tar.gz",
+    "bytes": 6680149,
+    "sha256": "fba8570698612275df0feb9d4c5e7e9cc457560a82e902d5559e38c6acec46dd",
+    "payload_file_count": 61,
+    "payload_bytes": 12048167,
+    "sidecar": "pokemon-tcg-top2-rl-handoff-v1.tar.gz.sha256"
+  },
+  "branches": [
+    {
+      "role": "primary",
+      "candidate_id": "crustle_kangaskhan_cage",
+      "deck_id": "top2-primary-crustle-kangaskhan-cage-v1"
+    },
+    {
+      "role": "reserve",
+      "candidate_id": "crustle_kangaskhan_petrel",
+      "deck_id": "top2-reserve-crustle-kangaskhan-petrel-v1"
+    }
+  ],
+  "development_smoke": {
+    "rollout_games": 1,
+    "rollout_decisions": 41,
+    "rollout_exceptions": 0,
+    "rollout_illegal_actions": 0,
+    "ppo_epochs": 1,
+    "ppo_batches": 1,
+    "ppo_loss": 0.4439302384853363,
+    "arena_games": 2,
+    "arena_exceptions": 0,
+    "arena_illegal_actions": 0,
+    "v1_candidates_selected": 5,
+    "v1_items_requested": 1,
+    "v1_items_labelled": 1,
+    "v1_failures": 0
+  },
+  "verification": {
+    "independent_extract": true,
+    "manifest_files_verified": 61,
+    "frozen_input_hashes_verified": 5,
+    "holdout_never_train_percent": 20,
+    "reserve_budget_ratio": 0.4,
+    "submission_replacement_authorized": false
+  },
+  "not_completed": [
+    "100-game rollout smoke per branch",
+    "full Top2 V1 reanalysis",
+    "full masked PPO training",
+    "release Arena and frozen holdout evaluation",
+    "submission replacement"
+  ]
+}
