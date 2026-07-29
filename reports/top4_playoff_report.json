@@ -1,0 +1,171 @@
+{
+  "schema_version": "top2_adapter_arena_preliminary_v1",
+  "started_at": "20260729_110659",
+  "elapsed_seconds": 44.928802251815796,
+  "engine_seed_controlled": false,
+  "policy_path": "data\\high_score_decks\\top2_selection_policy.json",
+  "score_weights": {
+    "internal_round_robin": 0.5,
+    "external_baseline_score": 0.3,
+    "worst_matchup_score": 0.1,
+    "stability_and_latency": 0.1
+  },
+  "missing_baselines": [
+    "Sample"
+  ],
+  "tasks_total": 12,
+  "tasks_completed": 12,
+  "complete": true,
+  "games_completed": 1200,
+  "ranking": [
+    {
+      "candidate": "crustle_kangaskhan_cage",
+      "internal": {
+        "crustle_kangaskhan_petrel": {
+          "points": 113.5,
+          "games": 200,
+          "score": 0.5675
+        },
+        "mega_starmie_dusknoir": {
+          "points": 136.0,
+          "games": 200,
+          "score": 0.68
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 143.0,
+          "games": 200,
+          "score": 0.715
+        }
+      },
+      "external": {},
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0015959999873302877,
+      "internal_score": 0.6541666666666667,
+      "internal_games": 600,
+      "internal_wilson_95": [
+        0.6152353886399626,
+        0.6911363485838391
+      ],
+      "external_score": 0.0,
+      "external_games": 0,
+      "worst_matchup_score": 0.5675,
+      "stability_and_latency_score": 0.9680800002533942,
+      "hard_gate_pass": true,
+      "composite_score": 0.48064133335867276,
+      "rank": 1
+    },
+    {
+      "candidate": "crustle_kangaskhan_petrel",
+      "internal": {
+        "crustle_kangaskhan_cage": {
+          "points": 86.5,
+          "games": 200,
+          "score": 0.4325
+        },
+        "mega_starmie_dusknoir": {
+          "points": 130.5,
+          "games": 200,
+          "score": 0.6525
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 132.0,
+          "games": 200,
+          "score": 0.66
+        }
+      },
+      "external": {},
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.001588399987667799,
+      "internal_score": 0.5816666666666667,
+      "internal_games": 600,
+      "internal_wilson_95": [
+        0.5417983767584683,
+        0.6204958407979241
+      ],
+      "external_score": 0.0,
+      "external_games": 0,
+      "worst_matchup_score": 0.4325,
+      "stability_and_latency_score": 0.968232000246644,
+      "hard_gate_pass": true,
+      "composite_score": 0.4309065333579978,
+      "rank": 2
+    },
+    {
+      "candidate": "cynthia_garchomp_roserade",
+      "internal": {
+        "crustle_kangaskhan_cage": {
+          "points": 57.0,
+          "games": 200,
+          "score": 0.285
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 68.0,
+          "games": 200,
+          "score": 0.34
+        },
+        "mega_starmie_dusknoir": {
+          "points": 107.0,
+          "games": 200,
+          "score": 0.535
+        }
+      },
+      "external": {},
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0015959999873302877,
+      "internal_score": 0.38666666666666666,
+      "internal_games": 600,
+      "internal_wilson_95": [
+        0.3485381336379906,
+        0.4262372379164039
+      ],
+      "external_score": 0.0,
+      "external_games": 0,
+      "worst_matchup_score": 0.285,
+      "stability_and_latency_score": 0.9680800002533942,
+      "hard_gate_pass": true,
+      "composite_score": 0.31864133335867273,
+      "rank": 3
+    },
+    {
+      "candidate": "mega_starmie_dusknoir",
+      "internal": {
+        "crustle_kangaskhan_cage": {
+          "points": 64.0,
+          "games": 200,
+          "score": 0.32
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 69.5,
+          "games": 200,
+          "score": 0.3475
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 93.0,
+          "games": 200,
+          "score": 0.465
+        }
+      },
+      "external": {},
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0014688999799545854,
+      "internal_score": 0.3775,
+      "internal_games": 600,
+      "internal_wilson_95": [
+        0.3396060652366151,
+        0.41695260842879656
+      ],
+      "external_score": 0.0,
+      "external_games": 0,
+      "worst_matchup_score": 0.32,
+      "stability_and_latency_score": 0.9706220004009083,
+      "hard_gate_pass": true,
+      "composite_score": 0.3178122000400908,
+      "rank": 4
+    }
+  ],
+  "failures": {}
+}

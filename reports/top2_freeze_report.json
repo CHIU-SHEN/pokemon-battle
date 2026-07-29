@@ -1,0 +1,159 @@
+{
+  "schema_version": "top2_freeze_report_v1",
+  "decision": "top2_selected_with_external_baseline_caveat",
+  "selection_complete": true,
+  "release_submission_unchanged": true,
+  "total_games": 10100,
+  "stage_games": {
+    "preliminary": 8500,
+    "top4_playoff": 1200,
+    "top2_final": 400
+  },
+  "top2_order_stable_across_stages": true,
+  "rank2_vs_rank3_preliminary_intervals_separated": true,
+  "roles": [
+    {
+      "role": "primary",
+      "candidate": "crustle_kangaskhan_cage",
+      "deck": "data\\high_score_decks\\crustle_kangaskhan_cage\\deck.csv",
+      "deck_sha256": "9781a695dc36f238d464203f83591338b9389ae1f2e345c0b9f03471dfd680af",
+      "adapter_checkpoint": "artifacts\\adapters_top10\\crustle_kangaskhan_cage\\best.pt",
+      "adapter_sha256": "6ec1abc936268a326de460f5cc4d375595370e38883b00feccd39d0b7035f381",
+      "stage_results": {
+        "preliminary": {
+          "rank": 1,
+          "candidate": "crustle_kangaskhan_cage",
+          "composite_score": 0.6762629999737255,
+          "internal_score": 0.735,
+          "internal_games": 900,
+          "internal_wilson_95": [
+            0.7052114192050328,
+            0.7627909387302513
+          ],
+          "external_score": 0.56,
+          "external_games": 400,
+          "worst_matchup_score": 0.44,
+          "max_p95_decision_seconds": 0.0016185000131372362,
+          "exceptions": 0,
+          "illegal_actions": 0,
+          "hard_gate_pass": true
+        },
+        "playoff": {
+          "rank": 1,
+          "candidate": "crustle_kangaskhan_cage",
+          "composite_score": 0.48064133335867276,
+          "internal_score": 0.6541666666666667,
+          "internal_games": 600,
+          "internal_wilson_95": [
+            0.6152353886399626,
+            0.6911363485838391
+          ],
+          "external_score": 0.0,
+          "external_games": 0,
+          "worst_matchup_score": 0.5675,
+          "max_p95_decision_seconds": 0.0015959999873302877,
+          "exceptions": 0,
+          "illegal_actions": 0,
+          "hard_gate_pass": true
+        },
+        "final": {
+          "rank": 1,
+          "candidate": "crustle_kangaskhan_cage",
+          "composite_score": 0.4526271999529563,
+          "internal_score": 0.5925,
+          "internal_games": 400,
+          "internal_wilson_95": [
+            0.5436874000695945,
+            0.6395527614194646
+          ],
+          "external_score": 0.0,
+          "external_games": 0,
+          "worst_matchup_score": 0.5925,
+          "max_p95_decision_seconds": 0.0014364000235218555,
+          "exceptions": 0,
+          "illegal_actions": 0,
+          "hard_gate_pass": true
+        }
+      }
+    },
+    {
+      "role": "reserve",
+      "candidate": "crustle_kangaskhan_petrel",
+      "deck": "data\\high_score_decks\\crustle_kangaskhan_petrel\\deck.csv",
+      "deck_sha256": "64683f59437fbb0a1e1630fea9eee796999a34176522d17476bd8acbef6d0f62",
+      "adapter_checkpoint": "artifacts\\adapters_top10\\crustle_kangaskhan_petrel\\best.pt",
+      "adapter_sha256": "d0836111271f4c0383a5ff45ecf49ff01d8bae1a57a413caa9d2c81280337170",
+      "stage_results": {
+        "preliminary": {
+          "rank": 2,
+          "candidate": "crustle_kangaskhan_petrel",
+          "composite_score": 0.634486244445615,
+          "internal_score": 0.6988888888888889,
+          "internal_games": 900,
+          "internal_wilson_95": [
+            0.6681242955248274,
+            0.7279628064629544
+          ],
+          "external_score": 0.51,
+          "external_games": 400,
+          "worst_matchup_score": 0.35,
+          "max_p95_decision_seconds": 0.001479099999414757,
+          "exceptions": 0,
+          "illegal_actions": 0,
+          "hard_gate_pass": true
+        },
+        "playoff": {
+          "rank": 2,
+          "candidate": "crustle_kangaskhan_petrel",
+          "composite_score": 0.4309065333579978,
+          "internal_score": 0.5816666666666667,
+          "internal_games": 600,
+          "internal_wilson_95": [
+            0.5417983767584683,
+            0.6204958407979241
+          ],
+          "external_score": 0.0,
+          "external_games": 0,
+          "worst_matchup_score": 0.4325,
+          "max_p95_decision_seconds": 0.001588399987667799,
+          "exceptions": 0,
+          "illegal_actions": 0,
+          "hard_gate_pass": true
+        },
+        "final": {
+          "rank": 2,
+          "candidate": "crustle_kangaskhan_petrel",
+          "composite_score": 0.3416271999529563,
+          "internal_score": 0.4075,
+          "internal_games": 400,
+          "internal_wilson_95": [
+            0.3604472385805353,
+            0.4563125999304055
+          ],
+          "external_score": 0.0,
+          "external_games": 0,
+          "worst_matchup_score": 0.4075,
+          "max_p95_decision_seconds": 0.0014364000235218555,
+          "exceptions": 0,
+          "illegal_actions": 0,
+          "hard_gate_pass": true
+        }
+      }
+    }
+  ],
+  "caveats": [
+    "Sample baseline source is absent locally, so the external matrix used Random, Exploiter-FirstMin, V0-current, and V0-best.",
+    "The bundled battle engine does not expose RNG seed control; seat swapping and large samples were used, but games are not strictly paired by engine seed.",
+    "This report freezes the Top2 selection only and does not authorize training or replacement of submission/deck.csv."
+  ],
+  "source_reports": {
+    "preliminary": "reports\\top2_arena_report.json",
+    "top4_playoff": "reports\\top4_playoff_report.json",
+    "top2_final": "reports\\top2_final_report.json"
+  },
+  "source_report_sha256": {
+    "preliminary": "0f21b377b0595c50808a5276c7592242d6fd1592fdb063a6d9529bd66461c7b8",
+    "top4_playoff": "49e3df2d611fab8d4fa9ac044d9d018471e862308cff187bea091e70119076be",
+    "top2_final": "079e261f7457b93bc256fe970977a96c649310d3fa3a380ef6e229daa6b242fd"
+  }
+}

@@ -1,0 +1,903 @@
+{
+  "schema_version": "top2_adapter_arena_preliminary_v1",
+  "started_at": "20260729_110030",
+  "elapsed_seconds": 348.52292680740356,
+  "engine_seed_controlled": false,
+  "policy_path": "data\\high_score_decks\\top2_selection_policy.json",
+  "score_weights": {
+    "internal_round_robin": 0.5,
+    "external_baseline_score": 0.3,
+    "worst_matchup_score": 0.1,
+    "stability_and_latency": 0.1
+  },
+  "missing_baselines": [
+    "Sample"
+  ],
+  "tasks_total": 170,
+  "tasks_completed": 170,
+  "complete": true,
+  "games_completed": 8500,
+  "ranking": [
+    {
+      "candidate": "crustle_kangaskhan_cage",
+      "internal": {
+        "alakazam_battle_cage_split": {
+          "points": 91.0,
+          "games": 100,
+          "score": 0.91
+        },
+        "alakazam_neutralization_zone": {
+          "points": 64.0,
+          "games": 100,
+          "score": 0.64
+        },
+        "alakazam_nighttime_mine": {
+          "points": 79.0,
+          "games": 100,
+          "score": 0.79
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 61.0,
+          "games": 100,
+          "score": 0.61
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 73.0,
+          "games": 100,
+          "score": 0.73
+        },
+        "marnie_grimmsnarl_dudunsparce": {
+          "points": 74.0,
+          "games": 100,
+          "score": 0.74
+        },
+        "marnie_grimmsnarl_froslass": {
+          "points": 74.0,
+          "games": 100,
+          "score": 0.74
+        },
+        "marnie_grimmsnarl_tatsugiri": {
+          "points": 79.0,
+          "games": 100,
+          "score": 0.79
+        },
+        "mega_starmie_dusknoir": {
+          "points": 66.5,
+          "games": 100,
+          "score": 0.665
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 77.0,
+          "games": 100,
+          "score": 0.77
+        },
+        "Exploiter-FirstMin": {
+          "points": 57.0,
+          "games": 100,
+          "score": 0.57
+        },
+        "V0-current": {
+          "points": 46.0,
+          "games": 100,
+          "score": 0.46
+        },
+        "V0-best": {
+          "points": 44.0,
+          "games": 100,
+          "score": 0.44
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0016185000131372362,
+      "internal_score": 0.735,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.7052114192050328,
+        0.7627909387302513
+      ],
+      "external_score": 0.56,
+      "external_games": 400,
+      "worst_matchup_score": 0.44,
+      "stability_and_latency_score": 0.9676299997372553,
+      "hard_gate_pass": true,
+      "composite_score": 0.6762629999737255,
+      "rank": 1
+    },
+    {
+      "candidate": "crustle_kangaskhan_petrel",
+      "internal": {
+        "alakazam_battle_cage_split": {
+          "points": 74.0,
+          "games": 100,
+          "score": 0.74
+        },
+        "alakazam_neutralization_zone": {
+          "points": 69.0,
+          "games": 100,
+          "score": 0.69
+        },
+        "alakazam_nighttime_mine": {
+          "points": 65.0,
+          "games": 100,
+          "score": 0.65
+        },
+        "crustle_kangaskhan_cage": {
+          "points": 39.0,
+          "games": 100,
+          "score": 0.39
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 76.0,
+          "games": 100,
+          "score": 0.76
+        },
+        "marnie_grimmsnarl_dudunsparce": {
+          "points": 88.0,
+          "games": 100,
+          "score": 0.88
+        },
+        "marnie_grimmsnarl_froslass": {
+          "points": 71.0,
+          "games": 100,
+          "score": 0.71
+        },
+        "marnie_grimmsnarl_tatsugiri": {
+          "points": 79.0,
+          "games": 100,
+          "score": 0.79
+        },
+        "mega_starmie_dusknoir": {
+          "points": 68.0,
+          "games": 100,
+          "score": 0.68
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 78.0,
+          "games": 100,
+          "score": 0.78
+        },
+        "Exploiter-FirstMin": {
+          "points": 49.0,
+          "games": 100,
+          "score": 0.49
+        },
+        "V0-current": {
+          "points": 35.0,
+          "games": 100,
+          "score": 0.35
+        },
+        "V0-best": {
+          "points": 42.0,
+          "games": 100,
+          "score": 0.42
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.001479099999414757,
+      "internal_score": 0.6988888888888889,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.6681242955248274,
+        0.7279628064629544
+      ],
+      "external_score": 0.51,
+      "external_games": 400,
+      "worst_matchup_score": 0.35,
+      "stability_and_latency_score": 0.9704180000117049,
+      "hard_gate_pass": true,
+      "composite_score": 0.634486244445615,
+      "rank": 2
+    },
+    {
+      "candidate": "mega_starmie_dusknoir",
+      "internal": {
+        "alakazam_battle_cage_split": {
+          "points": 70.5,
+          "games": 100,
+          "score": 0.705
+        },
+        "alakazam_neutralization_zone": {
+          "points": 64.0,
+          "games": 100,
+          "score": 0.64
+        },
+        "alakazam_nighttime_mine": {
+          "points": 67.5,
+          "games": 100,
+          "score": 0.675
+        },
+        "crustle_kangaskhan_cage": {
+          "points": 33.5,
+          "games": 100,
+          "score": 0.335
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 32.0,
+          "games": 100,
+          "score": 0.32
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 51.0,
+          "games": 100,
+          "score": 0.51
+        },
+        "marnie_grimmsnarl_dudunsparce": {
+          "points": 59.0,
+          "games": 100,
+          "score": 0.59
+        },
+        "marnie_grimmsnarl_froslass": {
+          "points": 62.0,
+          "games": 100,
+          "score": 0.62
+        },
+        "marnie_grimmsnarl_tatsugiri": {
+          "points": 62.0,
+          "games": 100,
+          "score": 0.62
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 58.5,
+          "games": 100,
+          "score": 0.585
+        },
+        "Exploiter-FirstMin": {
+          "points": 49.0,
+          "games": 100,
+          "score": 0.49
+        },
+        "V0-current": {
+          "points": 23.0,
+          "games": 100,
+          "score": 0.23
+        },
+        "V0-best": {
+          "points": 25.0,
+          "games": 100,
+          "score": 0.25
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.001484300009906292,
+      "internal_score": 0.5572222222222222,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.524595100865543,
+        0.5893629200974222
+      ],
+      "external_score": 0.38875,
+      "external_games": 400,
+      "worst_matchup_score": 0.23,
+      "stability_and_latency_score": 0.9703139998018742,
+      "hard_gate_pass": true,
+      "composite_score": 0.5152675110912985,
+      "rank": 3
+    },
+    {
+      "candidate": "cynthia_garchomp_roserade",
+      "internal": {
+        "alakazam_battle_cage_split": {
+          "points": 67.0,
+          "games": 100,
+          "score": 0.67
+        },
+        "alakazam_neutralization_zone": {
+          "points": 66.0,
+          "games": 100,
+          "score": 0.66
+        },
+        "alakazam_nighttime_mine": {
+          "points": 70.0,
+          "games": 100,
+          "score": 0.7
+        },
+        "crustle_kangaskhan_cage": {
+          "points": 27.0,
+          "games": 100,
+          "score": 0.27
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 24.0,
+          "games": 100,
+          "score": 0.24
+        },
+        "marnie_grimmsnarl_dudunsparce": {
+          "points": 57.0,
+          "games": 100,
+          "score": 0.57
+        },
+        "marnie_grimmsnarl_froslass": {
+          "points": 60.0,
+          "games": 100,
+          "score": 0.6
+        },
+        "marnie_grimmsnarl_tatsugiri": {
+          "points": 64.5,
+          "games": 100,
+          "score": 0.645
+        },
+        "mega_starmie_dusknoir": {
+          "points": 49.0,
+          "games": 100,
+          "score": 0.49
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 58.0,
+          "games": 100,
+          "score": 0.58
+        },
+        "Exploiter-FirstMin": {
+          "points": 41.0,
+          "games": 100,
+          "score": 0.41
+        },
+        "V0-current": {
+          "points": 15.0,
+          "games": 100,
+          "score": 0.15
+        },
+        "V0-best": {
+          "points": 13.0,
+          "games": 100,
+          "score": 0.13
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0015315999917220324,
+      "internal_score": 0.5383333333333333,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.5056687662149504,
+        0.5706720439447059
+      ],
+      "external_score": 0.3175,
+      "external_games": 400,
+      "worst_matchup_score": 0.13,
+      "stability_and_latency_score": 0.9693680001655594,
+      "hard_gate_pass": true,
+      "composite_score": 0.47435346668322265,
+      "rank": 4
+    },
+    {
+      "candidate": "alakazam_neutralization_zone",
+      "internal": {
+        "alakazam_battle_cage_split": {
+          "points": 56.0,
+          "games": 100,
+          "score": 0.56
+        },
+        "alakazam_nighttime_mine": {
+          "points": 57.0,
+          "games": 100,
+          "score": 0.57
+        },
+        "crustle_kangaskhan_cage": {
+          "points": 36.0,
+          "games": 100,
+          "score": 0.36
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 31.0,
+          "games": 100,
+          "score": 0.31
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 34.0,
+          "games": 100,
+          "score": 0.34
+        },
+        "marnie_grimmsnarl_dudunsparce": {
+          "points": 47.0,
+          "games": 100,
+          "score": 0.47
+        },
+        "marnie_grimmsnarl_froslass": {
+          "points": 31.0,
+          "games": 100,
+          "score": 0.31
+        },
+        "marnie_grimmsnarl_tatsugiri": {
+          "points": 34.0,
+          "games": 100,
+          "score": 0.34
+        },
+        "mega_starmie_dusknoir": {
+          "points": 36.0,
+          "games": 100,
+          "score": 0.36
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 54.0,
+          "games": 100,
+          "score": 0.54
+        },
+        "Exploiter-FirstMin": {
+          "points": 47.0,
+          "games": 100,
+          "score": 0.47
+        },
+        "V0-current": {
+          "points": 27.0,
+          "games": 100,
+          "score": 0.27
+        },
+        "V0-best": {
+          "points": 26.0,
+          "games": 100,
+          "score": 0.26
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0014260000025387853,
+      "internal_score": 0.4022222222222222,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.370667300787506,
+        0.43460831387771837
+      ],
+      "external_score": 0.385,
+      "external_games": 400,
+      "worst_matchup_score": 0.26,
+      "stability_and_latency_score": 0.9714799999492243,
+      "hard_gate_pass": true,
+      "composite_score": 0.4397591111060335,
+      "rank": 5
+    },
+    {
+      "candidate": "marnie_grimmsnarl_dudunsparce",
+      "internal": {
+        "alakazam_battle_cage_split": {
+          "points": 72.0,
+          "games": 100,
+          "score": 0.72
+        },
+        "alakazam_neutralization_zone": {
+          "points": 53.0,
+          "games": 100,
+          "score": 0.53
+        },
+        "alakazam_nighttime_mine": {
+          "points": 49.0,
+          "games": 100,
+          "score": 0.49
+        },
+        "crustle_kangaskhan_cage": {
+          "points": 26.0,
+          "games": 100,
+          "score": 0.26
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 12.0,
+          "games": 100,
+          "score": 0.12
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 43.0,
+          "games": 100,
+          "score": 0.43
+        },
+        "marnie_grimmsnarl_froslass": {
+          "points": 60.0,
+          "games": 100,
+          "score": 0.6
+        },
+        "marnie_grimmsnarl_tatsugiri": {
+          "points": 59.0,
+          "games": 100,
+          "score": 0.59
+        },
+        "mega_starmie_dusknoir": {
+          "points": 41.0,
+          "games": 100,
+          "score": 0.41
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 48.0,
+          "games": 100,
+          "score": 0.48
+        },
+        "Exploiter-FirstMin": {
+          "points": 51.0,
+          "games": 100,
+          "score": 0.51
+        },
+        "V0-current": {
+          "points": 12.0,
+          "games": 100,
+          "score": 0.12
+        },
+        "V0-best": {
+          "points": 9.0,
+          "games": 100,
+          "score": 0.09
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0016527000116184354,
+      "internal_score": 0.46111111111111114,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.4287775551148921,
+        0.49377524617241314
+      ],
+      "external_score": 0.3,
+      "external_games": 400,
+      "worst_matchup_score": 0.09,
+      "stability_and_latency_score": 0.9669459997676313,
+      "hard_gate_pass": true,
+      "composite_score": 0.4262501555323187,
+      "rank": 6
+    },
+    {
+      "candidate": "marnie_grimmsnarl_froslass",
+      "internal": {
+        "alakazam_battle_cage_split": {
+          "points": 69.0,
+          "games": 100,
+          "score": 0.69
+        },
+        "alakazam_neutralization_zone": {
+          "points": 69.0,
+          "games": 100,
+          "score": 0.69
+        },
+        "alakazam_nighttime_mine": {
+          "points": 67.0,
+          "games": 100,
+          "score": 0.67
+        },
+        "crustle_kangaskhan_cage": {
+          "points": 26.0,
+          "games": 100,
+          "score": 0.26
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 29.0,
+          "games": 100,
+          "score": 0.29
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 40.0,
+          "games": 100,
+          "score": 0.4
+        },
+        "marnie_grimmsnarl_dudunsparce": {
+          "points": 40.0,
+          "games": 100,
+          "score": 0.4
+        },
+        "marnie_grimmsnarl_tatsugiri": {
+          "points": 58.0,
+          "games": 100,
+          "score": 0.58
+        },
+        "mega_starmie_dusknoir": {
+          "points": 38.0,
+          "games": 100,
+          "score": 0.38
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 35.0,
+          "games": 100,
+          "score": 0.35
+        },
+        "Exploiter-FirstMin": {
+          "points": 28.0,
+          "games": 100,
+          "score": 0.28
+        },
+        "V0-current": {
+          "points": 6.0,
+          "games": 100,
+          "score": 0.06
+        },
+        "V0-best": {
+          "points": 10.0,
+          "games": 100,
+          "score": 0.1
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0015716000052634627,
+      "internal_score": 0.48444444444444446,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.45192910127483676,
+        0.5170920192400852
+      ],
+      "external_score": 0.1975,
+      "external_games": 400,
+      "worst_matchup_score": 0.06,
+      "stability_and_latency_score": 0.9685679998947307,
+      "hard_gate_pass": true,
+      "composite_score": 0.4043290222116953,
+      "rank": 7
+    },
+    {
+      "candidate": "marnie_grimmsnarl_tatsugiri",
+      "internal": {
+        "alakazam_battle_cage_split": {
+          "points": 69.0,
+          "games": 100,
+          "score": 0.69
+        },
+        "alakazam_neutralization_zone": {
+          "points": 66.0,
+          "games": 100,
+          "score": 0.66
+        },
+        "alakazam_nighttime_mine": {
+          "points": 63.0,
+          "games": 100,
+          "score": 0.63
+        },
+        "crustle_kangaskhan_cage": {
+          "points": 21.0,
+          "games": 100,
+          "score": 0.21
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 21.0,
+          "games": 100,
+          "score": 0.21
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 35.5,
+          "games": 100,
+          "score": 0.355
+        },
+        "marnie_grimmsnarl_dudunsparce": {
+          "points": 41.0,
+          "games": 100,
+          "score": 0.41
+        },
+        "marnie_grimmsnarl_froslass": {
+          "points": 42.0,
+          "games": 100,
+          "score": 0.42
+        },
+        "mega_starmie_dusknoir": {
+          "points": 38.0,
+          "games": 100,
+          "score": 0.38
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 41.0,
+          "games": 100,
+          "score": 0.41
+        },
+        "Exploiter-FirstMin": {
+          "points": 43.0,
+          "games": 100,
+          "score": 0.43
+        },
+        "V0-current": {
+          "points": 12.0,
+          "games": 100,
+          "score": 0.12
+        },
+        "V0-best": {
+          "points": 6.0,
+          "games": 100,
+          "score": 0.06
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0016527000116184354,
+      "internal_score": 0.44055555555555553,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.40844124846255925,
+        0.4731751763623214
+      ],
+      "external_score": 0.255,
+      "external_games": 400,
+      "worst_matchup_score": 0.06,
+      "stability_and_latency_score": 0.9669459997676313,
+      "hard_gate_pass": true,
+      "composite_score": 0.3994723777545409,
+      "rank": 8
+    },
+    {
+      "candidate": "alakazam_nighttime_mine",
+      "internal": {
+        "alakazam_battle_cage_split": {
+          "points": 60.0,
+          "games": 100,
+          "score": 0.6
+        },
+        "alakazam_neutralization_zone": {
+          "points": 43.0,
+          "games": 100,
+          "score": 0.43
+        },
+        "crustle_kangaskhan_cage": {
+          "points": 21.0,
+          "games": 100,
+          "score": 0.21
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 35.0,
+          "games": 100,
+          "score": 0.35
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 30.0,
+          "games": 100,
+          "score": 0.3
+        },
+        "marnie_grimmsnarl_dudunsparce": {
+          "points": 51.0,
+          "games": 100,
+          "score": 0.51
+        },
+        "marnie_grimmsnarl_froslass": {
+          "points": 33.0,
+          "games": 100,
+          "score": 0.33
+        },
+        "marnie_grimmsnarl_tatsugiri": {
+          "points": 37.0,
+          "games": 100,
+          "score": 0.37
+        },
+        "mega_starmie_dusknoir": {
+          "points": 32.5,
+          "games": 100,
+          "score": 0.325
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 41.0,
+          "games": 100,
+          "score": 0.41
+        },
+        "Exploiter-FirstMin": {
+          "points": 34.0,
+          "games": 100,
+          "score": 0.34
+        },
+        "V0-current": {
+          "points": 10.0,
+          "games": 100,
+          "score": 0.1
+        },
+        "V0-best": {
+          "points": 14.0,
+          "games": 100,
+          "score": 0.14
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.001458299986552447,
+      "internal_score": 0.38055555555555554,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.34940577735385386,
+        0.41272068374286913
+      ],
+      "external_score": 0.2475,
+      "external_games": 400,
+      "worst_matchup_score": 0.1,
+      "stability_and_latency_score": 0.9708340002689511,
+      "hard_gate_pass": true,
+      "composite_score": 0.3716111778046729,
+      "rank": 9
+    },
+    {
+      "candidate": "alakazam_battle_cage_split",
+      "internal": {
+        "alakazam_neutralization_zone": {
+          "points": 44.0,
+          "games": 100,
+          "score": 0.44
+        },
+        "alakazam_nighttime_mine": {
+          "points": 40.0,
+          "games": 100,
+          "score": 0.4
+        },
+        "crustle_kangaskhan_cage": {
+          "points": 9.0,
+          "games": 100,
+          "score": 0.09
+        },
+        "crustle_kangaskhan_petrel": {
+          "points": 26.0,
+          "games": 100,
+          "score": 0.26
+        },
+        "cynthia_garchomp_roserade": {
+          "points": 33.0,
+          "games": 100,
+          "score": 0.33
+        },
+        "marnie_grimmsnarl_dudunsparce": {
+          "points": 28.0,
+          "games": 100,
+          "score": 0.28
+        },
+        "marnie_grimmsnarl_froslass": {
+          "points": 31.0,
+          "games": 100,
+          "score": 0.31
+        },
+        "marnie_grimmsnarl_tatsugiri": {
+          "points": 31.0,
+          "games": 100,
+          "score": 0.31
+        },
+        "mega_starmie_dusknoir": {
+          "points": 29.5,
+          "games": 100,
+          "score": 0.295
+        }
+      },
+      "external": {
+        "Random": {
+          "points": 36.0,
+          "games": 100,
+          "score": 0.36
+        },
+        "Exploiter-FirstMin": {
+          "points": 35.5,
+          "games": 100,
+          "score": 0.355
+        },
+        "V0-current": {
+          "points": 7.5,
+          "games": 100,
+          "score": 0.075
+        },
+        "V0-best": {
+          "points": 13.0,
+          "games": 100,
+          "score": 0.13
+        }
+      },
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0014093999925535172,
+      "internal_score": 0.3016666666666667,
+      "internal_games": 900,
+      "internal_wilson_95": [
+        0.27257478377489863,
+        0.33244450279035787
+      ],
+      "external_score": 0.23,
+      "external_games": 400,
+      "worst_matchup_score": 0.075,
+      "stability_and_latency_score": 0.9718120001489297,
+      "hard_gate_pass": true,
+      "composite_score": 0.32451453334822633,
+      "rank": 10
+    }
+  ],
+  "failures": {}
+}

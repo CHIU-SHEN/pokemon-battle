@@ -28,6 +28,11 @@ final_submissions/submission_flat_safe_v0.zip
 
 该版本是当前历史基线提交包。新的学习模型尚未晋级，必须在固定评估中稳定超过基线后才能替换。
 
+Top10 Adapter 的正式 Arena 筛选已经完成：累计 10,100 局后，primary 为
+`crustle_kangaskhan_cage`，reserve 为 `crustle_kangaskhan_petrel`。该结论只冻结
+Top2 选择，不代表学习模型已通过发布门槛；当前正式提交仍保持 Flat Safe V0。
+详见 `reports/top2_freeze_report.md`。
+
 第一阶段 `SL-0-shared` 已生成可用于线上观测的实验包：
 
 ```text
@@ -43,8 +48,8 @@ final_submissions/sl0_shared_stage1.zip
 | Flat Safe V0 | 卡组特化规则 + 安全兜底 | 推荐主提交 |
 | Multi-module V0 | 模块化规则策略 | 本地开发与备份 |
 | Search V1 | 信念采样 + 有限预算搜索 | 实验版，默认关闭 |
-| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | 10 个 Adapter 已训练并完成统一离线复评；补充数据已正式转换和重训复核，10/10 通过 |
-| 排行榜 Top10 | 10 套候选牌表 | 10/10 静态合法、阶段 B 和 Adapter 离线门槛均通过；循环赛最终保留主卡组与备选卡组 Top2 |
+| 学习模型 | 单步共享主干 → 短序列/Combo 编码 → Top10 轻量 Adapter | 10 个 Adapter 已完成统一复评；Top2 已选出，尚未进行双分支强化或发布 |
+| 排行榜 Top10 | 10 套候选牌表 | 10,100 局初赛/复赛/决赛完成；primary=`crustle_kangaskhan_cage`，reserve=`crustle_kangaskhan_petrel` |
 | M5 Elite Decks | MAP-Elites 历史候选 | 辅助候选池，未替换主卡组 |
 
 旧 M0～M6 最小验证文档已移至 `docs/archive/mvp/`，只用于解释历史代码来源，不再作为当前路线或数据状态依据。

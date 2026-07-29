@@ -1,0 +1,77 @@
+{
+  "schema_version": "top2_adapter_arena_preliminary_v1",
+  "started_at": "20260729_111023",
+  "elapsed_seconds": 29.28056311607361,
+  "engine_seed_controlled": false,
+  "policy_path": "data\\high_score_decks\\top2_selection_policy.json",
+  "score_weights": {
+    "internal_round_robin": 0.5,
+    "external_baseline_score": 0.3,
+    "worst_matchup_score": 0.1,
+    "stability_and_latency": 0.1
+  },
+  "missing_baselines": [
+    "Sample"
+  ],
+  "tasks_total": 2,
+  "tasks_completed": 2,
+  "complete": true,
+  "games_completed": 400,
+  "ranking": [
+    {
+      "candidate": "crustle_kangaskhan_cage",
+      "internal": {
+        "crustle_kangaskhan_petrel": {
+          "points": 237.0,
+          "games": 400,
+          "score": 0.5925
+        }
+      },
+      "external": {},
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0014364000235218555,
+      "internal_score": 0.5925,
+      "internal_games": 400,
+      "internal_wilson_95": [
+        0.5436874000695945,
+        0.6395527614194646
+      ],
+      "external_score": 0.0,
+      "external_games": 0,
+      "worst_matchup_score": 0.5925,
+      "stability_and_latency_score": 0.9712719995295629,
+      "hard_gate_pass": true,
+      "composite_score": 0.4526271999529563,
+      "rank": 1
+    },
+    {
+      "candidate": "crustle_kangaskhan_petrel",
+      "internal": {
+        "crustle_kangaskhan_cage": {
+          "points": 163.0,
+          "games": 400,
+          "score": 0.4075
+        }
+      },
+      "external": {},
+      "exceptions": 0,
+      "illegal_actions": 0,
+      "max_p95_decision_seconds": 0.0014364000235218555,
+      "internal_score": 0.4075,
+      "internal_games": 400,
+      "internal_wilson_95": [
+        0.3604472385805353,
+        0.4563125999304055
+      ],
+      "external_score": 0.0,
+      "external_games": 0,
+      "worst_matchup_score": 0.4075,
+      "stability_and_latency_score": 0.9712719995295629,
+      "hard_gate_pass": true,
+      "composite_score": 0.3416271999529563,
+      "rank": 2
+    }
+  ],
+  "failures": {}
+}
