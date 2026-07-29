@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 import hashlib
 import json
+import os
 from pathlib import Path
 import tarfile
 import tempfile
@@ -329,6 +330,28 @@ def test_pilot_trial_commands_share_data_and_apply_distinct_presets() -> None:
     assert all(value(item["arena"], "--games") == "200" for item in commands)
 
 
+def test_v2_archive_contains_pilot_evidence_without_raw_runtime() -> None:
+    from scripts.build_top2_rl_handoff import PACKAGE_BASENAME, build
+
+    frozen_root = Path(os.environ.get("PTCG_FROZEN_SOURCE_ROOT", Path(__file__).resolve().parents[1]))
+    with tempfile.TemporaryDirectory(prefix="top2_rl_v2_") as tmp:
+        archive, _, _ = build(Path(tmp), frozen_root)
+        assert PACKAGE_BASENAME == "pokemon-tcg-top2-rl-handoff-v2"
+        assert archive.name == f"{PACKAGE_BASENAME}.tar.gz"
+        with tarfile.open(archive, "r:gz") as stream:
+            names = {Path(name).as_posix() for name in stream.getnames()}
+        required = {
+            f"{PACKAGE_BASENAME}/config/top2_rl_selected.json",
+            f"{PACKAGE_BASENAME}/reports/top2_local_pilot_report.json",
+            f"{PACKAGE_BASENAME}/reports/top2_local_pilot_report.md",
+            f"{PACKAGE_BASENAME}/scripts/evaluate_top2_ppo_holdout.py",
+            f"{PACKAGE_BASENAME}/scripts/run_top2_local_pilot.py",
+            f"{PACKAGE_BASENAME}/TOP2_RL_SERVER_HANDOFF.md",
+        }
+        assert required <= names
+        assert not any("/rollouts/" in name or "/trials/" in name or name.endswith("/last.pt") for name in names)
+
+
 def main() -> int:
     test_stable_game_split_freezes_twenty_percent()
     test_gae_propagates_terminal_reward_without_crossing_games()
@@ -344,6 +367,7 @@ def main() -> int:
     test_holdout_loader_never_returns_train_or_cross_deck_rows()
     test_holdout_metrics_mask_illegal_logits_and_compare_reference()
     test_pilot_trial_commands_share_data_and_apply_distinct_presets()
+    test_v2_archive_contains_pilot_evidence_without_raw_runtime()
     print("OK: Top2 RL handoff contracts")
     return 0
 

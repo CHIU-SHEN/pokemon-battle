@@ -13,7 +13,7 @@ import tarfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE_BASENAME = "pokemon-tcg-top2-rl-handoff-v1"
+PACKAGE_BASENAME = "pokemon-tcg-top2-rl-handoff-v2"
 
 REQUIRED_FILES = (
     "README.md",
@@ -22,12 +22,15 @@ REQUIRED_FILES = (
     "requirements-eval.txt",
     "requirements-train.txt",
     "config/top2_rl_policy.json",
+    "config/top2_rl_selected.json",
     "data/card_tags.json",
     "data/high_score_decks/top2_selection_policy.json",
     "data/high_score_decks/crustle_kangaskhan_cage/deck.csv",
     "data/high_score_decks/crustle_kangaskhan_petrel/deck.csv",
     "reports/top2_freeze_report.json",
     "reports/top2_freeze_report.md",
+    "reports/top2_local_pilot_report.json",
+    "reports/top2_local_pilot_report.md",
     "artifacts/sl0_shared_full/best.pt",
     "artifacts/adapters_top10/crustle_kangaskhan_cage/best.pt",
     "artifacts/adapters_top10/crustle_kangaskhan_petrel/best.pt",
@@ -39,6 +42,7 @@ REQUIRED_FILES = (
     "src/rl/__init__.py",
     "src/rl/top2_rollout.py",
     "src/rl/top2_ppo.py",
+    "src/rl/pilot.py",
     "src/train/__init__.py",
     "src/train/adapter_model.py",
     "src/train/features.py",
@@ -49,6 +53,8 @@ REQUIRED_FILES = (
     "scripts/collect_top2_rollouts.py",
     "scripts/train_top2_ppo.py",
     "scripts/evaluate_top2_ppo.py",
+    "scripts/evaluate_top2_ppo_holdout.py",
+    "scripts/run_top2_local_pilot.py",
     "scripts/select_top2_v1_candidates.py",
     "scripts/run_top2_v1_reanalysis.py",
     "scripts/convert_bad_cases.py",
@@ -59,6 +65,7 @@ REQUIRED_FILES = (
     "tests/test_top2_rl_package_smoke.py",
     "tests/fixtures/observations.json",
     "docs/superpowers/specs/2026-07-29-top2-rl-handoff-design.md",
+    "docs/superpowers/specs/2026-07-29-top2-local-pilot-design.md",
 )
 
 REQUIRED_TREES = ("submission/cg", "submission/agent")
@@ -82,15 +89,16 @@ def write_handoff_archive(package_root: Path, output_dir: Path) -> tuple[Path, P
     )
     hashes = {path.relative_to(package_root).as_posix(): sha256(path) for path in payload_files}
     manifest = {
-        "schema_version": "top2_rl_handoff_manifest_v1",
+        "schema_version": "top2_rl_handoff_manifest_v2",
         "created_at": datetime.now(timezone.utc).isoformat(),
         "package": PACKAGE_BASENAME,
-        "purpose": "Top2 branch-isolated rollout, V1 reanalysis, masked PPO, and Arena evaluation",
+        "purpose": "Top2 server RL handoff with local RTX 5060 pilot evidence and preliminary hyperparameters",
         "payload_file_count": len(hashes),
         "payload_bytes": sum(path.stat().st_size for path in payload_files),
         "excluded": [
             "full supervised training JSONL",
             "raw rollout output",
+            "local pilot trial checkpoints",
             "valid/test holdout training access",
             "last.pt historical checkpoints",
             "submission/deck.csv replacement",

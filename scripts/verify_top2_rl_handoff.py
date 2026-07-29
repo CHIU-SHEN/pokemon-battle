@@ -92,13 +92,54 @@ def verify_policy_root(root: Path) -> dict:
     manifest_files = 0
     if manifest_path.is_file():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        if manifest.get("schema_version") != "top2_rl_handoff_manifest_v1":
+        if manifest.get("schema_version") != "top2_rl_handoff_manifest_v2":
             raise ValueError("unsupported handoff manifest schema")
         for relative, expected in (manifest.get("sha256") or {}).items():
             path = root / relative
             if not path.is_file() or sha256(path).lower() != str(expected).lower():
                 raise ValueError(f"manifest payload mismatch: {relative}")
             manifest_files += 1
+    selected_path = root / "config/top2_rl_selected.json"
+    local_report_path = root / "reports/top2_local_pilot_report.json"
+    selected_name = None
+    local_wall_seconds = None
+    if selected_path.is_file() or local_report_path.is_file():
+        if not selected_path.is_file() or not local_report_path.is_file():
+            raise ValueError("v2 selected config and local pilot report must be present together")
+        selected = json.loads(selected_path.read_text(encoding="utf-8"))
+        local_report = json.loads(local_report_path.read_text(encoding="utf-8"))
+        if selected.get("schema_version") != "top2_rl_selected_v1":
+            raise ValueError("unsupported selected-config schema")
+        selected_name = selected.get("selected_preset")
+        preset_names = {item["name"] for item in presets}
+        if selected_name not in preset_names or selected.get("parameters", {}).get("name") != selected_name:
+            raise ValueError("selected preset is not one of the frozen pilot presets")
+        if selected.get("preliminary_only") is not True or selected.get("submission_replacement_authorized") is not False:
+            raise ValueError("selected config must remain preliminary and non-releasing")
+        if selected.get("frozen_hashes") != {
+            "shared_checkpoint": policy["shared_checkpoint"]["sha256"],
+            "primary_deck": branches[0]["deck_sha256"],
+            "reserve_deck": branches[1]["deck_sha256"],
+            "primary_adapter": branches[0]["adapter_sha256"],
+            "reserve_adapter": branches[1]["adapter_sha256"],
+        }:
+            raise ValueError("selected config frozen hashes drifted")
+        if local_report.get("schema_version") != "top2_local_pilot_report_v1":
+            raise ValueError("unsupported local-pilot report schema")
+        if local_report.get("run_id") != selected.get("source_run_id"):
+            raise ValueError("selected config does not point to the bundled local-pilot run")
+        local_wall_seconds = float(local_report.get("wall_seconds", 0))
+        if not 0 < local_wall_seconds <= 7200:
+            raise ValueError("local pilot exceeded its two-hour contract")
+        report_branches = local_report.get("rollout", {}).get("branches") or []
+        if len(report_branches) != 2 or any(
+            item.get("games") != 100 or item.get("exceptions") != 0 or item.get("illegal_actions") != 0
+            for item in report_branches
+        ):
+            raise ValueError("local pilot branch smoke contract failed")
+        trials = local_report.get("trials") or []
+        if [item.get("name") for item in trials] != ["conservative", "baseline", "exploratory"]:
+            raise ValueError("local pilot did not run the three frozen presets")
     return {
         "schema_version": "top2_rl_handoff_verification_v1",
         "root": str(root),
@@ -110,6 +151,8 @@ def verify_policy_root(root: Path) -> dict:
         "holdout_percent": 20,
         "submission_replacement_authorized": False,
         "pilot_presets": [item["name"] for item in presets],
+        "selected_preset": selected_name,
+        "local_pilot_wall_seconds": local_wall_seconds,
     }
 
 
