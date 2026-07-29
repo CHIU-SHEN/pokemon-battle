@@ -62,6 +62,25 @@ def verify_policy_root(root: Path) -> dict:
         raise ValueError("masked PPO is required")
     if float((policy.get("ppo") or {}).get("kl_coef", 0)) <= 0:
         raise ValueError("positive KL constraint is required")
+    pilot = policy.get("pilot") or {}
+    presets = pilot.get("presets") or []
+    expected_presets = {
+        "conservative": (0.00005, 0.10, 0.10, 0.005, 3),
+        "baseline": (0.00010, 0.15, 0.05, 0.010, 4),
+        "exploratory": (0.00020, 0.20, 0.02, 0.020, 4),
+    }
+    actual_presets = {
+        item.get("name"): (
+            float(item.get("learning_rate", 0)), float(item.get("clip_ratio", 0)),
+            float(item.get("kl_coef", 0)), float(item.get("entropy_coef", 0)), int(item.get("epochs", 0)),
+        )
+        for item in presets
+    }
+    if actual_presets != expected_presets:
+        raise ValueError(f"pilot presets drifted: {actual_presets}")
+    gates = pilot.get("safety_gates") or {}
+    if gates != {"target_kl_max": 0.03, "clip_fraction_max": 0.3, "entropy_drop_max": 0.5}:
+        raise ValueError(f"pilot safety gates drifted: {gates}")
     if (policy.get("release_gates") or {}).get("submission_replacement_authorized") is not False:
         raise ValueError("handoff package must not authorize submission replacement")
     checked_hash(root, policy["shared_checkpoint"], "path", "sha256")
@@ -90,6 +109,7 @@ def verify_policy_root(root: Path) -> dict:
         "reserve_budget_ratio": ratio,
         "holdout_percent": 20,
         "submission_replacement_authorized": False,
+        "pilot_presets": [item["name"] for item in presets],
     }
 
 

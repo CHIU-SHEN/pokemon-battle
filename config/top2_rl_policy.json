@@ -55,6 +55,43 @@
     "learning_rate": 0.0001,
     "epochs_per_rollout": 4
   },
+  "pilot": {
+    "max_wall_seconds": 7200,
+    "benchmark_games": 10,
+    "rollout_games_per_branch": 100,
+    "arena_games_per_trial": 200,
+    "safety_gates": {
+      "target_kl_max": 0.03,
+      "clip_fraction_max": 0.3,
+      "entropy_drop_max": 0.5
+    },
+    "presets": [
+      {
+        "name": "conservative",
+        "learning_rate": 0.00005,
+        "clip_ratio": 0.1,
+        "kl_coef": 0.1,
+        "entropy_coef": 0.005,
+        "epochs": 3
+      },
+      {
+        "name": "baseline",
+        "learning_rate": 0.0001,
+        "clip_ratio": 0.15,
+        "kl_coef": 0.05,
+        "entropy_coef": 0.01,
+        "epochs": 4
+      },
+      {
+        "name": "exploratory",
+        "learning_rate": 0.0002,
+        "clip_ratio": 0.2,
+        "kl_coef": 0.02,
+        "entropy_coef": 0.02,
+        "epochs": 4
+      }
+    ]
+  },
   "release_gates": {
     "smoke_exceptions": 0,
     "smoke_illegal_actions": 0,

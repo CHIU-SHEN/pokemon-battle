@@ -123,6 +123,14 @@ def test_verifier_accepts_only_two_hash_bound_isolated_branches() -> None:
             "rollout": {"smoke_games_per_branch": 100, "swap_seats": True, "engine_seed_controlled": False},
             "split": {"train_percent": 80, "valid_percent": 10, "test_percent": 10, "holdout_never_train_percent": 20},
             "ppo": {"algorithm": "masked_ppo", "kl_coef": 0.05},
+            "pilot": {
+                "safety_gates": {"target_kl_max": 0.03, "clip_fraction_max": 0.3, "entropy_drop_max": 0.5},
+                "presets": [
+                    {"name": "conservative", "learning_rate": 0.00005, "clip_ratio": 0.10, "kl_coef": 0.10, "entropy_coef": 0.005, "epochs": 3},
+                    {"name": "baseline", "learning_rate": 0.00010, "clip_ratio": 0.15, "kl_coef": 0.05, "entropy_coef": 0.010, "epochs": 4},
+                    {"name": "exploratory", "learning_rate": 0.00020, "clip_ratio": 0.20, "kl_coef": 0.02, "entropy_coef": 0.020, "epochs": 4},
+                ],
+            },
             "release_gates": {"submission_replacement_authorized": False},
         }
         (root / "config").mkdir()
@@ -206,6 +214,30 @@ def test_wilson_interval_and_preliminary_tie_break_are_deterministic() -> None:
     assert select_preliminary_trial(separated)["selected"] == "baseline"
 
 
+def test_ppo_safety_stop_reason_catches_each_hard_gate() -> None:
+    from src.rl.pilot import safety_stop_reason
+
+    base = {
+        "loss": 0.2,
+        "policy_loss": 0.1,
+        "value_loss": 0.2,
+        "entropy": 1.0,
+        "approx_kl": 0.01,
+        "clip_fraction": 0.1,
+    }
+    limits = {"target_kl_max": 0.03, "clip_fraction_max": 0.30, "entropy_drop_max": 0.50}
+    assert safety_stop_reason(base, first_entropy=1.0, limits=limits) is None
+    for key, value, expected in (
+        ("loss", float("nan"), "non_finite"),
+        ("approx_kl", 0.031, "kl_limit"),
+        ("clip_fraction", 0.31, "clip_fraction_limit"),
+        ("entropy", 0.49, "entropy_collapse"),
+    ):
+        metrics = dict(base)
+        metrics[key] = value
+        assert safety_stop_reason(metrics, first_entropy=1.0, limits=limits) == expected
+
+
 def main() -> int:
     test_stable_game_split_freezes_twenty_percent()
     test_gae_propagates_terminal_reward_without_crossing_games()
@@ -217,6 +249,7 @@ def main() -> int:
     test_v1_queue_keeps_only_train_samples_from_one_deck()
     test_pilot_budget_tiers_preserve_rollout_and_degrade_evaluation()
     test_wilson_interval_and_preliminary_tie_break_are_deterministic()
+    test_ppo_safety_stop_reason_catches_each_hard_gate()
     print("OK: Top2 RL handoff contracts")
     return 0
 

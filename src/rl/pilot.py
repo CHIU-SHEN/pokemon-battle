@@ -57,3 +57,17 @@ def select_preliminary_trial(trials: list[dict]) -> dict:
     by_name = {item["name"]: item for item in eligible}
     selected = next((name for name in ("conservative", "baseline", "exploratory") if name in by_name), ranked[0]["name"])
     return {"status": "preliminary_intervals_overlap", "selected": selected, "eligible": ranked}
+
+
+def safety_stop_reason(metrics: dict[str, float], *, first_entropy: float, limits: dict[str, float]) -> str | None:
+    required = ("loss", "policy_loss", "value_loss", "entropy", "approx_kl", "clip_fraction")
+    if any(key not in metrics or not math.isfinite(float(metrics[key])) for key in required):
+        return "non_finite"
+    if float(metrics["approx_kl"]) > float(limits["target_kl_max"]):
+        return "kl_limit"
+    if float(metrics["clip_fraction"]) > float(limits["clip_fraction_max"]):
+        return "clip_fraction_limit"
+    entropy_floor = first_entropy * (1.0 - float(limits["entropy_drop_max"]))
+    if float(metrics["entropy"]) < entropy_floor:
+        return "entropy_collapse"
+    return None
