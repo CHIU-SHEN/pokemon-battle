@@ -133,3 +133,32 @@ python scripts/evaluate_top2_ppo.py \
 ## 停止条件
 
 以下任一情况出现就停止扩大训练：冒烟存在异常或非法动作、训练加载到非 train split、`deck_id` 不匹配、KL 或 loss 非有限、回归集退化、Arena 收益不稳定。即使 Arena 通过，本包也不授权替换正式提交；仍需单独完成最终发布评审。
+
+## 两小时本地 pilot 一键入口
+
+在 RTX 5060 机器上运行：
+
+```powershell
+$env:PYTHONPATH='.'
+python .\scripts\run_top2_local_pilot.py `
+  --project-root . `
+  --device cuda `
+  --max-wall-seconds 7200
+```
+
+脚本先做 10 局吞吐基准，再执行预算分档。完整档包括 primary/reserve 各 100 局、primary 三组参数、冻结 holdout 和每组 200 局 Arena；任何安全门槛失败都会使该组失去推荐资格。结果写入 `reports/top2_local_pilot_report.json`、`.md` 和 `config/top2_rl_selected.json`。
+
+## 服务器正式阶段起点
+
+上传并验证 v2 包后，先读取 `config/top2_rl_selected.json`，再以推荐参数从冻结初始 Adapter 重新生成服务器 on-policy rollout。第一条正式采集命令仍保持分支隔离：
+
+```bash
+python scripts/collect_top2_rollouts.py \
+  --branch all \
+  --opponents cross-top2,first-min,random \
+  --games-per-opponent 1000 \
+  --device cpu \
+  --output-root experiments/adapter_top2_rl_server_rollouts
+```
+
+这里的 `1000` 是每个对手、每个分支的首轮服务器预算起点，应按 v2 报告中的实测局/秒和磁盘增长调整。不得在同一批本地 100 局轨迹上反复训练来替代新的 on-policy 数据。

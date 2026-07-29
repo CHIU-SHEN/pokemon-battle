@@ -295,6 +295,40 @@ def test_holdout_metrics_mask_illegal_logits_and_compare_reference() -> None:
     assert math.isfinite(result["reference_kl_sum"])
 
 
+def test_pilot_trial_commands_share_data_and_apply_distinct_presets() -> None:
+    from scripts.run_top2_local_pilot import build_trial_commands, decode_process_output, tree_bytes
+
+    chinese_path = "E:\\学校文件\\kaggle"
+    assert decode_process_output(chinese_path.encode("gbk"), "gbk") == chinese_path
+    with tempfile.TemporaryDirectory(prefix="pilot_bytes_") as tmp:
+        root = Path(tmp)
+        (root / "a.bin").write_bytes(b"123")
+        (root / "nested").mkdir()
+        (root / "nested/b.bin").write_bytes(b"4567")
+        assert tree_bytes(root) == 7
+
+    presets = [
+        {"name": "conservative", "learning_rate": 0.00005, "clip_ratio": 0.10, "kl_coef": 0.10, "entropy_coef": 0.005, "epochs": 3},
+        {"name": "baseline", "learning_rate": 0.00010, "clip_ratio": 0.15, "kl_coef": 0.05, "entropy_coef": 0.010, "epochs": 4},
+        {"name": "exploratory", "learning_rate": 0.00020, "clip_ratio": 0.20, "kl_coef": 0.02, "entropy_coef": 0.020, "epochs": 4},
+    ]
+    commands = [
+        build_trial_commands(
+            python="python", root=Path("repo"), project_root=Path("frozen"),
+            rollouts=Path("same/train"), holdout_root=Path("same"), output_root=Path("out"),
+            preset=preset, device="cuda", arena_games=200, max_wall_seconds=600.0,
+        )
+        for preset in presets
+    ]
+    def value(command: list[str], flag: str) -> str:
+        return command[command.index(flag) + 1]
+    assert {value(item["train"], "--rollouts") for item in commands} == {str(Path("same/train"))}
+    assert {value(item["train"], "--project-root") for item in commands} == {str(Path("frozen"))}
+    assert [value(item["train"], "--learning-rate") for item in commands] == ["5e-05", "0.0001", "0.0002"]
+    assert [value(item["train"], "--clip-ratio") for item in commands] == ["0.1", "0.15", "0.2"]
+    assert all(value(item["arena"], "--games") == "200" for item in commands)
+
+
 def main() -> int:
     test_stable_game_split_freezes_twenty_percent()
     test_gae_propagates_terminal_reward_without_crossing_games()
@@ -309,6 +343,7 @@ def main() -> int:
     test_ppo_safety_stop_reason_catches_each_hard_gate()
     test_holdout_loader_never_returns_train_or_cross_deck_rows()
     test_holdout_metrics_mask_illegal_logits_and_compare_reference()
+    test_pilot_trial_commands_share_data_and_apply_distinct_presets()
     print("OK: Top2 RL handoff contracts")
     return 0
 
