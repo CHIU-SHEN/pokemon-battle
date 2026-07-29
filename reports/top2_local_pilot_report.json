@@ -1,0 +1,1503 @@
+{
+  "schema_version": "top2_local_pilot_report_v1",
+  "status": "completed_preliminary",
+  "run_id": "20260729T064313Z",
+  "created_at": "2026-07-29T06:48:24.494134+00:00",
+  "wall_seconds": 311.39466849999735,
+  "max_wall_seconds": 7200.0,
+  "hardware": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+    "logical_cpu_count": 18,
+    "cuda": {
+      "available": true,
+      "torch_version": "2.7.1+cu128",
+      "cuda_runtime": "12.8",
+      "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "total_memory_bytes": 8546484224
+    }
+  },
+  "frozen_source_root": "E:\\学校文件\\kaggle\\pokemon-battle",
+  "frozen_hashes": {
+    "shared_checkpoint": "73f7702197365ec29e0f1ab480581b024152dc8b25850968db02972769449a8b",
+    "primary_deck": "9781a695dc36f238d464203f83591338b9389ae1f2e345c0b9f03471dfd680af",
+    "reserve_deck": "64683f59437fbb0a1e1630fea9eee796999a34176522d17476bd8acbef6d0f62",
+    "primary_adapter": "6ec1abc936268a326de460f5cc4d375595370e38883b00feccd39d0b7035f381",
+    "reserve_adapter": "d0836111271f4c0383a5ff45ecf49ff01d8bae1a57a413caa9d2c81280337170"
+  },
+  "benchmark": {
+    "command": [
+      "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+      "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\collect_top2_rollouts.py",
+      "--config",
+      "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+      "--project-root",
+      "E:\\学校文件\\kaggle\\pokemon-battle",
+      "--branch",
+      "primary",
+      "--opponents",
+      "cross-top2",
+      "--games-per-opponent",
+      "10",
+      "--output-root",
+      "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\benchmark",
+      "--device",
+      "cpu"
+    ],
+    "wall_seconds": 6.18635170001653,
+    "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\benchmark.log",
+    "games": 10,
+    "seconds_per_game": 0.618635170001653,
+    "predicted_full_seconds": 734.9081360013224
+  },
+  "budget": {
+    "name": "full",
+    "rollout_games_per_branch": 100,
+    "arena_games_per_trial": 200,
+    "trials": [
+      "conservative",
+      "baseline",
+      "exploratory"
+    ],
+    "epoch_cap": null
+  },
+  "rollout": {
+    "command": [
+      "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+      "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\collect_top2_rollouts.py",
+      "--config",
+      "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+      "--project-root",
+      "E:\\学校文件\\kaggle\\pokemon-battle",
+      "--branch",
+      "all",
+      "--opponents",
+      "cross-top2",
+      "--games-per-opponent",
+      "100",
+      "--output-root",
+      "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts",
+      "--device",
+      "cpu"
+    ],
+    "wall_seconds": 76.87274560000515,
+    "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\rollout.log",
+    "run_root": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z",
+    "branches": [
+      {
+        "role": "primary",
+        "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+        "games": 100,
+        "decisions": 4430,
+        "exceptions": 0,
+        "illegal_actions": 0,
+        "splits": {
+          "train": 79,
+          "valid": 12,
+          "test": 9
+        }
+      },
+      {
+        "role": "reserve",
+        "deck_id": "top2-reserve-crustle-kangaskhan-petrel-v1",
+        "games": 100,
+        "decisions": 4705,
+        "exceptions": 0,
+        "illegal_actions": 0,
+        "splits": {
+          "train": 84,
+          "valid": 12,
+          "test": 4
+        }
+      }
+    ],
+    "data_bytes": 523255318,
+    "bytes_per_game": 2616276.59
+  },
+  "trials": [
+    {
+      "name": "conservative",
+      "preset": {
+        "name": "conservative",
+        "learning_rate": 5e-05,
+        "clip_ratio": 0.1,
+        "kl_coef": 0.1,
+        "entropy_coef": 0.005,
+        "epochs": 3
+      },
+      "training": {
+        "schema_version": "top2_ppo_train_summary_v1",
+        "status": "completed",
+        "eligible": true,
+        "stop_reason": null,
+        "candidate_id": "crustle_kangaskhan_cage",
+        "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+        "device": "cuda",
+        "rows": 3477,
+        "epochs_requested": 3,
+        "epochs_completed": 3,
+        "effective_parameters": {
+          "learning_rate": 5e-05,
+          "clip_ratio": 0.1,
+          "kl_coef": 0.1,
+          "entropy_coef": 0.005,
+          "value_coef": 0.5,
+          "max_grad_norm": 0.5
+        },
+        "safety_limits": {
+          "target_kl_max": 0.03,
+          "clip_fraction_max": 0.3,
+          "entropy_drop_max": 0.5
+        },
+        "wall_seconds": 8.849173000024166,
+        "peak_cuda_memory_bytes": 32237568,
+        "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\last.pt",
+        "metrics": [
+          {
+            "loss": 0.12034727137402765,
+            "policy_loss": -0.0031633909259523663,
+            "value_loss": 0.26021241024136543,
+            "entropy": 1.3195239305496216,
+            "approx_kl": 2.0771741318981185e-05,
+            "clip_fraction": 0.0,
+            "epoch": 1,
+            "batches": 28,
+            "elapsed_sec": 7.964299400016898
+          },
+          {
+            "loss": 0.1143282746717367,
+            "policy_loss": -0.00472753940682326,
+            "value_loss": 0.25121831255299704,
+            "entropy": 1.3143885220800127,
+            "approx_kl": 0.00018600296529517176,
+            "clip_fraction": 0.0005580357142857143,
+            "epoch": 2,
+            "batches": 28,
+            "elapsed_sec": 8.44681940000737
+          },
+          {
+            "loss": 0.1111132263239207,
+            "policy_loss": -0.006336498473371778,
+            "value_loss": 0.24791257988129342,
+            "entropy": 1.3089768588542938,
+            "approx_kl": 0.00038320361532636786,
+            "clip_fraction": 0.006975446428571429,
+            "epoch": 3,
+            "batches": 28,
+            "elapsed_sec": 8.844720400025835
+          }
+        ]
+      },
+      "stages": {
+        "train": {
+          "command": [
+            "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\train_top2_ppo.py",
+            "--config",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+            "--project-root",
+            "E:\\学校文件\\kaggle\\pokemon-battle",
+            "--branch",
+            "primary",
+            "--rollouts",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary\\train",
+            "--output",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative",
+            "--device",
+            "cuda",
+            "--epochs",
+            "3",
+            "--learning-rate",
+            "5e-05",
+            "--clip-ratio",
+            "0.1",
+            "--kl-coef",
+            "0.1",
+            "--entropy-coef",
+            "0.005",
+            "--max-wall-seconds",
+            "2370.70334503334"
+          ],
+          "wall_seconds": 11.716447300015716,
+          "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\conservative_train.log"
+        },
+        "holdout": {
+          "command": [
+            "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo_holdout.py",
+            "--config",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+            "--project-root",
+            "E:\\学校文件\\kaggle\\pokemon-battle",
+            "--branch",
+            "primary",
+            "--rollouts",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary",
+            "--checkpoint",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\last.pt",
+            "--device",
+            "cuda",
+            "--output",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\holdout.json"
+          ],
+          "wall_seconds": 6.744673200009856,
+          "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\conservative_holdout.log"
+        },
+        "arena": {
+          "command": [
+            "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo.py",
+            "--config",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+            "--project-root",
+            "E:\\学校文件\\kaggle\\pokemon-battle",
+            "--branch",
+            "primary",
+            "--checkpoint",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\last.pt",
+            "--games",
+            "200",
+            "--device",
+            "cpu",
+            "--output",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\arena.json"
+          ],
+          "wall_seconds": 53.078973299998324,
+          "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\conservative_arena.log"
+        }
+      },
+      "holdout": {
+        "schema_version": "top2_ppo_holdout_v1",
+        "role": "primary",
+        "candidate_id": "crustle_kangaskhan_cage",
+        "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+        "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\last.pt",
+        "checkpoint_sha256": "cc726bf950e4e36ce8d538443697282396552633ca8d11b172a8ec904cc70d3c",
+        "splits": [
+          "test",
+          "valid"
+        ],
+        "split_samples": {
+          "test": 462,
+          "valid": 491
+        },
+        "games": 21,
+        "samples": 953,
+        "candidate_action_accuracy": 0.44805876180482684,
+        "reference_action_accuracy": 0.45015739769150054,
+        "candidate_reference_action_agreement": 0.9779643231899265,
+        "reference_kl": 0.0005793124398242014,
+        "candidate_value_mse": 0.21711276535722668,
+        "reference_value_mse": 0.22356456449374573,
+        "illegal_argmax": 0,
+        "finite": true,
+        "device": "cuda",
+        "wall_seconds": 4.077747300005285
+      },
+      "arena": {
+        "agent0": "ppo-candidate",
+        "agent1": "initial-adapter",
+        "seed": 20260729,
+        "engine_seed_controlled": false,
+        "games": 200,
+        "agent0_wins": 96,
+        "agent1_wins": 103,
+        "draws": 1,
+        "agent0_win_rate_all": 0.48,
+        "agent1_win_rate_all": 0.515,
+        "agent0_win_rate_non_draw": 0.4824120603015075,
+        "agent1_win_rate_non_draw": 0.5175879396984925,
+        "avg_steps": 107.18,
+        "avg_selection_count": 107.18,
+        "avg_agent_time_sec_per_game": 0.2082535425030801,
+        "p95_agent_time_sec_per_game": 0.36529290000908077,
+        "avg_agent_time_sec_per_decision": 0.0019074330692716625,
+        "p95_agent_time_sec_per_decision": 0.0031106999958865345,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "unreported": 10728
+          },
+          {
+            "unreported": 10708
+          }
+        ],
+        "schema_version": "top2_ppo_arena_v1",
+        "role": "primary"
+      },
+      "arena_wins": 96,
+      "arena_games": 200,
+      "eligible": true
+    },
+    {
+      "name": "baseline",
+      "preset": {
+        "name": "baseline",
+        "learning_rate": 0.0001,
+        "clip_ratio": 0.15,
+        "kl_coef": 0.05,
+        "entropy_coef": 0.01,
+        "epochs": 4
+      },
+      "training": {
+        "schema_version": "top2_ppo_train_summary_v1",
+        "status": "completed",
+        "eligible": true,
+        "stop_reason": null,
+        "candidate_id": "crustle_kangaskhan_cage",
+        "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+        "device": "cuda",
+        "rows": 3477,
+        "epochs_requested": 4,
+        "epochs_completed": 4,
+        "effective_parameters": {
+          "learning_rate": 0.0001,
+          "clip_ratio": 0.15,
+          "kl_coef": 0.05,
+          "entropy_coef": 0.01,
+          "value_coef": 0.5,
+          "max_grad_norm": 0.5
+        },
+        "safety_limits": {
+          "target_kl_max": 0.03,
+          "clip_fraction_max": 0.3,
+          "entropy_drop_max": 0.5
+        },
+        "wall_seconds": 8.033086500014178,
+        "peak_cuda_memory_bytes": 32237568,
+        "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\last.pt",
+        "metrics": [
+          {
+            "loss": 0.11254336748139135,
+            "policy_loss": -0.0033396203070878983,
+            "value_loss": 0.25813058550868717,
+            "entropy": 1.3186249562672205,
+            "approx_kl": 7.890311768018623e-05,
+            "clip_fraction": 0.0,
+            "epoch": 1,
+            "batches": 28,
+            "elapsed_sec": 7.016520700010005
+          },
+          {
+            "loss": 0.1037594722168121,
+            "policy_loss": -0.005540233903697559,
+            "value_loss": 0.24474508581416948,
+            "entropy": 1.3107736238411494,
+            "approx_kl": 0.0006980077003910472,
+            "clip_fraction": 0.0033482142857142855,
+            "epoch": 2,
+            "batches": 28,
+            "elapsed_sec": 7.35518330000923
+          },
+          {
+            "loss": 0.09827791333581055,
+            "policy_loss": -0.007546072293605123,
+            "value_loss": 0.23762096677507674,
+            "entropy": 1.304642140865326,
+            "approx_kl": 0.0011984723699112823,
+            "clip_fraction": 0.016741071428571428,
+            "epoch": 3,
+            "batches": 28,
+            "elapsed_sec": 7.692605800024467
+          },
+          {
+            "loss": 0.10020083368622831,
+            "policy_loss": 0.002104777011222073,
+            "value_loss": 0.22218241542577744,
+            "entropy": 1.3072974000658308,
+            "approx_kl": 0.0015564656558646156,
+            "clip_fraction": 0.02823394989328725,
+            "epoch": 4,
+            "batches": 28,
+            "elapsed_sec": 8.030254600016633
+          }
+        ]
+      },
+      "stages": {
+        "train": {
+          "command": [
+            "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\train_top2_ppo.py",
+            "--config",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+            "--project-root",
+            "E:\\学校文件\\kaggle\\pokemon-battle",
+            "--branch",
+            "primary",
+            "--rollouts",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary\\train",
+            "--output",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline",
+            "--device",
+            "cuda",
+            "--epochs",
+            "4",
+            "--learning-rate",
+            "0.0001",
+            "--clip-ratio",
+            "0.15",
+            "--kl-coef",
+            "0.05",
+            "--entropy-coef",
+            "0.01",
+            "--max-wall-seconds",
+            "3520.270337550013"
+          ],
+          "wall_seconds": 10.507921200012788,
+          "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\baseline_train.log"
+        },
+        "holdout": {
+          "command": [
+            "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo_holdout.py",
+            "--config",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+            "--project-root",
+            "E:\\学校文件\\kaggle\\pokemon-battle",
+            "--branch",
+            "primary",
+            "--rollouts",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary",
+            "--checkpoint",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\last.pt",
+            "--device",
+            "cuda",
+            "--output",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\holdout.json"
+          ],
+          "wall_seconds": 6.256551500002388,
+          "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\baseline_holdout.log"
+        },
+        "arena": {
+          "command": [
+            "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo.py",
+            "--config",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+            "--project-root",
+            "E:\\学校文件\\kaggle\\pokemon-battle",
+            "--branch",
+            "primary",
+            "--checkpoint",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\last.pt",
+            "--games",
+            "200",
+            "--device",
+            "cpu",
+            "--output",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\arena.json"
+          ],
+          "wall_seconds": 56.710809099982725,
+          "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\baseline_arena.log"
+        }
+      },
+      "holdout": {
+        "schema_version": "top2_ppo_holdout_v1",
+        "role": "primary",
+        "candidate_id": "crustle_kangaskhan_cage",
+        "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+        "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\last.pt",
+        "checkpoint_sha256": "43b995cd371a3c3ccefccf77c3c99a4cd9e3dcb122e3d515130a43bf6bff80bf",
+        "splits": [
+          "test",
+          "valid"
+        ],
+        "split_samples": {
+          "test": 462,
+          "valid": 491
+        },
+        "games": 21,
+        "samples": 953,
+        "candidate_action_accuracy": 0.4491080797481637,
+        "reference_action_accuracy": 0.45015739769150054,
+        "candidate_reference_action_agreement": 0.9611752360965372,
+        "reference_kl": 0.001715181413002054,
+        "candidate_value_mse": 0.20642037606814725,
+        "reference_value_mse": 0.22356456449374573,
+        "illegal_argmax": 0,
+        "finite": true,
+        "device": "cuda",
+        "wall_seconds": 3.9799214000231586
+      },
+      "arena": {
+        "agent0": "ppo-candidate",
+        "agent1": "initial-adapter",
+        "seed": 20260729,
+        "engine_seed_controlled": false,
+        "games": 200,
+        "agent0_wins": 89,
+        "agent1_wins": 110,
+        "draws": 1,
+        "agent0_win_rate_all": 0.445,
+        "agent1_win_rate_all": 0.55,
+        "agent0_win_rate_non_draw": 0.4472361809045226,
+        "agent1_win_rate_non_draw": 0.5527638190954773,
+        "avg_steps": 112.12,
+        "avg_selection_count": 112.12,
+        "avg_agent_time_sec_per_game": 0.22419631600569118,
+        "p95_agent_time_sec_per_game": 0.3865536999364849,
+        "avg_agent_time_sec_per_decision": 0.001964566386309947,
+        "p95_agent_time_sec_per_decision": 0.0033088999916799366,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "unreported": 11136
+          },
+          {
+            "unreported": 11288
+          }
+        ],
+        "schema_version": "top2_ppo_arena_v1",
+        "role": "primary"
+      },
+      "arena_wins": 89,
+      "arena_games": 200,
+      "eligible": true
+    },
+    {
+      "name": "exploratory",
+      "preset": {
+        "name": "exploratory",
+        "learning_rate": 0.0002,
+        "clip_ratio": 0.2,
+        "kl_coef": 0.02,
+        "entropy_coef": 0.02,
+        "epochs": 4
+      },
+      "training": {
+        "schema_version": "top2_ppo_train_summary_v1",
+        "status": "completed",
+        "eligible": true,
+        "stop_reason": null,
+        "candidate_id": "crustle_kangaskhan_cage",
+        "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+        "device": "cuda",
+        "rows": 3477,
+        "epochs_requested": 4,
+        "epochs_completed": 4,
+        "effective_parameters": {
+          "learning_rate": 0.0002,
+          "clip_ratio": 0.2,
+          "kl_coef": 0.02,
+          "entropy_coef": 0.02,
+          "value_coef": 0.5,
+          "max_grad_norm": 0.5
+        },
+        "safety_limits": {
+          "target_kl_max": 0.03,
+          "clip_fraction_max": 0.3,
+          "entropy_drop_max": 0.5
+        },
+        "wall_seconds": 8.503595100017264,
+        "peak_cuda_memory_bytes": 32237568,
+        "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\last.pt",
+        "metrics": [
+          {
+            "loss": 0.09700431843521073,
+            "policy_loss": -0.0036340737715363503,
+            "value_loss": 0.253958134246724,
+            "entropy": 1.3173174006598336,
+            "approx_kl": 0.0002836682195135966,
+            "clip_fraction": 0.0,
+            "epoch": 1,
+            "batches": 28,
+            "elapsed_sec": 7.31183880000026
+          },
+          {
+            "loss": 0.08400182787590893,
+            "policy_loss": -0.006653912498482636,
+            "value_loss": 0.2334339597395488,
+            "entropy": 1.3052825714860643,
+            "approx_kl": 0.0022204887666573215,
+            "clip_fraction": 0.016209608875215054,
+            "epoch": 2,
+            "batches": 28,
+            "elapsed_sec": 7.735645200009458
+          },
+          {
+            "loss": 0.07529725618327834,
+            "policy_loss": -0.008991693944803305,
+            "value_loss": 0.22063133120536804,
+            "entropy": 1.303574583360127,
+            "approx_kl": 0.002238729565371094,
+            "clip_fraction": 0.01953125,
+            "epoch": 3,
+            "batches": 28,
+            "elapsed_sec": 8.126247900014278
+          },
+          {
+            "loss": 0.07475404849641823,
+            "policy_loss": 0.00024074382547821318,
+            "value_loss": 0.20118399150669575,
+            "entropy": 1.306535861321858,
+            "approx_kl": 0.0026012782389963312,
+            "clip_fraction": 0.025722789179001535,
+            "epoch": 4,
+            "batches": 28,
+            "elapsed_sec": 8.500862900022184
+          }
+        ]
+      },
+      "stages": {
+        "train": {
+          "command": [
+            "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\train_top2_ppo.py",
+            "--config",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+            "--project-root",
+            "E:\\学校文件\\kaggle\\pokemon-battle",
+            "--branch",
+            "primary",
+            "--rollouts",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary\\train",
+            "--output",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory",
+            "--device",
+            "cuda",
+            "--epochs",
+            "4",
+            "--learning-rate",
+            "0.0002",
+            "--clip-ratio",
+            "0.2",
+            "--kl-coef",
+            "0.02",
+            "--entropy-coef",
+            "0.02",
+            "--max-wall-seconds",
+            "6967.03920520001"
+          ],
+          "wall_seconds": 11.21213830000488,
+          "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\exploratory_train.log"
+        },
+        "holdout": {
+          "command": [
+            "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo_holdout.py",
+            "--config",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+            "--project-root",
+            "E:\\学校文件\\kaggle\\pokemon-battle",
+            "--branch",
+            "primary",
+            "--rollouts",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary",
+            "--checkpoint",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\last.pt",
+            "--device",
+            "cuda",
+            "--output",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\holdout.json"
+          ],
+          "wall_seconds": 6.396129600005224,
+          "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\exploratory_holdout.log"
+        },
+        "arena": {
+          "command": [
+            "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo.py",
+            "--config",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+            "--project-root",
+            "E:\\学校文件\\kaggle\\pokemon-battle",
+            "--branch",
+            "primary",
+            "--checkpoint",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\last.pt",
+            "--games",
+            "200",
+            "--device",
+            "cpu",
+            "--output",
+            "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\arena.json"
+          ],
+          "wall_seconds": 60.80030629999237,
+          "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\exploratory_arena.log"
+        }
+      },
+      "holdout": {
+        "schema_version": "top2_ppo_holdout_v1",
+        "role": "primary",
+        "candidate_id": "crustle_kangaskhan_cage",
+        "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+        "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\last.pt",
+        "checkpoint_sha256": "5cb5f60946c89a42ad4f55a2705cab9e7a9b23648ee3c8070c5856e53d63a0d4",
+        "splits": [
+          "test",
+          "valid"
+        ],
+        "split_samples": {
+          "test": 462,
+          "valid": 491
+        },
+        "games": 21,
+        "samples": 953,
+        "candidate_action_accuracy": 0.453305351521511,
+        "reference_action_accuracy": 0.45015739769150054,
+        "candidate_reference_action_agreement": 0.9601259181532005,
+        "reference_kl": 0.0030583664853074993,
+        "candidate_value_mse": 0.19515883734944234,
+        "reference_value_mse": 0.22356456449374573,
+        "illegal_argmax": 0,
+        "finite": true,
+        "device": "cuda",
+        "wall_seconds": 4.053653100010706
+      },
+      "arena": {
+        "agent0": "ppo-candidate",
+        "agent1": "initial-adapter",
+        "seed": 20260729,
+        "engine_seed_controlled": false,
+        "games": 200,
+        "agent0_wins": 100,
+        "agent1_wins": 100,
+        "draws": 0,
+        "agent0_win_rate_all": 0.5,
+        "agent1_win_rate_all": 0.5,
+        "agent0_win_rate_non_draw": 0.5,
+        "agent1_win_rate_non_draw": 0.5,
+        "avg_steps": 115.635,
+        "avg_selection_count": 115.635,
+        "avg_agent_time_sec_per_game": 0.24034750297607388,
+        "p95_agent_time_sec_per_game": 0.40750639987527393,
+        "avg_agent_time_sec_per_decision": 0.0020431631995245793,
+        "p95_agent_time_sec_per_decision": 0.0033848000166472048,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "unreported": 11544
+          },
+          {
+            "unreported": 11583
+          }
+        ],
+        "schema_version": "top2_ppo_arena_v1",
+        "role": "primary"
+      },
+      "arena_wins": 100,
+      "arena_games": 200,
+      "eligible": true
+    }
+  ],
+  "selection": {
+    "status": "preliminary_intervals_overlap",
+    "selected": "conservative",
+    "eligible": [
+      {
+        "name": "exploratory",
+        "preset": {
+          "name": "exploratory",
+          "learning_rate": 0.0002,
+          "clip_ratio": 0.2,
+          "kl_coef": 0.02,
+          "entropy_coef": 0.02,
+          "epochs": 4
+        },
+        "training": {
+          "schema_version": "top2_ppo_train_summary_v1",
+          "status": "completed",
+          "eligible": true,
+          "stop_reason": null,
+          "candidate_id": "crustle_kangaskhan_cage",
+          "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+          "device": "cuda",
+          "rows": 3477,
+          "epochs_requested": 4,
+          "epochs_completed": 4,
+          "effective_parameters": {
+            "learning_rate": 0.0002,
+            "clip_ratio": 0.2,
+            "kl_coef": 0.02,
+            "entropy_coef": 0.02,
+            "value_coef": 0.5,
+            "max_grad_norm": 0.5
+          },
+          "safety_limits": {
+            "target_kl_max": 0.03,
+            "clip_fraction_max": 0.3,
+            "entropy_drop_max": 0.5
+          },
+          "wall_seconds": 8.503595100017264,
+          "peak_cuda_memory_bytes": 32237568,
+          "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\last.pt",
+          "metrics": [
+            {
+              "loss": 0.09700431843521073,
+              "policy_loss": -0.0036340737715363503,
+              "value_loss": 0.253958134246724,
+              "entropy": 1.3173174006598336,
+              "approx_kl": 0.0002836682195135966,
+              "clip_fraction": 0.0,
+              "epoch": 1,
+              "batches": 28,
+              "elapsed_sec": 7.31183880000026
+            },
+            {
+              "loss": 0.08400182787590893,
+              "policy_loss": -0.006653912498482636,
+              "value_loss": 0.2334339597395488,
+              "entropy": 1.3052825714860643,
+              "approx_kl": 0.0022204887666573215,
+              "clip_fraction": 0.016209608875215054,
+              "epoch": 2,
+              "batches": 28,
+              "elapsed_sec": 7.735645200009458
+            },
+            {
+              "loss": 0.07529725618327834,
+              "policy_loss": -0.008991693944803305,
+              "value_loss": 0.22063133120536804,
+              "entropy": 1.303574583360127,
+              "approx_kl": 0.002238729565371094,
+              "clip_fraction": 0.01953125,
+              "epoch": 3,
+              "batches": 28,
+              "elapsed_sec": 8.126247900014278
+            },
+            {
+              "loss": 0.07475404849641823,
+              "policy_loss": 0.00024074382547821318,
+              "value_loss": 0.20118399150669575,
+              "entropy": 1.306535861321858,
+              "approx_kl": 0.0026012782389963312,
+              "clip_fraction": 0.025722789179001535,
+              "epoch": 4,
+              "batches": 28,
+              "elapsed_sec": 8.500862900022184
+            }
+          ]
+        },
+        "stages": {
+          "train": {
+            "command": [
+              "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\train_top2_ppo.py",
+              "--config",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+              "--project-root",
+              "E:\\学校文件\\kaggle\\pokemon-battle",
+              "--branch",
+              "primary",
+              "--rollouts",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary\\train",
+              "--output",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory",
+              "--device",
+              "cuda",
+              "--epochs",
+              "4",
+              "--learning-rate",
+              "0.0002",
+              "--clip-ratio",
+              "0.2",
+              "--kl-coef",
+              "0.02",
+              "--entropy-coef",
+              "0.02",
+              "--max-wall-seconds",
+              "6967.03920520001"
+            ],
+            "wall_seconds": 11.21213830000488,
+            "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\exploratory_train.log"
+          },
+          "holdout": {
+            "command": [
+              "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo_holdout.py",
+              "--config",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+              "--project-root",
+              "E:\\学校文件\\kaggle\\pokemon-battle",
+              "--branch",
+              "primary",
+              "--rollouts",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary",
+              "--checkpoint",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\last.pt",
+              "--device",
+              "cuda",
+              "--output",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\holdout.json"
+            ],
+            "wall_seconds": 6.396129600005224,
+            "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\exploratory_holdout.log"
+          },
+          "arena": {
+            "command": [
+              "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo.py",
+              "--config",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+              "--project-root",
+              "E:\\学校文件\\kaggle\\pokemon-battle",
+              "--branch",
+              "primary",
+              "--checkpoint",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\last.pt",
+              "--games",
+              "200",
+              "--device",
+              "cpu",
+              "--output",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\arena.json"
+            ],
+            "wall_seconds": 60.80030629999237,
+            "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\exploratory_arena.log"
+          }
+        },
+        "holdout": {
+          "schema_version": "top2_ppo_holdout_v1",
+          "role": "primary",
+          "candidate_id": "crustle_kangaskhan_cage",
+          "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+          "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\exploratory\\last.pt",
+          "checkpoint_sha256": "5cb5f60946c89a42ad4f55a2705cab9e7a9b23648ee3c8070c5856e53d63a0d4",
+          "splits": [
+            "test",
+            "valid"
+          ],
+          "split_samples": {
+            "test": 462,
+            "valid": 491
+          },
+          "games": 21,
+          "samples": 953,
+          "candidate_action_accuracy": 0.453305351521511,
+          "reference_action_accuracy": 0.45015739769150054,
+          "candidate_reference_action_agreement": 0.9601259181532005,
+          "reference_kl": 0.0030583664853074993,
+          "candidate_value_mse": 0.19515883734944234,
+          "reference_value_mse": 0.22356456449374573,
+          "illegal_argmax": 0,
+          "finite": true,
+          "device": "cuda",
+          "wall_seconds": 4.053653100010706
+        },
+        "arena": {
+          "agent0": "ppo-candidate",
+          "agent1": "initial-adapter",
+          "seed": 20260729,
+          "engine_seed_controlled": false,
+          "games": 200,
+          "agent0_wins": 100,
+          "agent1_wins": 100,
+          "draws": 0,
+          "agent0_win_rate_all": 0.5,
+          "agent1_win_rate_all": 0.5,
+          "agent0_win_rate_non_draw": 0.5,
+          "agent1_win_rate_non_draw": 0.5,
+          "avg_steps": 115.635,
+          "avg_selection_count": 115.635,
+          "avg_agent_time_sec_per_game": 0.24034750297607388,
+          "p95_agent_time_sec_per_game": 0.40750639987527393,
+          "avg_agent_time_sec_per_decision": 0.0020431631995245793,
+          "p95_agent_time_sec_per_decision": 0.0033848000166472048,
+          "draw_by_max_steps": 0,
+          "exceptions": 0,
+          "illegal_actions": [
+            0,
+            0
+          ],
+          "action_sources": [
+            {
+              "unreported": 11544
+            },
+            {
+              "unreported": 11583
+            }
+          ],
+          "schema_version": "top2_ppo_arena_v1",
+          "role": "primary"
+        },
+        "arena_wins": 100,
+        "arena_games": 200,
+        "eligible": true,
+        "arena_wilson_95": [
+          0.43136085960389187,
+          0.5686391403961082
+        ]
+      },
+      {
+        "name": "conservative",
+        "preset": {
+          "name": "conservative",
+          "learning_rate": 5e-05,
+          "clip_ratio": 0.1,
+          "kl_coef": 0.1,
+          "entropy_coef": 0.005,
+          "epochs": 3
+        },
+        "training": {
+          "schema_version": "top2_ppo_train_summary_v1",
+          "status": "completed",
+          "eligible": true,
+          "stop_reason": null,
+          "candidate_id": "crustle_kangaskhan_cage",
+          "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+          "device": "cuda",
+          "rows": 3477,
+          "epochs_requested": 3,
+          "epochs_completed": 3,
+          "effective_parameters": {
+            "learning_rate": 5e-05,
+            "clip_ratio": 0.1,
+            "kl_coef": 0.1,
+            "entropy_coef": 0.005,
+            "value_coef": 0.5,
+            "max_grad_norm": 0.5
+          },
+          "safety_limits": {
+            "target_kl_max": 0.03,
+            "clip_fraction_max": 0.3,
+            "entropy_drop_max": 0.5
+          },
+          "wall_seconds": 8.849173000024166,
+          "peak_cuda_memory_bytes": 32237568,
+          "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\last.pt",
+          "metrics": [
+            {
+              "loss": 0.12034727137402765,
+              "policy_loss": -0.0031633909259523663,
+              "value_loss": 0.26021241024136543,
+              "entropy": 1.3195239305496216,
+              "approx_kl": 2.0771741318981185e-05,
+              "clip_fraction": 0.0,
+              "epoch": 1,
+              "batches": 28,
+              "elapsed_sec": 7.964299400016898
+            },
+            {
+              "loss": 0.1143282746717367,
+              "policy_loss": -0.00472753940682326,
+              "value_loss": 0.25121831255299704,
+              "entropy": 1.3143885220800127,
+              "approx_kl": 0.00018600296529517176,
+              "clip_fraction": 0.0005580357142857143,
+              "epoch": 2,
+              "batches": 28,
+              "elapsed_sec": 8.44681940000737
+            },
+            {
+              "loss": 0.1111132263239207,
+              "policy_loss": -0.006336498473371778,
+              "value_loss": 0.24791257988129342,
+              "entropy": 1.3089768588542938,
+              "approx_kl": 0.00038320361532636786,
+              "clip_fraction": 0.006975446428571429,
+              "epoch": 3,
+              "batches": 28,
+              "elapsed_sec": 8.844720400025835
+            }
+          ]
+        },
+        "stages": {
+          "train": {
+            "command": [
+              "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\train_top2_ppo.py",
+              "--config",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+              "--project-root",
+              "E:\\学校文件\\kaggle\\pokemon-battle",
+              "--branch",
+              "primary",
+              "--rollouts",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary\\train",
+              "--output",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative",
+              "--device",
+              "cuda",
+              "--epochs",
+              "3",
+              "--learning-rate",
+              "5e-05",
+              "--clip-ratio",
+              "0.1",
+              "--kl-coef",
+              "0.1",
+              "--entropy-coef",
+              "0.005",
+              "--max-wall-seconds",
+              "2370.70334503334"
+            ],
+            "wall_seconds": 11.716447300015716,
+            "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\conservative_train.log"
+          },
+          "holdout": {
+            "command": [
+              "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo_holdout.py",
+              "--config",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+              "--project-root",
+              "E:\\学校文件\\kaggle\\pokemon-battle",
+              "--branch",
+              "primary",
+              "--rollouts",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary",
+              "--checkpoint",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\last.pt",
+              "--device",
+              "cuda",
+              "--output",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\holdout.json"
+            ],
+            "wall_seconds": 6.744673200009856,
+            "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\conservative_holdout.log"
+          },
+          "arena": {
+            "command": [
+              "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo.py",
+              "--config",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+              "--project-root",
+              "E:\\学校文件\\kaggle\\pokemon-battle",
+              "--branch",
+              "primary",
+              "--checkpoint",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\last.pt",
+              "--games",
+              "200",
+              "--device",
+              "cpu",
+              "--output",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\arena.json"
+            ],
+            "wall_seconds": 53.078973299998324,
+            "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\conservative_arena.log"
+          }
+        },
+        "holdout": {
+          "schema_version": "top2_ppo_holdout_v1",
+          "role": "primary",
+          "candidate_id": "crustle_kangaskhan_cage",
+          "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+          "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\conservative\\last.pt",
+          "checkpoint_sha256": "cc726bf950e4e36ce8d538443697282396552633ca8d11b172a8ec904cc70d3c",
+          "splits": [
+            "test",
+            "valid"
+          ],
+          "split_samples": {
+            "test": 462,
+            "valid": 491
+          },
+          "games": 21,
+          "samples": 953,
+          "candidate_action_accuracy": 0.44805876180482684,
+          "reference_action_accuracy": 0.45015739769150054,
+          "candidate_reference_action_agreement": 0.9779643231899265,
+          "reference_kl": 0.0005793124398242014,
+          "candidate_value_mse": 0.21711276535722668,
+          "reference_value_mse": 0.22356456449374573,
+          "illegal_argmax": 0,
+          "finite": true,
+          "device": "cuda",
+          "wall_seconds": 4.077747300005285
+        },
+        "arena": {
+          "agent0": "ppo-candidate",
+          "agent1": "initial-adapter",
+          "seed": 20260729,
+          "engine_seed_controlled": false,
+          "games": 200,
+          "agent0_wins": 96,
+          "agent1_wins": 103,
+          "draws": 1,
+          "agent0_win_rate_all": 0.48,
+          "agent1_win_rate_all": 0.515,
+          "agent0_win_rate_non_draw": 0.4824120603015075,
+          "agent1_win_rate_non_draw": 0.5175879396984925,
+          "avg_steps": 107.18,
+          "avg_selection_count": 107.18,
+          "avg_agent_time_sec_per_game": 0.2082535425030801,
+          "p95_agent_time_sec_per_game": 0.36529290000908077,
+          "avg_agent_time_sec_per_decision": 0.0019074330692716625,
+          "p95_agent_time_sec_per_decision": 0.0031106999958865345,
+          "draw_by_max_steps": 0,
+          "exceptions": 0,
+          "illegal_actions": [
+            0,
+            0
+          ],
+          "action_sources": [
+            {
+              "unreported": 10728
+            },
+            {
+              "unreported": 10708
+            }
+          ],
+          "schema_version": "top2_ppo_arena_v1",
+          "role": "primary"
+        },
+        "arena_wins": 96,
+        "arena_games": 200,
+        "eligible": true,
+        "arena_wilson_95": [
+          0.411791663783233,
+          0.5489621492718576
+        ]
+      },
+      {
+        "name": "baseline",
+        "preset": {
+          "name": "baseline",
+          "learning_rate": 0.0001,
+          "clip_ratio": 0.15,
+          "kl_coef": 0.05,
+          "entropy_coef": 0.01,
+          "epochs": 4
+        },
+        "training": {
+          "schema_version": "top2_ppo_train_summary_v1",
+          "status": "completed",
+          "eligible": true,
+          "stop_reason": null,
+          "candidate_id": "crustle_kangaskhan_cage",
+          "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+          "device": "cuda",
+          "rows": 3477,
+          "epochs_requested": 4,
+          "epochs_completed": 4,
+          "effective_parameters": {
+            "learning_rate": 0.0001,
+            "clip_ratio": 0.15,
+            "kl_coef": 0.05,
+            "entropy_coef": 0.01,
+            "value_coef": 0.5,
+            "max_grad_norm": 0.5
+          },
+          "safety_limits": {
+            "target_kl_max": 0.03,
+            "clip_fraction_max": 0.3,
+            "entropy_drop_max": 0.5
+          },
+          "wall_seconds": 8.033086500014178,
+          "peak_cuda_memory_bytes": 32237568,
+          "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\last.pt",
+          "metrics": [
+            {
+              "loss": 0.11254336748139135,
+              "policy_loss": -0.0033396203070878983,
+              "value_loss": 0.25813058550868717,
+              "entropy": 1.3186249562672205,
+              "approx_kl": 7.890311768018623e-05,
+              "clip_fraction": 0.0,
+              "epoch": 1,
+              "batches": 28,
+              "elapsed_sec": 7.016520700010005
+            },
+            {
+              "loss": 0.1037594722168121,
+              "policy_loss": -0.005540233903697559,
+              "value_loss": 0.24474508581416948,
+              "entropy": 1.3107736238411494,
+              "approx_kl": 0.0006980077003910472,
+              "clip_fraction": 0.0033482142857142855,
+              "epoch": 2,
+              "batches": 28,
+              "elapsed_sec": 7.35518330000923
+            },
+            {
+              "loss": 0.09827791333581055,
+              "policy_loss": -0.007546072293605123,
+              "value_loss": 0.23762096677507674,
+              "entropy": 1.304642140865326,
+              "approx_kl": 0.0011984723699112823,
+              "clip_fraction": 0.016741071428571428,
+              "epoch": 3,
+              "batches": 28,
+              "elapsed_sec": 7.692605800024467
+            },
+            {
+              "loss": 0.10020083368622831,
+              "policy_loss": 0.002104777011222073,
+              "value_loss": 0.22218241542577744,
+              "entropy": 1.3072974000658308,
+              "approx_kl": 0.0015564656558646156,
+              "clip_fraction": 0.02823394989328725,
+              "epoch": 4,
+              "batches": 28,
+              "elapsed_sec": 8.030254600016633
+            }
+          ]
+        },
+        "stages": {
+          "train": {
+            "command": [
+              "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\train_top2_ppo.py",
+              "--config",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+              "--project-root",
+              "E:\\学校文件\\kaggle\\pokemon-battle",
+              "--branch",
+              "primary",
+              "--rollouts",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary\\train",
+              "--output",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline",
+              "--device",
+              "cuda",
+              "--epochs",
+              "4",
+              "--learning-rate",
+              "0.0001",
+              "--clip-ratio",
+              "0.15",
+              "--kl-coef",
+              "0.05",
+              "--entropy-coef",
+              "0.01",
+              "--max-wall-seconds",
+              "3520.270337550013"
+            ],
+            "wall_seconds": 10.507921200012788,
+            "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\baseline_train.log"
+          },
+          "holdout": {
+            "command": [
+              "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo_holdout.py",
+              "--config",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+              "--project-root",
+              "E:\\学校文件\\kaggle\\pokemon-battle",
+              "--branch",
+              "primary",
+              "--rollouts",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\rollouts\\20260729T064325Z\\primary",
+              "--checkpoint",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\last.pt",
+              "--device",
+              "cuda",
+              "--output",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\holdout.json"
+            ],
+            "wall_seconds": 6.256551500002388,
+            "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\baseline_holdout.log"
+          },
+          "arena": {
+            "command": [
+              "C:\\Users\\lenovo\\miniconda3\\envs\\pokemon-tcg\\python.exe",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\scripts\\evaluate_top2_ppo.py",
+              "--config",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\artifacts\\worktrees\\top2-data-handoff\\config\\top2_rl_policy.json",
+              "--project-root",
+              "E:\\学校文件\\kaggle\\pokemon-battle",
+              "--branch",
+              "primary",
+              "--checkpoint",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\last.pt",
+              "--games",
+              "200",
+              "--device",
+              "cpu",
+              "--output",
+              "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\arena.json"
+            ],
+            "wall_seconds": 56.710809099982725,
+            "log": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\logs\\baseline_arena.log"
+          }
+        },
+        "holdout": {
+          "schema_version": "top2_ppo_holdout_v1",
+          "role": "primary",
+          "candidate_id": "crustle_kangaskhan_cage",
+          "deck_id": "top2-primary-crustle-kangaskhan-cage-v1",
+          "checkpoint": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\adapter_top2_rl_pilot\\20260729T064313Z\\trials\\baseline\\last.pt",
+          "checkpoint_sha256": "43b995cd371a3c3ccefccf77c3c99a4cd9e3dcb122e3d515130a43bf6bff80bf",
+          "splits": [
+            "test",
+            "valid"
+          ],
+          "split_samples": {
+            "test": 462,
+            "valid": 491
+          },
+          "games": 21,
+          "samples": 953,
+          "candidate_action_accuracy": 0.4491080797481637,
+          "reference_action_accuracy": 0.45015739769150054,
+          "candidate_reference_action_agreement": 0.9611752360965372,
+          "reference_kl": 0.001715181413002054,
+          "candidate_value_mse": 0.20642037606814725,
+          "reference_value_mse": 0.22356456449374573,
+          "illegal_argmax": 0,
+          "finite": true,
+          "device": "cuda",
+          "wall_seconds": 3.9799214000231586
+        },
+        "arena": {
+          "agent0": "ppo-candidate",
+          "agent1": "initial-adapter",
+          "seed": 20260729,
+          "engine_seed_controlled": false,
+          "games": 200,
+          "agent0_wins": 89,
+          "agent1_wins": 110,
+          "draws": 1,
+          "agent0_win_rate_all": 0.445,
+          "agent1_win_rate_all": 0.55,
+          "agent0_win_rate_non_draw": 0.4472361809045226,
+          "agent1_win_rate_non_draw": 0.5527638190954773,
+          "avg_steps": 112.12,
+          "avg_selection_count": 112.12,
+          "avg_agent_time_sec_per_game": 0.22419631600569118,
+          "p95_agent_time_sec_per_game": 0.3865536999364849,
+          "avg_agent_time_sec_per_decision": 0.001964566386309947,
+          "p95_agent_time_sec_per_decision": 0.0033088999916799366,
+          "draw_by_max_steps": 0,
+          "exceptions": 0,
+          "illegal_actions": [
+            0,
+            0
+          ],
+          "action_sources": [
+            {
+              "unreported": 11136
+            },
+            {
+              "unreported": 11288
+            }
+          ],
+          "schema_version": "top2_ppo_arena_v1",
+          "role": "primary"
+        },
+        "arena_wins": 89,
+        "arena_games": 200,
+        "eligible": true,
+        "arena_wilson_95": [
+          0.3778060100295335,
+          0.5142669758719658
+        ]
+      }
+    ]
+  },
+  "preliminary_only": true,
+  "submission_replacement_authorized": false,
+  "remaining_server_work": [
+    "large on-policy rollout",
+    "Top2 V1 expansion",
+    "full masked PPO",
+    "frozen holdout and final Arena"
+  ]
+}
