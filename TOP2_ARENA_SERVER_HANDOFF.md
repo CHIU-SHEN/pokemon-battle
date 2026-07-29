@@ -16,11 +16,17 @@
 ## 包名
 
 ```text
-server_uploads/pokemon-tcg-top2-arena-handoff-v1.tar.gz
-server_uploads/pokemon-tcg-top2-arena-handoff-v1.tar.gz.sha256
+server_uploads/pokemon-tcg-top2-arena-handoff-v2.tar.gz
+server_uploads/pokemon-tcg-top2-arena-handoff-v2.tar.gz.sha256
 ```
 
 该包不包含 5.4GB 监督训练 JSONL；Arena 不需要重新训练共享主干。
+
+本地重新构建交接包：
+
+```bash
+python scripts/build_top2_arena_handoff.py
+```
 
 ## 环境
 
@@ -58,9 +64,9 @@ df -h .
 ### 第 2 步：解压与校验
 
 ```bash
-sha256sum -c pokemon-tcg-top2-arena-handoff-v1.tar.gz.sha256
-tar -xzf pokemon-tcg-top2-arena-handoff-v1.tar.gz
-cd pokemon-tcg-top2-arena-handoff-v1
+sha256sum -c pokemon-tcg-top2-arena-handoff-v2.tar.gz.sha256
+tar -xzf pokemon-tcg-top2-arena-handoff-v2.tar.gz
+cd pokemon-tcg-top2-arena-handoff-v2
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
@@ -119,7 +125,13 @@ src/train/adapter_model.py
 src/train/eval_adapters.py
 ```
 
-需要新增一个候选代理构建入口，使每个候选能够同时加载：
+仓库现已提供候选在线代理入口：
+
+```text
+adapter:<candidate_id>
+```
+
+入口由 `src/arena/adapter_agent.py` 和 `eval/run_match.py` 加载，使每个候选能够同时加载：
 
 1. 对应的 `deck.csv`；
 2. 共享主干 `best.pt`；
@@ -145,26 +157,36 @@ src/train/eval_adapters.py
 
 ```bash
 python eval/run_match.py \
-  --agent0 <candidate_agent_path> \
+  --agent0 adapter:<candidate_id> \
   --agent1 random \
   --games 10 \
   --out-dir experiments/top2_adapter_smoke/<candidate>/vs_random
 
 python eval/run_match.py \
-  --agent0 <candidate_agent_path> \
+  --agent0 adapter:<candidate_id> \
   --mirror \
   --games 10 \
   --out-dir experiments/top2_adapter_smoke/<candidate>/mirror
 ```
 
-`<candidate_agent_path>` 必须替换为在线接入阶段实际生成的候选代理目录或
-`main.py`。10/10 候选都必须满足：
+`<candidate_id>` 必须替换为 `data/high_score_decks/` 下的候选目录名。默认在
+CPU 上推理；如服务器需要 CUDA，可设置 `PTCG_ADAPTER_DEVICE=cuda`。10/10
+候选都必须满足：
 
 - 0 exceptions；
 - 0 illegal actions；
 - 能完成 20 局；
 - P95 决策耗时低于项目门槛；
 - deck hash 与 candidate ID 一致。
+
+可用统一脚本一次执行 10 套 Random + mirror smoke 并生成机器可读报告：
+
+```bash
+python scripts/run_top10_adapter_smoke.py --games 10
+```
+
+输出位于 `experiments/top2_adapter_smoke/`，汇总报告为
+`reports/top10_adapter_online_smoke.json`。任一候选不满足门槛时脚本返回非零。
 
 ### 第 6 步：启动正式 Arena
 
@@ -176,7 +198,7 @@ smoke test 10/10 通过后再启动：
 4. 所有结果写入新的 `experiments/top2_adapter_arena/`，禁止混入历史目录；
 5. 每轮保存 `games.json`、`summary.json` 和总榜 checkpoint，支持中断续跑。
 
-正式矩阵尚需在在线代理接入后实现统一编排脚本。实现脚本时必须读取：
+在线代理和统一 smoke 脚本已实现；正式矩阵仍需实现统一编排脚本。实现脚本时必须读取：
 
 ```text
 data/high_score_decks/top2_selection_policy.json
@@ -237,8 +259,9 @@ sha256sum pokemon-tcg-top2-arena-results-v1.tar.gz \
 
 ## 执行边界
 
-当前包用于下一阶段开发和比赛。必须先完成 Adapter 在线推理接入与代理 smoke
-test，再启动正式矩阵；不得把离线 Top-1 直接当作 Arena 胜率。
+当前包用于下一阶段开发和比赛。在线推理接入已完成，本地 200 局 smoke 已通过；
+服务器解压后仍须先运行校验并复跑 smoke，再启动正式矩阵。不得把离线 Top-1
+或短 smoke 胜率直接当作 Arena 排名。
 
 正式比赛口径：
 

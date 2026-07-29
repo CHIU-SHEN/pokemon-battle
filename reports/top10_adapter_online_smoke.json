@@ -1,0 +1,965 @@
+{
+  "schema_version": "top10_adapter_online_smoke_v1",
+  "games_per_matchup": 10,
+  "matchups": 20,
+  "total_games": 200,
+  "seed": 20260729,
+  "engine_seed_controlled": false,
+  "latency_gate_seconds": 0.05,
+  "elapsed_seconds": 82.21198749542236,
+  "candidates": {
+    "alakazam_battle_cage_split": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "281de048fa487911efd526dfe8f149a71e0571842d76604cdfa739bf5c06e02b",
+      "vs_random": {
+        "agent0": "adapter:alakazam_battle_cage_split",
+        "agent1": "random",
+        "seed": 20260729,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 3,
+        "agent1_wins": 7,
+        "draws": 0,
+        "agent0_win_rate_all": 0.3,
+        "agent1_win_rate_all": 0.7,
+        "agent0_win_rate_non_draw": 0.3,
+        "agent1_win_rate_non_draw": 0.7,
+        "avg_steps": 49.7,
+        "avg_selection_count": 49.7,
+        "avg_agent_time_sec_per_game": 0.03350609003973659,
+        "p95_agent_time_sec_per_game": 0.11137920018518344,
+        "avg_agent_time_sec_per_decision": 0.0006480868479639573,
+        "p95_agent_time_sec_per_decision": 0.0020145000016782433,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 162,
+            "forced": 62,
+            "rules_fallback": 76
+          },
+          {
+            "unreported": 197
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "281de048fa487911efd526dfe8f149a71e0571842d76604cdfa739bf5c06e02b",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094627",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\alakazam_battle_cage_split\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:alakazam_battle_cage_split",
+        "agent1": "adapter:alakazam_battle_cage_split",
+        "seed": 20260729,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 4,
+        "agent1_wins": 6,
+        "draws": 0,
+        "agent0_win_rate_all": 0.4,
+        "agent1_win_rate_all": 0.6,
+        "agent0_win_rate_non_draw": 0.4,
+        "agent1_win_rate_non_draw": 0.6,
+        "avg_steps": 104.6,
+        "avg_selection_count": 104.6,
+        "avg_agent_time_sec_per_game": 0.13119995000888593,
+        "p95_agent_time_sec_per_game": 0.34164210010203533,
+        "avg_agent_time_sec_per_decision": 0.0012307687618094366,
+        "p95_agent_time_sec_per_decision": 0.0024591999826952815,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 332,
+            "rules_fallback": 119,
+            "forced": 127
+          },
+          {
+            "forced": 63,
+            "adapter": 294,
+            "rules_fallback": 111
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "281de048fa487911efd526dfe8f149a71e0571842d76604cdfa739bf5c06e02b",
+        "deck1_sha256": "281de048fa487911efd526dfe8f149a71e0571842d76604cdfa739bf5c06e02b",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094630",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\alakazam_battle_cage_split\\mirror"
+      }
+    },
+    "alakazam_neutralization_zone": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "bd7efde07a6ed7773019b1f38c7f4832cf951c74ce179902ba73c48e5c136ba6",
+      "vs_random": {
+        "agent0": "adapter:alakazam_neutralization_zone",
+        "agent1": "random",
+        "seed": 20260730,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 6,
+        "agent1_wins": 4,
+        "draws": 0,
+        "agent0_win_rate_all": 0.6,
+        "agent1_win_rate_all": 0.4,
+        "agent0_win_rate_non_draw": 0.6,
+        "agent1_win_rate_non_draw": 0.4,
+        "avg_steps": 79.2,
+        "avg_selection_count": 79.2,
+        "avg_agent_time_sec_per_game": 0.07645920000504702,
+        "p95_agent_time_sec_per_game": 0.16551180006354116,
+        "avg_agent_time_sec_per_decision": 0.0009416157636089534,
+        "p95_agent_time_sec_per_decision": 0.002330099989194423,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 342,
+            "forced": 66,
+            "rules_fallback": 94
+          },
+          {
+            "unreported": 290
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "bd7efde07a6ed7773019b1f38c7f4832cf951c74ce179902ba73c48e5c136ba6",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094634",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\alakazam_neutralization_zone\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:alakazam_neutralization_zone",
+        "agent1": "adapter:alakazam_neutralization_zone",
+        "seed": 20260730,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 6,
+        "agent1_wins": 4,
+        "draws": 0,
+        "agent0_win_rate_all": 0.6,
+        "agent1_win_rate_all": 0.4,
+        "agent0_win_rate_non_draw": 0.6,
+        "agent1_win_rate_non_draw": 0.4,
+        "avg_steps": 137.2,
+        "avg_selection_count": 137.2,
+        "avg_agent_time_sec_per_game": 0.19052511999034322,
+        "p95_agent_time_sec_per_game": 0.4667456003371626,
+        "avg_agent_time_sec_per_decision": 0.0013687149424593623,
+        "p95_agent_time_sec_per_decision": 0.002502800023648888,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 462,
+            "forced": 84,
+            "rules_fallback": 156
+          },
+          {
+            "adapter": 441,
+            "rules_fallback": 136,
+            "forced": 93
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "bd7efde07a6ed7773019b1f38c7f4832cf951c74ce179902ba73c48e5c136ba6",
+        "deck1_sha256": "bd7efde07a6ed7773019b1f38c7f4832cf951c74ce179902ba73c48e5c136ba6",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094637",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\alakazam_neutralization_zone\\mirror"
+      }
+    },
+    "alakazam_nighttime_mine": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "22148e2154f59f82058a558af76daccbb787cf73c2f2761fd41ec25cbef1066e",
+      "vs_random": {
+        "agent0": "adapter:alakazam_nighttime_mine",
+        "agent1": "random",
+        "seed": 20260731,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 7,
+        "agent1_wins": 3,
+        "draws": 0,
+        "agent0_win_rate_all": 0.7,
+        "agent1_win_rate_all": 0.3,
+        "agent0_win_rate_non_draw": 0.7,
+        "agent1_win_rate_non_draw": 0.3,
+        "avg_steps": 106.2,
+        "avg_selection_count": 106.2,
+        "avg_agent_time_sec_per_game": 0.11277579998131841,
+        "p95_agent_time_sec_per_game": 0.23313799992320128,
+        "avg_agent_time_sec_per_decision": 0.001042290203154514,
+        "p95_agent_time_sec_per_decision": 0.002340800012461841,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 499,
+            "rules_fallback": 152,
+            "forced": 53
+          },
+          {
+            "unreported": 358
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "22148e2154f59f82058a558af76daccbb787cf73c2f2761fd41ec25cbef1066e",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094641",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\alakazam_nighttime_mine\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:alakazam_nighttime_mine",
+        "agent1": "adapter:alakazam_nighttime_mine",
+        "seed": 20260731,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 4,
+        "agent1_wins": 6,
+        "draws": 0,
+        "agent0_win_rate_all": 0.4,
+        "agent1_win_rate_all": 0.6,
+        "agent0_win_rate_non_draw": 0.4,
+        "agent1_win_rate_non_draw": 0.6,
+        "avg_steps": 97.8,
+        "avg_selection_count": 97.8,
+        "avg_agent_time_sec_per_game": 0.1321776199620217,
+        "p95_agent_time_sec_per_game": 0.35696540027856827,
+        "avg_agent_time_sec_per_decision": 0.0013244250497196563,
+        "p95_agent_time_sec_per_decision": 0.0023923999979160726,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 348,
+            "forced": 62,
+            "rules_fallback": 105
+          },
+          {
+            "forced": 70,
+            "adapter": 285,
+            "rules_fallback": 108
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "22148e2154f59f82058a558af76daccbb787cf73c2f2761fd41ec25cbef1066e",
+        "deck1_sha256": "22148e2154f59f82058a558af76daccbb787cf73c2f2761fd41ec25cbef1066e",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094645",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\alakazam_nighttime_mine\\mirror"
+      }
+    },
+    "crustle_kangaskhan_cage": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "88d253a7c04af10afb914242370840c884065452595ddcd73decd4f2f8b73dbd",
+      "vs_random": {
+        "agent0": "adapter:crustle_kangaskhan_cage",
+        "agent1": "random",
+        "seed": 20260732,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 9,
+        "agent1_wins": 1,
+        "draws": 0,
+        "agent0_win_rate_all": 0.9,
+        "agent1_win_rate_all": 0.1,
+        "agent0_win_rate_non_draw": 0.9,
+        "agent1_win_rate_non_draw": 0.1,
+        "avg_steps": 82.4,
+        "avg_selection_count": 82.4,
+        "avg_agent_time_sec_per_game": 0.07753634998807683,
+        "p95_agent_time_sec_per_game": 0.17413320008199662,
+        "avg_agent_time_sec_per_decision": 0.0009186771325601521,
+        "p95_agent_time_sec_per_decision": 0.00229649999528192,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 360,
+            "rules_fallback": 71,
+            "forced": 33
+          },
+          {
+            "unreported": 360
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "88d253a7c04af10afb914242370840c884065452595ddcd73decd4f2f8b73dbd",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094649",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\crustle_kangaskhan_cage\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:crustle_kangaskhan_cage",
+        "agent1": "adapter:crustle_kangaskhan_cage",
+        "seed": 20260732,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 6,
+        "agent1_wins": 4,
+        "draws": 0,
+        "agent0_win_rate_all": 0.6,
+        "agent1_win_rate_all": 0.4,
+        "agent0_win_rate_non_draw": 0.6,
+        "agent1_win_rate_non_draw": 0.4,
+        "avg_steps": 113.1,
+        "avg_selection_count": 113.1,
+        "avg_agent_time_sec_per_game": 0.19413744000776206,
+        "p95_agent_time_sec_per_game": 0.28538769992883317,
+        "avg_agent_time_sec_per_decision": 0.0016866849696590969,
+        "p95_agent_time_sec_per_decision": 0.0025978999910876155,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 363,
+            "rules_fallback": 90,
+            "forced": 38
+          },
+          {
+            "forced": 42,
+            "adapter": 505,
+            "rules_fallback": 93
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "88d253a7c04af10afb914242370840c884065452595ddcd73decd4f2f8b73dbd",
+        "deck1_sha256": "88d253a7c04af10afb914242370840c884065452595ddcd73decd4f2f8b73dbd",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094652",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\crustle_kangaskhan_cage\\mirror"
+      }
+    },
+    "crustle_kangaskhan_petrel": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "15202f6d1a22cad164ab796b1e0c35157696f937fa327d63ba29e52db420c0eb",
+      "vs_random": {
+        "agent0": "adapter:crustle_kangaskhan_petrel",
+        "agent1": "random",
+        "seed": 20260733,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 7,
+        "agent1_wins": 3,
+        "draws": 0,
+        "agent0_win_rate_all": 0.7,
+        "agent1_win_rate_all": 0.3,
+        "agent0_win_rate_non_draw": 0.7,
+        "agent1_win_rate_non_draw": 0.3,
+        "avg_steps": 41.0,
+        "avg_selection_count": 41.0,
+        "avg_agent_time_sec_per_game": 0.044969040012802,
+        "p95_agent_time_sec_per_game": 0.08174029990914278,
+        "avg_agent_time_sec_per_decision": 0.0010457916282046976,
+        "p95_agent_time_sec_per_decision": 0.002528899989556521,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 191,
+            "forced": 25,
+            "rules_fallback": 46
+          },
+          {
+            "unreported": 148
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "15202f6d1a22cad164ab796b1e0c35157696f937fa327d63ba29e52db420c0eb",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094657",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\crustle_kangaskhan_petrel\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:crustle_kangaskhan_petrel",
+        "agent1": "adapter:crustle_kangaskhan_petrel",
+        "seed": 20260733,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 5,
+        "agent1_wins": 5,
+        "draws": 0,
+        "agent0_win_rate_all": 0.5,
+        "agent1_win_rate_all": 0.5,
+        "agent0_win_rate_non_draw": 0.5,
+        "agent1_win_rate_non_draw": 0.5,
+        "avg_steps": 95.4,
+        "avg_selection_count": 95.4,
+        "avg_agent_time_sec_per_game": 0.15368751999922098,
+        "p95_agent_time_sec_per_game": 0.29812449993914925,
+        "avg_agent_time_sec_per_decision": 0.0015779006160084289,
+        "p95_agent_time_sec_per_decision": 0.002824700000928715,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 338,
+            "forced": 26,
+            "rules_fallback": 93
+          },
+          {
+            "adapter": 373,
+            "rules_fallback": 99,
+            "forced": 25
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "15202f6d1a22cad164ab796b1e0c35157696f937fa327d63ba29e52db420c0eb",
+        "deck1_sha256": "15202f6d1a22cad164ab796b1e0c35157696f937fa327d63ba29e52db420c0eb",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094700",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\crustle_kangaskhan_petrel\\mirror"
+      }
+    },
+    "cynthia_garchomp_roserade": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "6701e255d1d3d9361cf7b75cd66b256d2fdabc70ea52b40044d0b2d069794dd6",
+      "vs_random": {
+        "agent0": "adapter:cynthia_garchomp_roserade",
+        "agent1": "random",
+        "seed": 20260734,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 5,
+        "agent1_wins": 5,
+        "draws": 0,
+        "agent0_win_rate_all": 0.5,
+        "agent1_win_rate_all": 0.5,
+        "agent0_win_rate_non_draw": 0.5,
+        "agent1_win_rate_non_draw": 0.5,
+        "avg_steps": 87.5,
+        "avg_selection_count": 87.5,
+        "avg_agent_time_sec_per_game": 0.09141188998473808,
+        "p95_agent_time_sec_per_game": 0.2143200002319645,
+        "avg_agent_time_sec_per_decision": 0.0010213618992708166,
+        "p95_agent_time_sec_per_decision": 0.0025369000213686377,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 404,
+            "rules_fallback": 104,
+            "forced": 48
+          },
+          {
+            "unreported": 319
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "6701e255d1d3d9361cf7b75cd66b256d2fdabc70ea52b40044d0b2d069794dd6",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094704",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\cynthia_garchomp_roserade\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:cynthia_garchomp_roserade",
+        "agent1": "adapter:cynthia_garchomp_roserade",
+        "seed": 20260734,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 7,
+        "agent1_wins": 3,
+        "draws": 0,
+        "agent0_win_rate_all": 0.7,
+        "agent1_win_rate_all": 0.3,
+        "agent0_win_rate_non_draw": 0.7,
+        "agent1_win_rate_non_draw": 0.3,
+        "avg_steps": 103.4,
+        "avg_selection_count": 103.4,
+        "avg_agent_time_sec_per_game": 0.13359329002269077,
+        "p95_agent_time_sec_per_game": 0.23067630000878125,
+        "avg_agent_time_sec_per_decision": 0.0012674885201393812,
+        "p95_agent_time_sec_per_decision": 0.0021692999871447682,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 365,
+            "forced": 50,
+            "rules_fallback": 112
+          },
+          {
+            "forced": 58,
+            "adapter": 333,
+            "rules_fallback": 116
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "6701e255d1d3d9361cf7b75cd66b256d2fdabc70ea52b40044d0b2d069794dd6",
+        "deck1_sha256": "6701e255d1d3d9361cf7b75cd66b256d2fdabc70ea52b40044d0b2d069794dd6",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094707",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\cynthia_garchomp_roserade\\mirror"
+      }
+    },
+    "marnie_grimmsnarl_dudunsparce": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "4cb36d0880c8de80e0914a4801450add554fe7831d0ff6661faf6e112667a919",
+      "vs_random": {
+        "agent0": "adapter:marnie_grimmsnarl_dudunsparce",
+        "agent1": "random",
+        "seed": 20260735,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 5,
+        "agent1_wins": 5,
+        "draws": 0,
+        "agent0_win_rate_all": 0.5,
+        "agent1_win_rate_all": 0.5,
+        "agent0_win_rate_non_draw": 0.5,
+        "agent1_win_rate_non_draw": 0.5,
+        "avg_steps": 101.2,
+        "avg_selection_count": 101.2,
+        "avg_agent_time_sec_per_game": 0.08332905003044289,
+        "p95_agent_time_sec_per_game": 0.1590593998262193,
+        "avg_agent_time_sec_per_decision": 0.0008074520351787102,
+        "p95_agent_time_sec_per_decision": 0.0019047000096179545,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 437,
+            "rules_fallback": 161,
+            "forced": 108
+          },
+          {
+            "unreported": 306
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "4cb36d0880c8de80e0914a4801450add554fe7831d0ff6661faf6e112667a919",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094711",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\marnie_grimmsnarl_dudunsparce\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:marnie_grimmsnarl_dudunsparce",
+        "agent1": "adapter:marnie_grimmsnarl_dudunsparce",
+        "seed": 20260735,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 5,
+        "agent1_wins": 5,
+        "draws": 0,
+        "agent0_win_rate_all": 0.5,
+        "agent1_win_rate_all": 0.5,
+        "agent0_win_rate_non_draw": 0.5,
+        "agent1_win_rate_non_draw": 0.5,
+        "avg_steps": 247.6,
+        "avg_selection_count": 247.6,
+        "avg_agent_time_sec_per_game": 0.3685643698612694,
+        "p95_agent_time_sec_per_game": 0.6625004998641089,
+        "avg_agent_time_sec_per_decision": 0.0014766200715595728,
+        "p95_agent_time_sec_per_decision": 0.002701699995668605,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 810,
+            "forced": 107,
+            "rules_fallback": 329
+          },
+          {
+            "adapter": 791,
+            "rules_fallback": 317,
+            "forced": 122
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "4cb36d0880c8de80e0914a4801450add554fe7831d0ff6661faf6e112667a919",
+        "deck1_sha256": "4cb36d0880c8de80e0914a4801450add554fe7831d0ff6661faf6e112667a919",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094714",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\marnie_grimmsnarl_dudunsparce\\mirror"
+      }
+    },
+    "marnie_grimmsnarl_froslass": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "beb4ce142775ed1f3ad7bf2d93b0efd00b2c71e45f18dcb5e03fc101816e6adf",
+      "vs_random": {
+        "agent0": "adapter:marnie_grimmsnarl_froslass",
+        "agent1": "random",
+        "seed": 20260736,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 1,
+        "agent1_wins": 9,
+        "draws": 0,
+        "agent0_win_rate_all": 0.1,
+        "agent1_win_rate_all": 0.9,
+        "agent0_win_rate_non_draw": 0.1,
+        "agent1_win_rate_non_draw": 0.9,
+        "avg_steps": 142.8,
+        "avg_selection_count": 142.8,
+        "avg_agent_time_sec_per_game": 0.13801757998298853,
+        "p95_agent_time_sec_per_game": 0.22193589998641983,
+        "avg_agent_time_sec_per_decision": 0.0009531600827554457,
+        "p95_agent_time_sec_per_decision": 0.0022705000010319054,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 652,
+            "rules_fallback": 185,
+            "forced": 177
+          },
+          {
+            "unreported": 414
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "beb4ce142775ed1f3ad7bf2d93b0efd00b2c71e45f18dcb5e03fc101816e6adf",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094721",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\marnie_grimmsnarl_froslass\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:marnie_grimmsnarl_froslass",
+        "agent1": "adapter:marnie_grimmsnarl_froslass",
+        "seed": 20260736,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 3,
+        "agent1_wins": 7,
+        "draws": 0,
+        "agent0_win_rate_all": 0.3,
+        "agent1_win_rate_all": 0.7,
+        "agent0_win_rate_non_draw": 0.3,
+        "agent1_win_rate_non_draw": 0.7,
+        "avg_steps": 263.6,
+        "avg_selection_count": 263.6,
+        "avg_agent_time_sec_per_game": 0.38101675997895657,
+        "p95_agent_time_sec_per_game": 0.7223619997675996,
+        "avg_agent_time_sec_per_decision": 0.0014345510541376376,
+        "p95_agent_time_sec_per_decision": 0.0024354000051971525,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 821,
+            "forced": 191,
+            "rules_fallback": 265
+          },
+          {
+            "forced": 177,
+            "adapter": 902,
+            "rules_fallback": 280
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "beb4ce142775ed1f3ad7bf2d93b0efd00b2c71e45f18dcb5e03fc101816e6adf",
+        "deck1_sha256": "beb4ce142775ed1f3ad7bf2d93b0efd00b2c71e45f18dcb5e03fc101816e6adf",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094725",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\marnie_grimmsnarl_froslass\\mirror"
+      }
+    },
+    "marnie_grimmsnarl_tatsugiri": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "5b648ba556ddf43ee2d479e5cb168a776989ce60b7e385bacc336ab0f75d0661",
+      "vs_random": {
+        "agent0": "adapter:marnie_grimmsnarl_tatsugiri",
+        "agent1": "random",
+        "seed": 20260737,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 5,
+        "agent1_wins": 5,
+        "draws": 0,
+        "agent0_win_rate_all": 0.5,
+        "agent1_win_rate_all": 0.5,
+        "agent0_win_rate_non_draw": 0.5,
+        "agent1_win_rate_non_draw": 0.5,
+        "avg_steps": 112.0,
+        "avg_selection_count": 112.0,
+        "avg_agent_time_sec_per_game": 0.11235566995164845,
+        "p95_agent_time_sec_per_game": 0.2100936998031102,
+        "avg_agent_time_sec_per_decision": 0.0009855760522074425,
+        "p95_agent_time_sec_per_decision": 0.00230089999968186,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 509,
+            "rules_fallback": 193,
+            "forced": 58
+          },
+          {
+            "unreported": 360
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "5b648ba556ddf43ee2d479e5cb168a776989ce60b7e385bacc336ab0f75d0661",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094732",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\marnie_grimmsnarl_tatsugiri\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:marnie_grimmsnarl_tatsugiri",
+        "agent1": "adapter:marnie_grimmsnarl_tatsugiri",
+        "seed": 20260737,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 5,
+        "agent1_wins": 4,
+        "draws": 1,
+        "agent0_win_rate_all": 0.5,
+        "agent1_win_rate_all": 0.4,
+        "agent0_win_rate_non_draw": 0.5555555555555556,
+        "agent1_win_rate_non_draw": 0.4444444444444444,
+        "avg_steps": 326.6,
+        "avg_selection_count": 326.6,
+        "avg_agent_time_sec_per_game": 0.513285220018588,
+        "p95_agent_time_sec_per_game": 0.8564284997701179,
+        "avg_agent_time_sec_per_decision": 0.001562036579484443,
+        "p95_agent_time_sec_per_decision": 0.002639899990754202,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 1130,
+            "forced": 114,
+            "rules_fallback": 381
+          },
+          {
+            "forced": 103,
+            "adapter": 1150,
+            "rules_fallback": 388
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "5b648ba556ddf43ee2d479e5cb168a776989ce60b7e385bacc336ab0f75d0661",
+        "deck1_sha256": "5b648ba556ddf43ee2d479e5cb168a776989ce60b7e385bacc336ab0f75d0661",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094735",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\marnie_grimmsnarl_tatsugiri\\mirror"
+      }
+    },
+    "mega_starmie_dusknoir": {
+      "decision": "pass",
+      "problems": [],
+      "deck_sha256": "4edcef420a5d17491be3ac5b7f74913065a50eebdc7db477f3a5e5931695b7d3",
+      "vs_random": {
+        "agent0": "adapter:mega_starmie_dusknoir",
+        "agent1": "random",
+        "seed": 20260738,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 5,
+        "agent1_wins": 5,
+        "draws": 0,
+        "agent0_win_rate_all": 0.5,
+        "agent1_win_rate_all": 0.5,
+        "agent0_win_rate_non_draw": 0.5,
+        "agent1_win_rate_non_draw": 0.5,
+        "avg_steps": 76.8,
+        "avg_selection_count": 76.8,
+        "avg_agent_time_sec_per_game": 0.05408134002354927,
+        "p95_agent_time_sec_per_game": 0.08408520006923936,
+        "avg_agent_time_sec_per_decision": 0.0006863114216186456,
+        "p95_agent_time_sec_per_decision": 0.0018924000032711774,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 280,
+            "rules_fallback": 100,
+            "forced": 48
+          },
+          {
+            "unreported": 340
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "4edcef420a5d17491be3ac5b7f74913065a50eebdc7db477f3a5e5931695b7d3",
+        "deck1_sha256": "6a5f19eca2e95127539cbcf0cf51bc7527d51ac0db9e777c9fefbe223ca2a79a",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094744",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\mega_starmie_dusknoir\\vs_random"
+      },
+      "mirror": {
+        "agent0": "adapter:mega_starmie_dusknoir",
+        "agent1": "adapter:mega_starmie_dusknoir",
+        "seed": 20260738,
+        "engine_seed_controlled": false,
+        "games": 10,
+        "agent0_wins": 5,
+        "agent1_wins": 5,
+        "draws": 0,
+        "agent0_win_rate_all": 0.5,
+        "agent1_win_rate_all": 0.5,
+        "agent0_win_rate_non_draw": 0.5,
+        "agent1_win_rate_non_draw": 0.5,
+        "avg_steps": 32.1,
+        "avg_selection_count": 32.1,
+        "avg_agent_time_sec_per_game": 0.0416081200062763,
+        "p95_agent_time_sec_per_game": 0.07453070001793094,
+        "avg_agent_time_sec_per_decision": 0.001220179472324818,
+        "p95_agent_time_sec_per_decision": 0.0022709000040777028,
+        "draw_by_max_steps": 0,
+        "exceptions": 0,
+        "illegal_actions": [
+          0,
+          0
+        ],
+        "action_sources": [
+          {
+            "adapter": 116,
+            "rules_fallback": 43,
+            "forced": 23
+          },
+          {
+            "adapter": 91,
+            "rules_fallback": 33,
+            "forced": 15
+          }
+        ],
+        "deck0": null,
+        "deck1": null,
+        "deck0_sha256": "4edcef420a5d17491be3ac5b7f74913065a50eebdc7db477f3a5e5931695b7d3",
+        "deck1_sha256": "4edcef420a5d17491be3ac5b7f74913065a50eebdc7db477f3a5e5931695b7d3",
+        "deck0_consistent": true,
+        "deck1_consistent": true,
+        "started_at": "20260729_094747",
+        "out_dir": "E:\\学校文件\\kaggle\\pokemon-battle\\experiments\\top2_adapter_smoke\\mega_starmie_dusknoir\\mirror"
+      }
+    }
+  },
+  "passed": 10,
+  "failed": [],
+  "decision": "pass"
+}

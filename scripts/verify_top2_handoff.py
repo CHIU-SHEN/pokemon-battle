@@ -93,6 +93,24 @@ def main() -> int:
     ) != 0:
         raise ValueError("verified Alakazam retrain did not pass")
 
+    if not (ROOT / "src/arena/adapter_agent.py").is_file():
+        raise FileNotFoundError("online Adapter agent entry is missing")
+    smoke = json.loads(
+        (ROOT / "reports/top10_adapter_online_smoke.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    if smoke.get("schema_version") != "top10_adapter_online_smoke_v1":
+        raise ValueError("unsupported online smoke schema")
+    if smoke.get("decision") != "pass" or smoke.get("passed") != 10 or smoke.get("failed"):
+        raise ValueError("Top10 online smoke did not pass")
+    smoke_candidates = smoke.get("candidates") or {}
+    if set(smoke_candidates) != EXPECTED:
+        raise ValueError("online smoke candidate set mismatch")
+    for candidate, result in smoke_candidates.items():
+        if result.get("decision") != "pass" or result.get("problems"):
+            raise ValueError(f"online smoke failed for {candidate}")
+
     print(
         json.dumps(
             {
@@ -100,6 +118,7 @@ def main() -> int:
                 "adapters": len(EXPECTED),
                 "decks": len(EXPECTED),
                 "roles": ["primary", "reserve"],
+                "online_smoke": "10/10 pass",
                 "base_dataset_sha256": base_hash,
             },
             ensure_ascii=False,

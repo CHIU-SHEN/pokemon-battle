@@ -20,6 +20,8 @@ import hashlib
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SUBMISSION_DIR = PROJECT_ROOT / "submission"
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 if str(SUBMISSION_DIR) not in sys.path:
     sys.path.insert(0, str(SUBMISSION_DIR))
 
@@ -81,6 +83,10 @@ def load_agent(spec: str) -> Agent:
         return random_agent
     if spec == "first-min":
         return first_min_agent
+    if spec.startswith("adapter:"):
+        from src.arena.adapter_agent import AdapterArenaAgent
+
+        return AdapterArenaAgent(spec.partition(":")[2])
     if spec == "submission":
         spec = str(SUBMISSION_DIR / "main.py")
 
@@ -315,8 +321,14 @@ def write_json(path: Path, data: object) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--agent0", default="submission", help="submission, random, first-min, or /path/to/main.py")
-    parser.add_argument("--agent1", default="random", help="submission, random, first-min, or /path/to/main.py")
+    parser.add_argument(
+        "--agent0", default="submission",
+        help="submission, random, first-min, adapter:<candidate>, or /path/to/main.py",
+    )
+    parser.add_argument(
+        "--agent1", default="random",
+        help="submission, random, first-min, adapter:<candidate>, or /path/to/main.py",
+    )
     parser.add_argument("--deck0", default=None, help="optional deck.csv override for agent0")
     parser.add_argument("--deck1", default=None, help="optional deck.csv override for agent1")
     parser.add_argument("--mirror", action="store_true", help="run agent0 against itself")
@@ -331,6 +343,11 @@ def main() -> int:
     parser.add_argument("--bad-case-dir", default=None, help="write replayable bad cases to this directory")
     parser.add_argument("--high-latency-sec", type=float, default=0.05)
     args = parser.parse_args()
+
+    if args.deck0 is not None and args.agent0.startswith("adapter:"):
+        raise ValueError("--deck0 cannot override an Adapter agent's checkpoint-bound deck")
+    if args.deck1 is not None and args.agent1.startswith("adapter:"):
+        raise ValueError("--deck1 cannot override an Adapter agent's checkpoint-bound deck")
 
     random.seed(args.seed)
     if args.mirror:
@@ -354,8 +371,18 @@ def main() -> int:
     summary = summarize(records, args.agent0, args.agent1, args.seed)
     summary["deck0"] = args.deck0
     summary["deck1"] = args.deck1
-    summary["deck0_sha256"] = deck_sha256(deck0) if deck0 else None
-    summary["deck1_sha256"] = deck_sha256(deck1) if deck1 else None
+    observed_deck0 = records[0].get("decks", [None, None])[0] if records else deck0
+    observed_deck1 = records[0].get("decks", [None, None])[1] if records else deck1
+    summary["deck0_sha256"] = deck_sha256(observed_deck0) if observed_deck0 else None
+    summary["deck1_sha256"] = deck_sha256(observed_deck1) if observed_deck1 else None
+    summary["deck0_consistent"] = bool(records) and all(
+        record.get("decks") and deck_sha256(record["decks"][0]) == summary["deck0_sha256"]
+        for record in records
+    )
+    summary["deck1_consistent"] = bool(records) and all(
+        record.get("decks") and deck_sha256(record["decks"][1]) == summary["deck1_sha256"]
+        for record in records
+    )
     summary["started_at"] = started
     summary["out_dir"] = str(out_dir)
 

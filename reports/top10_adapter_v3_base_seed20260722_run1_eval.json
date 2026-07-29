@@ -1,0 +1,992 @@
+{
+  "schema_version": "top10_adapter_offline_eval_v1",
+  "created_at": "2026-07-28T16:47:03+0800",
+  "split": "test",
+  "data": [
+    "/share/home/shenhanxi/pokemon_data/v3/training_decisions_v1.jsonl"
+  ],
+  "rows": 87992,
+  "unknown_rows_excluded_from_tiers": 1730,
+  "batches": 344,
+  "device": "cuda",
+  "amp": true,
+  "elapsed_seconds": 119.89434622507542,
+  "base_checkpoint": "artifacts/sl0_shared_full/best.pt",
+  "base_dataset_sha256": "E8DC4DC2784A3505EAA159255A735A2C50B907DB66A5F9AB7759BEC326062370",
+  "base_latency_ms_per_row": 0.01805664461250176,
+  "base_online_latency_batch1": {
+    "repeats": 100,
+    "mean_ms": 1.3768504979088902,
+    "p50_ms": 1.3766172342002392,
+    "p95_ms": 1.3898229226469994,
+    "max_ms": 1.413765363395214
+  },
+  "decision_policy": {
+    "hard_gate": "0 illegal predictions",
+    "retrain": "exact/similar top-1 < -0.5pp or general top-1 < -0.3pp",
+    "advance": "exact rows >= 100 and exact top-1 >= +0.3pp, exact policy loss <= -0.01, or similar top-1 >= +0.2pp",
+    "note": "offline gate only; Arena remains mandatory"
+  },
+  "candidates": {
+    "alakazam_battle_cage_split": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 117,
+            "policy_count": 117,
+            "policy_loss": 1.4871055078175333,
+            "policy_top1": 0.47863247863247865,
+            "value_count": 117,
+            "value_mse": 2.3857647649243345,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 117,
+            "policy_count": 117,
+            "policy_loss": 1.4644861588748093,
+            "policy_top1": 0.47863247863247865,
+            "value_count": 117,
+            "value_mse": 2.4903570663215766,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.022619348942723994,
+            "policy_top1": 0.0,
+            "value_mse": 0.10459230139724207
+          },
+          "rows": 117
+        },
+        "similar": {
+          "base": {
+            "rows": 43324,
+            "policy_count": 43250,
+            "policy_loss": 1.1699090353713661,
+            "policy_top1": 0.6228208092485549,
+            "value_count": 43324,
+            "value_mse": 0.8650475313924663,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 43324,
+            "policy_count": 43250,
+            "policy_loss": 1.153468845022993,
+            "policy_top1": 0.6287630057803468,
+            "value_count": 43324,
+            "value_mse": 0.8373538200522425,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.016440190348373074,
+            "policy_top1": 0.0059421965317919545,
+            "value_mse": -0.027693711340223803
+          },
+          "rows": 43324
+        },
+        "general": {
+          "base": {
+            "rows": 42821,
+            "policy_count": 42644,
+            "policy_loss": 1.166167499643071,
+            "policy_top1": 0.5735390676296782,
+            "value_count": 42821,
+            "value_mse": 0.9502386466329507,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 42821,
+            "policy_count": 42644,
+            "policy_loss": 1.1498052375278516,
+            "policy_top1": 0.5808320045023919,
+            "value_count": 42821,
+            "value_mse": 0.9318935897557378,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.016362262115219517,
+            "policy_top1": 0.007292936872713707,
+            "value_mse": -0.018345056877212884
+          },
+          "rows": 42821
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.00894876471406921,
+      "latency_delta_ms_per_row": -0.00910787989843255,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.6353863617405295,
+        "p50_ms": 1.6362955793738365,
+        "p95_ms": 1.651492901146412,
+        "max_ms": 1.655189786106348
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    },
+    "alakazam_neutralization_zone": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 5136,
+            "policy_count": 5111,
+            "policy_loss": 1.1063300462530903,
+            "policy_top1": 0.6466444922715712,
+            "value_count": 5136,
+            "value_mse": 0.7842320864468906,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 5136,
+            "policy_count": 5111,
+            "policy_loss": 1.0854388985377332,
+            "policy_top1": 0.6564273136372529,
+            "value_count": 5136,
+            "value_mse": 0.7858911307754918,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.02089114771535705,
+            "policy_top1": 0.00978282136568176,
+            "value_mse": 0.0016590443286012002
+          },
+          "rows": 5136
+        },
+        "similar": {
+          "base": {
+            "rows": 38305,
+            "policy_count": 38256,
+            "policy_loss": 1.1793732815199365,
+            "policy_top1": 0.6191969887076537,
+            "value_count": 38305,
+            "value_mse": 0.8805283313288637,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 38305,
+            "policy_count": 38256,
+            "policy_loss": 1.163565386018343,
+            "policy_top1": 0.6253136762860728,
+            "value_count": 38305,
+            "value_mse": 0.8335131405523654,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.01580789550159345,
+            "policy_top1": 0.0061166875784191,
+            "value_mse": -0.047015190776498295
+          },
+          "rows": 38305
+        },
+        "general": {
+          "base": {
+            "rows": 42821,
+            "policy_count": 42644,
+            "policy_loss": 1.166167499643071,
+            "policy_top1": 0.5735390676296782,
+            "value_count": 42821,
+            "value_mse": 0.9502386466329507,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 42821,
+            "policy_count": 42644,
+            "policy_loss": 1.1492109250138938,
+            "policy_top1": 0.5818169027295751,
+            "value_count": 42821,
+            "value_mse": 0.9039278347662425,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.016956574629177323,
+            "policy_top1": 0.00827783509989688,
+            "value_mse": -0.04631081186670816
+          },
+          "rows": 42821
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.008746025002039836,
+      "latency_delta_ms_per_row": -0.009310619610461923,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.6357643296942115,
+        "p50_ms": 1.6368175856769085,
+        "p95_ms": 1.65221793577075,
+        "max_ms": 1.658368855714798
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    },
+    "alakazam_nighttime_mine": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 21345,
+            "policy_count": 21314,
+            "policy_loss": 1.1827190096890394,
+            "policy_top1": 0.6208595289481093,
+            "value_count": 21345,
+            "value_mse": 0.9386033982911136,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 21345,
+            "policy_count": 21314,
+            "policy_loss": 1.161183089157233,
+            "policy_top1": 0.6279909918363517,
+            "value_count": 21345,
+            "value_mse": 0.885120542542553,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.02153592053180642,
+            "policy_top1": 0.007131462888242401,
+            "value_mse": -0.0534828557485606
+          },
+          "rows": 21345
+        },
+        "similar": {
+          "base": {
+            "rows": 22096,
+            "policy_count": 22053,
+            "policy_loss": 1.159211179962547,
+            "policy_top1": 0.6239513898335828,
+            "value_count": 22096,
+            "value_mse": 0.8020439985074012,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 22096,
+            "policy_count": 22053,
+            "policy_loss": 1.1456447158771972,
+            "policy_top1": 0.6297555888087788,
+            "value_count": 22096,
+            "value_mse": 0.7915150902296736,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.013566464085349894,
+            "policy_top1": 0.005804198975196018,
+            "value_mse": -0.010528908277727567
+          },
+          "rows": 22096
+        },
+        "general": {
+          "base": {
+            "rows": 42821,
+            "policy_count": 42644,
+            "policy_loss": 1.166167499643071,
+            "policy_top1": 0.5735390676296782,
+            "value_count": 42821,
+            "value_mse": 0.9502386466329507,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 42821,
+            "policy_count": 42644,
+            "policy_loss": 1.1525584991610511,
+            "policy_top1": 0.5803395553888003,
+            "value_count": 42821,
+            "value_mse": 0.9196230043645792,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.013609000482019962,
+            "policy_top1": 0.00680048775912212,
+            "value_mse": -0.030615642268371435
+          },
+          "rows": 42821
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.008657504252996965,
+      "latency_delta_ms_per_row": -0.009399140359504796,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.636815876699984,
+        "p50_ms": 1.636509783565998,
+        "p95_ms": 1.6509657725691795,
+        "max_ms": 1.7965789884328842
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    },
+    "crustle_kangaskhan_cage": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 12424,
+            "policy_count": 12424,
+            "policy_loss": 1.2083138440228074,
+            "policy_top1": 0.564311010946555,
+            "value_count": 12424,
+            "value_mse": 0.8556725207166909,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 12424,
+            "policy_count": 12424,
+            "policy_loss": 1.1997248010183426,
+            "policy_top1": 0.5699452672247264,
+            "value_count": 12424,
+            "value_mse": 0.842068037513526,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.008589043004464836,
+            "policy_top1": 0.005634256278171379,
+            "value_mse": -0.013604483203164874
+          },
+          "rows": 12424
+        },
+        "similar": {
+          "base": {
+            "rows": 4508,
+            "policy_count": 4504,
+            "policy_loss": 1.1469984424197517,
+            "policy_top1": 0.5732682060390764,
+            "value_count": 4508,
+            "value_mse": 0.9035640354164957,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 4508,
+            "policy_count": 4504,
+            "policy_loss": 1.1123060291253781,
+            "policy_top1": 0.5892539964476021,
+            "value_count": 4508,
+            "value_mse": 0.8956880255832859,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.03469241329437356,
+            "policy_top1": 0.01598579040852577,
+            "value_mse": -0.007876009833209796
+          },
+          "rows": 4508
+        },
+        "general": {
+          "base": {
+            "rows": 69330,
+            "policy_count": 69083,
+            "policy_loss": 1.162723561458064,
+            "policy_top1": 0.6059088343007687,
+            "value_count": 69330,
+            "value_mse": 0.9194069053219559,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 69330,
+            "policy_count": 69083,
+            "policy_loss": 1.150091428584282,
+            "policy_top1": 0.6116555447794682,
+            "value_count": 69330,
+            "value_mse": 0.8874205760422438,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.012632132873781954,
+            "policy_top1": 0.005746710478699457,
+            "value_mse": -0.03198632927971212
+          },
+          "rows": 69330
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.008630099891490117,
+      "latency_delta_ms_per_row": -0.009426544721011645,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.638513207435608,
+        "p50_ms": 1.6383810434490442,
+        "p95_ms": 1.6529117710888386,
+        "max_ms": 1.691924873739481
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    },
+    "crustle_kangaskhan_petrel": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 245,
+            "policy_count": 245,
+            "policy_loss": 1.226510146914088,
+            "policy_top1": 0.5591836734693878,
+            "value_count": 245,
+            "value_mse": 0.32686670142777113,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 245,
+            "policy_count": 245,
+            "policy_loss": 1.1922196897621058,
+            "policy_top1": 0.6081632653061224,
+            "value_count": 245,
+            "value_mse": 0.3351535862805892,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.0342904571519822,
+            "policy_top1": 0.048979591836734615,
+            "value_mse": 0.008286884852818088
+          },
+          "rows": 245
+        },
+        "similar": {
+          "base": {
+            "rows": 16687,
+            "policy_count": 16683,
+            "policy_loss": 1.191492968698913,
+            "policy_top1": 0.5668045315590721,
+            "value_count": 16687,
+            "value_mse": 0.8763744068551522,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 16687,
+            "policy_count": 16683,
+            "policy_loss": 1.179305577484253,
+            "policy_top1": 0.572139303482587,
+            "value_count": 16687,
+            "value_mse": 0.8663310139412261,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.01218739121466017,
+            "policy_top1": 0.005334771923514947,
+            "value_mse": -0.010043392913926086
+          },
+          "rows": 16687
+        },
+        "general": {
+          "base": {
+            "rows": 69330,
+            "policy_count": 69083,
+            "policy_loss": 1.162723561458064,
+            "policy_top1": 0.6059088343007687,
+            "value_count": 69330,
+            "value_mse": 0.9194069053219559,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 69330,
+            "policy_count": 69083,
+            "policy_loss": 1.150665889050698,
+            "policy_top1": 0.6109462530579158,
+            "value_count": 69330,
+            "value_mse": 0.8932020468043332,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.012057672407365994,
+            "policy_top1": 0.0050374187571471385,
+            "value_mse": -0.026204858517622664
+          },
+          "rows": 69330
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.008609606222485721,
+      "latency_delta_ms_per_row": -0.009447038390016038,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.6400771122425795,
+        "p50_ms": 1.6380322631448507,
+        "p95_ms": 1.664069015532732,
+        "max_ms": 1.8335608765482903
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    },
+    "cynthia_garchomp_roserade": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 960,
+            "policy_count": 938,
+            "policy_loss": 1.2929175976139586,
+            "policy_top1": 0.511727078891258,
+            "value_count": 960,
+            "value_mse": 1.39642677847296,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 960,
+            "policy_count": 938,
+            "policy_loss": 1.2600196203125564,
+            "policy_top1": 0.5149253731343284,
+            "value_count": 960,
+            "value_mse": 1.3433671718463303,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.032897977301402204,
+            "policy_top1": 0.0031982942430703876,
+            "value_mse": -0.053059606626629785
+          },
+          "rows": 960
+        },
+        "similar": {
+          "base": {
+            "rows": 670,
+            "policy_count": 667,
+            "policy_loss": 1.3177232532866712,
+            "policy_top1": 0.5502248875562219,
+            "value_count": 670,
+            "value_mse": 0.42790589946419444,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 670,
+            "policy_count": 667,
+            "policy_loss": 1.2783631309308392,
+            "policy_top1": 0.5697151424287856,
+            "value_count": 670,
+            "value_mse": 0.4418049846122514,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.03936012235583197,
+            "policy_top1": 0.019490254872563728,
+            "value_mse": 0.013899085148056933
+          },
+          "rows": 670
+        },
+        "general": {
+          "base": {
+            "rows": 84632,
+            "policy_count": 84406,
+            "policy_loss": 1.1659233450524993,
+            "policy_top1": 0.5995308390398787,
+            "value_count": 84632,
+            "value_mse": 0.9076868814991714,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 84632,
+            "policy_count": 84406,
+            "policy_loss": 1.149539968503631,
+            "policy_top1": 0.606070658483994,
+            "value_count": 84632,
+            "value_mse": 0.8864816026143242,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.016383376548868345,
+            "policy_top1": 0.006539819444115302,
+            "value_mse": -0.021205278884847245
+          },
+          "rows": 84632
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.008639539995013377,
+      "latency_delta_ms_per_row": -0.009417104617488382,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.6385675873607397,
+        "p50_ms": 1.6398625448346138,
+        "p95_ms": 1.6527790576219559,
+        "max_ms": 1.6752160154283047
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    },
+    "marnie_grimmsnarl_dudunsparce": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 113,
+            "policy_count": 113,
+            "policy_loss": 1.2170136683183697,
+            "policy_top1": 0.584070796460177,
+            "value_count": 113,
+            "value_mse": 0.1973466931191166,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 113,
+            "policy_count": 113,
+            "policy_loss": 1.1846846045217418,
+            "policy_top1": 0.584070796460177,
+            "value_count": 113,
+            "value_mse": 0.23174261466591758,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.03232906379662781,
+            "policy_top1": 0.0,
+            "value_mse": 0.03439592154680099
+          },
+          "rows": 113
+        },
+        "similar": {
+          "base": {
+            "rows": 10163,
+            "policy_count": 10104,
+            "policy_loss": 0.9831416268830401,
+            "policy_top1": 0.6184679334916865,
+            "value_count": 10163,
+            "value_mse": 0.8141441462570835,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 10163,
+            "policy_count": 10104,
+            "policy_loss": 0.9684756907058997,
+            "policy_top1": 0.6245051464766429,
+            "value_count": 10163,
+            "value_mse": 0.8064789756081253,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.014665936177140404,
+            "policy_top1": 0.006037212984956408,
+            "value_mse": -0.007665170648958219
+          },
+          "rows": 10163
+        },
+        "general": {
+          "base": {
+            "rows": 75986,
+            "policy_count": 75794,
+            "policy_loss": 1.193121070750444,
+            "policy_top1": 0.5955088793308178,
+            "value_count": 75986,
+            "value_mse": 0.9231986902887339,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 75986,
+            "policy_count": 75794,
+            "policy_loss": 1.1794540775160458,
+            "policy_top1": 0.60132728184289,
+            "value_count": 75986,
+            "value_mse": 0.901380148232948,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.01366699323439824,
+            "policy_top1": 0.005818402512072218,
+            "value_mse": -0.021818542055785928
+          },
+          "rows": 75986
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.008568481115585528,
+      "latency_delta_ms_per_row": -0.009488163496916233,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.636648760177195,
+        "p50_ms": 1.6370019875466824,
+        "p95_ms": 1.6530351713299751,
+        "max_ms": 1.6701649874448776
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    },
+    "marnie_grimmsnarl_froslass": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 2580,
+            "policy_count": 2578,
+            "policy_loss": 0.9577525237743519,
+            "policy_top1": 0.6334367726920093,
+            "value_count": 2580,
+            "value_mse": 0.6907227253035981,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 2580,
+            "policy_count": 2578,
+            "policy_loss": 0.9585551153407833,
+            "policy_top1": 0.6334367726920093,
+            "value_count": 2580,
+            "value_mse": 0.6783020218906477,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": 0.0008025915664313654,
+            "policy_top1": 0.0,
+            "value_mse": -0.012420703412950429
+          },
+          "rows": 2580
+        },
+        "similar": {
+          "base": {
+            "rows": 7696,
+            "policy_count": 7639,
+            "policy_loss": 0.9951694640994807,
+            "policy_top1": 0.6129074486189292,
+            "value_count": 7696,
+            "value_mse": 0.8464634230054465,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 7696,
+            "policy_count": 7639,
+            "policy_loss": 0.9724809511487011,
+            "policy_top1": 0.6219400445084435,
+            "value_count": 7696,
+            "value_mse": 0.832221403082914,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.02268851295077956,
+            "policy_top1": 0.009032595889514328,
+            "value_mse": -0.01424201992253249
+          },
+          "rows": 7696
+        },
+        "general": {
+          "base": {
+            "rows": 75986,
+            "policy_count": 75794,
+            "policy_loss": 1.193121070750444,
+            "policy_top1": 0.5955088793308178,
+            "value_count": 75986,
+            "value_mse": 0.9231986902887339,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 75986,
+            "policy_count": 75794,
+            "policy_loss": 1.1784597068568248,
+            "policy_top1": 0.601657123255139,
+            "value_count": 75986,
+            "value_mse": 0.8908020427383715,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.014661363893619273,
+            "policy_top1": 0.006148243924321228,
+            "value_mse": -0.03239664755036242
+          },
+          "rows": 75986
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.008566972473987664,
+      "latency_delta_ms_per_row": -0.009489672138514097,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.6393176512792706,
+        "p50_ms": 1.6393465921282768,
+        "p95_ms": 1.651630736887455,
+        "max_ms": 1.8063629977405071
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    },
+    "marnie_grimmsnarl_tatsugiri": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 195,
+            "policy_count": 194,
+            "policy_loss": 1.0016027313570695,
+            "policy_top1": 0.5824742268041238,
+            "value_count": 195,
+            "value_mse": 0.013995625728215926,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 195,
+            "policy_count": 194,
+            "policy_loss": 0.9695338713792488,
+            "policy_top1": 0.6185567010309279,
+            "value_count": 195,
+            "value_mse": 0.008351404238969852,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.03206885997782061,
+            "policy_top1": 0.03608247422680411,
+            "value_mse": -0.005644221489246074
+          },
+          "rows": 195
+        },
+        "similar": {
+          "base": {
+            "rows": 10081,
+            "policy_count": 10023,
+            "policy_loss": 0.9854209929824346,
+            "policy_top1": 0.6187768133293425,
+            "value_count": 10081,
+            "value_mse": 0.8227078650645966,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 10081,
+            "policy_count": 10023,
+            "policy_loss": 0.9663904563478857,
+            "policy_top1": 0.6272573081911603,
+            "value_count": 10081,
+            "value_mse": 0.822558315946592,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.0190305366345489,
+            "policy_top1": 0.008480494861817789,
+            "value_mse": -0.00014954911800457715
+          },
+          "rows": 10081
+        },
+        "general": {
+          "base": {
+            "rows": 75986,
+            "policy_count": 75794,
+            "policy_loss": 1.193121070750444,
+            "policy_top1": 0.5955088793308178,
+            "value_count": 75986,
+            "value_mse": 0.9231986902887339,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 75986,
+            "policy_count": 75794,
+            "policy_loss": 1.1774562789879472,
+            "policy_top1": 0.602303612423147,
+            "value_count": 75986,
+            "value_mse": 0.9030488467780017,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.0156647917624968,
+            "policy_top1": 0.006794733092329253,
+            "value_mse": -0.020149843510732235
+          },
+          "rows": 75986
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.008578083014073524,
+      "latency_delta_ms_per_row": -0.009478561598428236,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.6367909731343389,
+        "p50_ms": 1.6387496143579483,
+        "p95_ms": 1.6512400470674038,
+        "max_ms": 1.6850251704454422
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    },
+    "mega_starmie_dusknoir": {
+      "tiers": {
+        "exact": {
+          "base": {
+            "rows": 965,
+            "policy_count": 953,
+            "policy_loss": 1.1076446638524666,
+            "policy_top1": 0.5991605456453305,
+            "value_count": 965,
+            "value_mse": 0.6444312554566971,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 965,
+            "policy_count": 953,
+            "policy_loss": 1.0241327722273974,
+            "policy_top1": 0.6379853095487933,
+            "value_count": 965,
+            "value_mse": 0.6528540837332375,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.08351189162506922,
+            "policy_top1": 0.03882476390346279,
+            "value_mse": 0.008422828276540395
+          },
+          "rows": 965
+        },
+        "similar": {
+          "base": {
+            "rows": 0,
+            "policy_count": 0,
+            "policy_loss": null,
+            "policy_top1": null,
+            "value_count": 0,
+            "value_mse": null,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 0,
+            "policy_count": 0,
+            "policy_loss": null,
+            "policy_top1": null,
+            "value_count": 0,
+            "value_mse": null,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": null,
+            "policy_top1": null,
+            "value_mse": null
+          },
+          "rows": 0
+        },
+        "general": {
+          "base": {
+            "rows": 85297,
+            "policy_count": 85058,
+            "policy_loss": 1.1691671402378843,
+            "policy_top1": 0.5981800653671613,
+            "value_count": 85297,
+            "value_mse": 0.9123972314793863,
+            "illegal_predictions": 0
+          },
+          "adapter": {
+            "rows": 85297,
+            "policy_count": 85058,
+            "policy_loss": 1.151875754832981,
+            "policy_top1": 0.6051047520515414,
+            "value_count": 85297,
+            "value_mse": 0.8925335551550116,
+            "illegal_predictions": 0
+          },
+          "delta": {
+            "policy_loss": -0.01729138540490327,
+            "policy_top1": 0.006924686684380066,
+            "value_mse": -0.01986367632437469
+          },
+          "rows": 85297
+        }
+      },
+      "illegal_predictions": 0,
+      "latency_ms_per_row": 0.008560128996277578,
+      "latency_delta_ms_per_row": -0.009496515616224182,
+      "online_latency_batch1": {
+        "repeats": 100,
+        "mean_ms": 1.6379128396511078,
+        "p50_ms": 1.638282323256135,
+        "p95_ms": 1.6521420329809189,
+        "max_ms": 1.6759070567786694
+      },
+      "decision": "advance",
+      "decision_reasons": [
+        "专属或相似牌组离线指标提升，且通用层未越过回退门槛"
+      ]
+    }
+  }
+}
