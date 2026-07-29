@@ -117,6 +117,32 @@ def load_rollout_rows(path: Path, deck_id: str) -> list[dict]:
     return validate_training_rows(rows, deck_id)
 
 
+def load_rollout_rows_for_splits(path: Path, deck_id: str, allowed_splits: set[str]) -> list[dict]:
+    """Load valid/test decisions for evaluation without exposing train rows."""
+
+    if not allowed_splits or not allowed_splits <= {"valid", "test"}:
+        raise ValueError("holdout loader accepts only a non-empty subset of valid/test")
+    files = [path] if path.is_file() else sorted(path.rglob("*.json"))
+    rows: list[dict] = []
+    for source in files:
+        doc = json.loads(source.read_text(encoding="utf-8"))
+        if doc.get("schema_version") != "top2_rl_rollout_v1":
+            continue
+        if doc.get("deck_id") != deck_id:
+            raise ValueError(f"holdout file crosses deck stream: {source}")
+        for row in doc.get("decisions") or []:
+            split = row.get("split")
+            if split in allowed_splits:
+                if row.get("deck_id") != deck_id:
+                    raise ValueError(f"holdout row crosses deck stream: {source}")
+                rows.append(row)
+            elif path.is_file() and split == "train":
+                raise ValueError(f"train-only file cannot be evaluated as holdout: {source}")
+    if not rows:
+        raise ValueError(f"no {sorted(allowed_splits)} rollout decisions found under {path}")
+    return rows
+
+
 def collate_rollout_rows(rows: list[dict]) -> dict[str, torch.Tensor]:
     """Pad variable legal-option sets for one PPO minibatch."""
 
@@ -154,4 +180,39 @@ def collate_rollout_rows(rows: list[dict]) -> dict[str, torch.Tensor]:
         "old_log_probs": torch.tensor([row["old_log_prob"] for row in rows], dtype=torch.float32),
         "advantages": torch.tensor([row["advantage"] for row in rows], dtype=torch.float32),
         "returns": torch.tensor([row["return"] for row in rows], dtype=torch.float32),
+    }
+
+
+def holdout_batch_metrics(
+    *,
+    candidate_logits: torch.Tensor,
+    reference_logits: torch.Tensor,
+    candidate_values: torch.Tensor,
+    reference_values: torch.Tensor,
+    actions: torch.Tensor,
+    returns: torch.Tensor,
+    legal_mask: torch.Tensor,
+) -> dict[str, float | int]:
+    """Return additive frozen-holdout metrics for one padded batch."""
+
+    floor = torch.finfo(candidate_logits.dtype).min
+    candidate_masked = candidate_logits.masked_fill(~legal_mask, floor)
+    reference_masked = reference_logits.masked_fill(~legal_mask, floor)
+    candidate_log_probs = F.log_softmax(candidate_masked, dim=-1)
+    reference_log_probs = F.log_softmax(reference_masked, dim=-1)
+    candidate_probs = candidate_log_probs.exp()
+    candidate_actions = candidate_masked.argmax(dim=-1)
+    reference_actions = reference_masked.argmax(dim=-1)
+    reference_kl = (
+        candidate_probs * (candidate_log_probs - reference_log_probs)
+    ).masked_fill(~legal_mask, 0.0).sum(dim=-1)
+    return {
+        "samples": int(actions.numel()),
+        "candidate_correct": int((candidate_actions == actions).sum().item()),
+        "reference_correct": int((reference_actions == actions).sum().item()),
+        "action_agreement": int((candidate_actions == reference_actions).sum().item()),
+        "illegal_argmax": int((~legal_mask.gather(1, candidate_actions.unsqueeze(1)).squeeze(1)).sum().item()),
+        "reference_kl_sum": float(reference_kl.sum().item()),
+        "candidate_value_se": float(((candidate_values - returns) ** 2).sum().item()),
+        "reference_value_se": float(((reference_values - returns) ** 2).sum().item()),
     }

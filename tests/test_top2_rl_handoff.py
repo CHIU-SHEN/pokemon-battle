@@ -238,6 +238,63 @@ def test_ppo_safety_stop_reason_catches_each_hard_gate() -> None:
         assert safety_stop_reason(metrics, first_entropy=1.0, limits=limits) == expected
 
 
+def test_holdout_loader_never_returns_train_or_cross_deck_rows() -> None:
+    from src.rl.top2_ppo import load_rollout_rows_for_splits
+
+    with tempfile.TemporaryDirectory(prefix="top2_holdout_") as tmp:
+        root = Path(tmp)
+        valid = {
+            "schema_version": "top2_rl_rollout_v1",
+            "deck_id": "primary-v1",
+            "decisions": [{"split": "valid", "deck_id": "primary-v1", "sample": 1}],
+        }
+        (root / "valid.json").write_text(json.dumps(valid), encoding="utf-8")
+        rows = load_rollout_rows_for_splits(root, "primary-v1", {"valid", "test"})
+        assert rows == valid["decisions"]
+        train = dict(valid)
+        train["decisions"] = [{"split": "train", "deck_id": "primary-v1"}]
+        train_path = root / "train_only.json"
+        train_path.write_text(json.dumps(train), encoding="utf-8")
+        try:
+            load_rollout_rows_for_splits(train_path, "primary-v1", {"valid", "test"})
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("train-only file was accepted as holdout")
+        cross = dict(valid)
+        cross["deck_id"] = "reserve-v1"
+        cross_path = root / "cross.json"
+        cross_path.write_text(json.dumps(cross), encoding="utf-8")
+        try:
+            load_rollout_rows_for_splits(cross_path, "primary-v1", {"valid", "test"})
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("cross-deck holdout file was accepted")
+
+
+def test_holdout_metrics_mask_illegal_logits_and_compare_reference() -> None:
+    from src.rl.top2_ppo import holdout_batch_metrics
+
+    result = holdout_batch_metrics(
+        candidate_logits=torch.tensor([[0.0, 1.0, 1000.0]]),
+        reference_logits=torch.tensor([[1.0, 0.0, -1000.0]]),
+        candidate_values=torch.tensor([0.5]),
+        reference_values=torch.tensor([0.0]),
+        actions=torch.tensor([1]),
+        returns=torch.tensor([0.5]),
+        legal_mask=torch.tensor([[True, True, False]]),
+    )
+    assert result["samples"] == 1
+    assert result["candidate_correct"] == 1
+    assert result["reference_correct"] == 0
+    assert result["action_agreement"] == 0
+    assert result["illegal_argmax"] == 0
+    assert result["candidate_value_se"] == 0.0
+    assert result["reference_value_se"] == 0.25
+    assert math.isfinite(result["reference_kl_sum"])
+
+
 def main() -> int:
     test_stable_game_split_freezes_twenty_percent()
     test_gae_propagates_terminal_reward_without_crossing_games()
@@ -250,6 +307,8 @@ def main() -> int:
     test_pilot_budget_tiers_preserve_rollout_and_degrade_evaluation()
     test_wilson_interval_and_preliminary_tie_break_are_deterministic()
     test_ppo_safety_stop_reason_catches_each_hard_gate()
+    test_holdout_loader_never_returns_train_or_cross_deck_rows()
+    test_holdout_metrics_mask_illegal_logits_and_compare_reference()
     print("OK: Top2 RL handoff contracts")
     return 0
 
