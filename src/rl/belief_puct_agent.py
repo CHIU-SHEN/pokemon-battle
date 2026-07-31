@@ -265,11 +265,16 @@ class Top2BeliefPUCTAgent:
         self.sampler = BeliefSampler(deck=policy.deck, seed=self.config.seed)
         self.ledger = GameLedger()
         self.last_decision: SearchDecision | None = None
+        self.search_records: list[dict[str, Any]] = []
         self._last_source = "initialized"
         self.searchable_decisions = 0
 
     def action_source(self) -> str:
         return self._last_source
+
+    def reset_trajectory(self) -> None:
+        self.search_records.clear()
+        self.searchable_decisions = 0
 
     def __call__(self, obs_dict: dict | None) -> list[int]:
         if obs_dict is None or obs_dict.get("select") is None:
@@ -294,6 +299,7 @@ class Top2BeliefPUCTAgent:
             self._last_source = "policy_fallback"
             return self.policy(obs_dict)
         evaluator = Top2NodeEvaluator(self.policy)
+        _, _, _, root_features = self.policy.evaluate_policy_value(obs)
         backend = SearchBackend(sampler=self.sampler)
         temperature = 1.0 if self.searchable_decisions < 20 else 0.25
         decision = BeliefPUCTSearch(
@@ -309,5 +315,24 @@ class Top2BeliefPUCTAgent:
         if not is_legal_action(select, action):
             raise ValueError(f"MCTS returned illegal action: {action}")
         self.searchable_decisions += 1
+        self.search_records.append(
+            {
+                "step": len(self.search_records),
+                **root_features,
+                "actions": [list(item) for item in sorted(decision.visit_counts)],
+                "visit_counts": [
+                    decision.visit_counts[item] for item in sorted(decision.visit_counts)
+                ],
+                "policy_target": [
+                    decision.policy_target[item] for item in sorted(decision.policy_target)
+                ],
+                "root_value": decision.root_value,
+                "simulations": decision.simulations,
+                "particles_requested": decision.particles_requested,
+                "particles_valid": decision.particles_valid,
+                "max_depth_reached": decision.max_depth_reached,
+                "chosen_action": action,
+            }
+        )
         self._last_source = "mcts"
         return action
