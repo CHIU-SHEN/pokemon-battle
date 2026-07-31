@@ -34,6 +34,7 @@ def main() -> int:
     parser.add_argument("--branch", choices=("primary", "reserve"), required=True)
     parser.add_argument("--rollouts", type=Path, required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
+    parser.add_argument("--reference-checkpoint", type=Path)
     parser.add_argument("--splits", default="valid,test")
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--device", default="auto")
@@ -55,7 +56,10 @@ def main() -> int:
     ).model.eval()
     reference = Top2RolloutAgent(
         branch["candidate_id"], branch["deck_id"], project_root=args.project_root.resolve(),
-        device=str(device), deterministic=True, record_decisions=False,
+        device=str(device),
+        ppo_checkpoint=args.reference_checkpoint.resolve() if args.reference_checkpoint else None,
+        deterministic=True,
+        record_decisions=False,
     ).model.eval()
     totals = {
         "samples": 0, "candidate_correct": 0, "reference_correct": 0,
@@ -85,6 +89,8 @@ def main() -> int:
         "deck_id": branch["deck_id"],
         "checkpoint": str(args.checkpoint.resolve()),
         "checkpoint_sha256": sha256_file(args.checkpoint.resolve()),
+        "reference_checkpoint": str(args.reference_checkpoint.resolve()) if args.reference_checkpoint else None,
+        "reference_checkpoint_sha256": sha256_file(args.reference_checkpoint.resolve()) if args.reference_checkpoint else None,
         "splits": sorted(splits),
         "split_samples": {split: sum(row["split"] == split for row in rows) for split in sorted(splits)},
         "games": len({row["game_id"] for row in rows}),

@@ -24,6 +24,7 @@ def main() -> int:
     parser.add_argument("--project-root", type=Path, default=ROOT)
     parser.add_argument("--branch", choices=("primary", "reserve"), required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
+    parser.add_argument("--baseline-checkpoint", type=Path)
     parser.add_argument("--games", type=int, default=200)
     parser.add_argument("--max-steps", type=int, default=1000)
     parser.add_argument("--device", default="cpu")
@@ -33,7 +34,21 @@ def main() -> int:
     config = json.loads(args.config.read_text(encoding="utf-8"))
     branch = next(item for item in config["branches"] if item["role"] == args.branch)
     candidate = PPOArenaAgent(branch["candidate_id"], branch["deck_id"], args.checkpoint, project_root=args.project_root.resolve(), device=args.device)
-    baseline = AdapterArenaAgent(branch["candidate_id"], project_root=args.project_root.resolve(), device=args.device)
+    baseline = (
+        PPOArenaAgent(
+            branch["candidate_id"],
+            branch["deck_id"],
+            args.baseline_checkpoint,
+            project_root=args.project_root.resolve(),
+            device=args.device,
+        )
+        if args.baseline_checkpoint
+        else AdapterArenaAgent(
+            branch["candidate_id"],
+            project_root=args.project_root.resolve(),
+            device=args.device,
+        )
+    )
     records = []
     for index in range(args.games):
         side = index % 2
@@ -43,7 +58,12 @@ def main() -> int:
         if side == 1 and record["result"] in (0, 1):
             record["result"] = 1 - record["result"]
         records.append(record)
-    report = summarize(records, "ppo-candidate", "initial-adapter", args.seed)
+    report = summarize(
+        records,
+        "ppo-candidate",
+        "selfplay-best" if args.baseline_checkpoint else "initial-adapter",
+        args.seed,
+    )
     report.update({"schema_version": "top2_ppo_arena_v1", "role": args.branch, "engine_seed_controlled": False})
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -34,6 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--branch", choices=("primary", "reserve"), required=True)
     parser.add_argument("--rollouts", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--initial-checkpoint", type=Path)
     parser.add_argument("--device", default="auto")
     parser.add_argument("--epochs", type=int, default=4)
     parser.add_argument("--batch-size", type=int, default=128)
@@ -58,7 +59,13 @@ def main() -> int:
     branch = next(item for item in config["branches"] if item["role"] == args.branch)
     device = torch.device("cuda" if args.device == "auto" and torch.cuda.is_available() else "cpu" if args.device == "auto" else args.device)
     owner = Top2RolloutAgent(
-        branch["candidate_id"], branch["deck_id"], project_root=args.project_root.resolve(), device=str(device), deterministic=True, record_decisions=False
+        branch["candidate_id"],
+        branch["deck_id"],
+        project_root=args.project_root.resolve(),
+        device=str(device),
+        ppo_checkpoint=args.initial_checkpoint.resolve() if args.initial_checkpoint else None,
+        deterministic=True,
+        record_decisions=False,
     )
     model = owner.model.to(device)
     reference = copy.deepcopy(model).to(device).eval()
@@ -128,6 +135,7 @@ def main() -> int:
         payload = {
             "schema_version": "top2_ppo_checkpoint_v1", "candidate_id": branch["candidate_id"], "deck_id": branch["deck_id"],
             "initial_adapter_sha256": sha256_file(owner.adapter_path), "adapter_state": model.adapter_state_dict(),
+            "parent_checkpoint_sha256": sha256_file(args.initial_checkpoint.resolve()) if args.initial_checkpoint else None,
             "epoch": epoch, "metrics": metrics, "ppo_config": {**ppo, **effective, "safety_limits": limits},
         }
         torch.save(payload, args.output / "last.pt")
