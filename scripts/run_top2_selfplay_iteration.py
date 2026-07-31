@@ -50,6 +50,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", default="auto")
     parser.add_argument("--arena-device", default="cpu")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--stop-after", choices=("rollout", "train"))
     return parser.parse_args()
 
 
@@ -207,11 +208,32 @@ def main() -> int:
 
     def regression_stage(context: dict[str, Any]) -> dict[str, Any]:
         holdout = context["stages"]["holdout"]
-        return {
-            "passed": bool(holdout.get("finite", False)) and int(holdout.get("illegal_argmax", 1)) == 0,
-            "illegal_actions": int(holdout.get("illegal_argmax", 1)),
-            "holdout_report": holdout["report"],
-        }
+        output = iteration_root / "regression.json"
+        command = [
+            python,
+            str(ROOT / "scripts/evaluate_selfplay_regression.py"),
+            "--config",
+            str(args.config.resolve()),
+            "--project-root",
+            str(project_root),
+            "--selfplay-root",
+            str(args.selfplay_root.resolve()),
+            "--branch",
+            args.branch,
+            "--candidate-checkpoint",
+            context["stages"]["train"]["checkpoint"],
+            "--device",
+            args.arena_device,
+            "--output",
+            str(output),
+        ]
+        run_command(command, cwd=ROOT)
+        report = json.loads(output.read_text(encoding="utf-8"))
+        holdout_passed = bool(holdout.get("finite", False)) and int(holdout.get("illegal_argmax", 1)) == 0
+        report["passed"] = bool(report["passed"]) and holdout_passed
+        report["holdout_report"] = holdout["report"]
+        report["illegal_actions"] = int(report.get("illegal_actions", 0)) + int(holdout.get("illegal_argmax", 0))
+        return report
 
     runner = SelfPlayRunner(
         state,
@@ -224,7 +246,7 @@ def main() -> int:
             "regression": regression_stage,
         },
     )
-    report = runner.run()
+    report = runner.run(stop_after=args.stop_after)
     report_path = iteration_root / "iteration-report.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
