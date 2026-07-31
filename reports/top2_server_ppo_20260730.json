@@ -1,0 +1,50 @@
+{
+  "schema_version": "top2_server_ppo_review_v1",
+  "run_id": "20260730T081415Z",
+  "reviewed_at": "2026-07-31",
+  "source_archive": "artifacts/archive/server-results/2026-07-30-top2-ppo/top2-training-results-20260730T081415Z.tar.gz",
+  "source_sha256": "c39c4b841d7b873a5e20e002c3c245e4f5e5e9839ed5c98c0d717e042f3cad0c",
+  "decision": "do_not_promote",
+  "submission_replacement_authorized": false,
+  "branches": {
+    "primary": {
+      "candidate_id": "crustle_kangaskhan_cage",
+      "training_rows": 120251,
+      "epochs": 3,
+      "final_approx_kl": 0.0008794238377223782,
+      "final_clip_fraction": 0.03166978452750977,
+      "holdout_samples": 28389,
+      "candidate_action_accuracy": 0.4783895170664694,
+      "reference_action_accuracy": 0.4791644651097256,
+      "candidate_reference_action_agreement": 0.9725597942865194,
+      "candidate_value_mse": 0.16443677796604994,
+      "reference_value_mse": 0.2760567665939925,
+      "illegal_argmax": 0,
+      "arena_games": 400,
+      "arena_wins": 193,
+      "arena_losses": 205,
+      "arena_draws": 2,
+      "arena_win_rate_all": 0.4825
+    },
+    "reserve": {
+      "candidate_id": "crustle_kangaskhan_petrel",
+      "training_rows": 118115,
+      "epochs": 3,
+      "final_approx_kl": 0.0007412019280947842,
+      "final_clip_fraction": 0.022149908484513686,
+      "holdout_samples": 28468,
+      "candidate_action_accuracy": 0.49044541239286216,
+      "reference_action_accuracy": 0.49083181115638613,
+      "candidate_reference_action_agreement": 0.9796965013348321,
+      "candidate_value_mse": 0.1718558144817296,
+      "reference_value_mse": 0.2782874431723337,
+      "illegal_argmax": 0,
+      "arena_games": 400,
+      "arena_wins": 199,
+      "arena_losses": 199,
+      "arena_draws": 2,
+      "arena_win_rate_all": 0.4975
+    }
+  },
+  "next_step": "Keep frozen initial adapters; add heterogeneous opponents, independent repetitions, and Top2-specific V1 reanalysis before another small update."
+}

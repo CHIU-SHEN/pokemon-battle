@@ -10,6 +10,7 @@
 - `top4_playoff_report.json`：前四复赛，共 1,200 局。
 - `top2_final_report.json`：前二决赛，共 400 局。
 - `top2_freeze_report.md` / `.json`：10,100 局后的 Top2 选择、三阶段指标、牌表/Adapter/报告哈希与已知限制；当前 primary 为 `crustle_kangaskhan_cage`，reserve 为 `crustle_kangaskhan_petrel`。
+- `top2_server_ppo_20260730.md` / `.json`：首轮服务器双分支 conservative PPO 的训练、冻结 holdout、800 局 Arena 与晋级判断；结论为流程通过、候选不晋级。
 - 后续正式训练和固定评估报告应记录数据版本、模型版本、随机种子、对手矩阵和晋级结论。
 
 历史 M0～M6 说明已归档到 `docs/archive/mvp/`。
