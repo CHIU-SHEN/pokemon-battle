@@ -113,7 +113,10 @@ class Top2RolloutAgent:
 
     def _load_ppo_checkpoint(self, path: Path) -> None:
         checkpoint = torch.load(path, map_location="cpu", weights_only=False)
-        if checkpoint.get("schema_version") != "top2_ppo_checkpoint_v1":
+        if checkpoint.get("schema_version") not in {
+            "top2_ppo_checkpoint_v1",
+            "top2_mcts_checkpoint_v1",
+        }:
             raise ValueError("unsupported PPO checkpoint schema")
         if checkpoint.get("candidate_id") != self.candidate_id:
             raise ValueError("PPO checkpoint candidate mismatch")
