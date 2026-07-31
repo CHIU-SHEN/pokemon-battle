@@ -1,0 +1,27 @@
+{
+  "schema_version": "top2_selfplay_mcts_review_v1",
+  "date": "2026-07-31",
+  "formal_best_changed": false,
+  "submission_changed": false,
+  "ppo_rounds": [
+    {"iteration": "iter-0001", "branch": "primary", "wins": 1523, "losses": 1461, "draws": 16, "win_rate": 0.5103887399463807, "wilson_low": 0.4924509398052398, "status": "reject"},
+    {"iteration": "iter-0001", "branch": "reserve", "wins": 1486, "losses": 1490, "draws": 24, "win_rate": 0.4993279569892473, "wilson_low": 0.48137648088574986, "status": "reject"},
+    {"iteration": "iter-0002", "branch": "primary", "wins": 491, "losses": 505, "draws": 4, "win_rate": 0.4929718875502008, "wilson_low": 0.4620097316203084, "status": "reject"},
+    {"iteration": "iter-0002", "branch": "reserve", "wins": 1529, "losses": 1445, "draws": 26, "win_rate": 0.5141223940820444, "wilson_low": 0.49615294518801245, "status": "reject"},
+    {"iteration": "iter-0003", "branch": "primary", "wins": 512, "losses": 481, "draws": 7, "win_rate": 0.5156092648539778, "wilson_low": 0.4845253739812554, "status": "reject"},
+    {"iteration": "iter-0003", "branch": "reserve", "wins": 501, "losses": 485, "draws": 14, "win_rate": 0.5081135902636917, "wilson_low": 0.47693782128870094, "status": "reject"}
+  ],
+  "mcts": {
+    "smoke": {"games": 2, "samples": 108, "nodes": 864, "fallbacks": 0, "exceptions": 0, "illegal_actions": 0},
+    "benchmark": {"games": 10, "samples": 631, "nodes": 20192, "games_per_hour": 143.47212209932943, "fallbacks": 0, "exceptions": 0, "illegal_actions": 0},
+    "candidate_reeval": {"branch": "primary", "games": 100, "wins": 49, "losses": 51, "draws": 0, "exceptions": 0, "illegal_actions": 0},
+    "search_reeval": {"branch": "primary", "games": 100, "wins": 65, "losses": 35, "draws": 0, "win_rate": 0.65, "wilson_low": 0.5525444329688797, "wilson_high": 0.7363575175690247, "fallback_rate": 0.0, "exceptions": 0, "illegal_actions": 0, "mean_decision_seconds": 0.09427441256784364, "p95_decision_seconds": 0.11553367599844933}
+  },
+  "next": [
+    "run reserve best+MCTS vs pure best for 100 games",
+    "run 400-game formal search validation per branch only after positive 100-game signal",
+    "collect about 200 MCTS games per validated branch",
+    "train on visit distributions and whole-game value targets",
+    "gate MCTS candidate before changing best or submission"
+  ]
+}
