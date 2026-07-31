@@ -38,11 +38,13 @@ def test_promote_archives_old_best_before_switching_pointer(tmp_path: Path) -> N
     old_sha = state.best["sha256"]
     assert state.best["branch"] == "primary"
     assert state.best["deck_id"] == "deck-primary"
+    assert state.best["checkpoint_kind"] == "adapter"
     state.begin_iteration("iter-0001")
     state.promote(checkpoint(tmp_path, "candidate"), {"win_rate": 0.60})
 
     assert state.history[-1]["sha256"] == old_sha
     assert state.best["sha256"] != old_sha
+    assert state.best["checkpoint_kind"] == "ppo"
     assert Path(state.history[-1]["path"]).is_file()
     assert state.iteration["status"] == "promoted"
 

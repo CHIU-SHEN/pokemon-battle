@@ -19,6 +19,7 @@ class OpponentSpec:
     checkpoint_sha256: str | None
     branch: str | None
     deck_id: str | None
+    checkpoint_kind: str | None
 
 
 def sha256_file(path: Path) -> str:
@@ -41,6 +42,7 @@ def _checkpoint_spec(kind: str, item: dict[str, Any]) -> OpponentSpec:
         checkpoint_sha256=actual,
         branch=item.get("branch"),
         deck_id=item.get("deck_id"),
+        checkpoint_kind=item.get("checkpoint_kind", "ppo"),
     )
 
 
@@ -79,6 +81,7 @@ def build_opponent_schedule(
                 checkpoint_sha256=None,
                 branch=None,
                 deck_id=None,
+                checkpoint_kind=None,
             )
         )
     random.Random(seed).shuffle(schedule)

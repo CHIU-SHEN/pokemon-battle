@@ -104,6 +104,7 @@ class SelfPlayState:
             {
                 "branch": branch,
                 "deck_id": deck_id,
+                "checkpoint_kind": "adapter",
                 "source_iteration": None,
                 "promoted_at": state.data["created_at"],
                 "metrics": {},
@@ -166,6 +167,7 @@ class SelfPlayState:
             {
                 "branch": self.data["branch"],
                 "deck_id": self.data["deck_id"],
+                "checkpoint_kind": self.best.get("checkpoint_kind", "ppo"),
                 "source_iteration": self.best.get("source_iteration"),
                 "archived_at": _utc_now(),
                 "metrics": self.best.get("metrics", {}),
@@ -177,6 +179,7 @@ class SelfPlayState:
             {
                 "branch": self.data["branch"],
                 "deck_id": self.data["deck_id"],
+                "checkpoint_kind": "ppo",
                 "source_iteration": iteration_id,
                 "promoted_at": _utc_now(),
                 "metrics": metrics,
