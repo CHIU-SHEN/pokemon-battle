@@ -36,6 +36,8 @@ def test_promote_archives_old_best_before_switching_pointer(tmp_path: Path) -> N
         checkpoint(tmp_path, "initial"),
     )
     old_sha = state.best["sha256"]
+    assert state.best["branch"] == "primary"
+    assert state.best["deck_id"] == "deck-primary"
     state.begin_iteration("iter-0001")
     state.promote(checkpoint(tmp_path, "candidate"), {"win_rate": 0.60})
 

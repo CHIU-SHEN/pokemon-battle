@@ -100,7 +100,15 @@ class SelfPlayState:
         )
         state.root.mkdir(parents=True, exist_ok=True)
         best = state._copy_checkpoint(source, state.root / "best", "initial")
-        best.update({"source_iteration": None, "promoted_at": state.data["created_at"], "metrics": {}})
+        best.update(
+            {
+                "branch": branch,
+                "deck_id": deck_id,
+                "source_iteration": None,
+                "promoted_at": state.data["created_at"],
+                "metrics": {},
+            }
+        )
         state.data["best"] = best
         state._save()
         return state
@@ -156,6 +164,8 @@ class SelfPlayState:
         )
         archived.update(
             {
+                "branch": self.data["branch"],
+                "deck_id": self.data["deck_id"],
                 "source_iteration": self.best.get("source_iteration"),
                 "archived_at": _utc_now(),
                 "metrics": self.best.get("metrics", {}),
@@ -165,6 +175,8 @@ class SelfPlayState:
         promoted = self._copy_checkpoint(source, self.root / "best", f"{iteration_id}-{candidate_sha[:12]}")
         promoted.update(
             {
+                "branch": self.data["branch"],
+                "deck_id": self.data["deck_id"],
                 "source_iteration": iteration_id,
                 "promoted_at": _utc_now(),
                 "metrics": metrics,
