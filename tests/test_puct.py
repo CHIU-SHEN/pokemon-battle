@@ -40,6 +40,15 @@ def test_joint_action_priors_are_normalized_and_length_corrected() -> None:
     assert all(value > 0.0 for value in priors.values())
 
 
+def test_joint_action_priors_support_legal_empty_action() -> None:
+    from src.rl.puct import joint_action_priors
+
+    priors = joint_action_priors(option_logits=[1.0, 0.0], actions=[(), (0,)])
+
+    assert set(priors) == {(), (0,)}
+    assert sum(priors.values()) == pytest.approx(1.0)
+
+
 def test_visit_distribution_supports_sampling_and_argmax_temperatures() -> None:
     from src.rl.puct import EdgeStats, visit_distribution
 

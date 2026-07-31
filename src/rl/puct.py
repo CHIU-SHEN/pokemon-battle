@@ -80,12 +80,16 @@ def joint_action_priors(
     normalized_actions: list[Action] = []
     for raw_action in actions:
         action = tuple(int(index) for index in raw_action)
-        if not action or len(set(action)) != len(action):
-            raise ValueError("joint actions must be non-empty and unique")
-        if min(action) < 0 or max(action) >= len(log_probs):
+        if len(set(action)) != len(action):
+            raise ValueError("joint action indices must be unique")
+        if action and (min(action) < 0 or max(action) >= len(log_probs)):
             raise ValueError("joint action index outside option logits")
         normalized_actions.append(action)
-        scores.append(float(log_probs[list(action)].sum()) / math.sqrt(len(action)))
+        scores.append(
+            math.log(0.05)
+            if not action
+            else float(log_probs[list(action)].sum()) / math.sqrt(len(action))
+        )
     probabilities = _softmax(np.asarray(scores, dtype=np.float64))
     return {action: float(probability) for action, probability in zip(normalized_actions, probabilities)}
 
