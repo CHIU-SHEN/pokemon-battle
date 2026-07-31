@@ -56,6 +56,7 @@ def gate_decision(
     if min(wins, losses, draws) < 0:
         raise ValueError("counts must be non-negative")
     non_draw_games = wins + losses
+    games = non_draw_games + draws
     if non_draw_games == 0:
         raise ValueError("at least one non-draw game is required")
     if initial_games <= 0 or games_cap < initial_games:
@@ -63,16 +64,16 @@ def gate_decision(
     rate = wins / non_draw_games
     low, high = wilson_interval(wins, losses)
 
-    if non_draw_games < initial_games:
+    if games < initial_games:
         status, reason, target = "continue", "initial_sample_incomplete", initial_games
-    elif non_draw_games == initial_games:
+    elif games == initial_games:
         if rate >= 0.58:
             status, reason, target = "promote_ready", "initial_rate_at_least_58_percent", None
         elif rate <= 0.52:
             status, reason, target = "reject", "initial_rate_at_most_52_percent", None
         else:
             status, reason, target = "continue", "initial_rate_in_gray_zone", games_cap
-    elif non_draw_games < games_cap:
+    elif games < games_cap:
         status, reason, target = "continue", "gray_zone_sample_incomplete", games_cap
     elif rate >= 0.55 and low > 0.52:
         status, reason, target = "promote_ready", "final_rate_and_wilson_gate_passed", None
@@ -85,7 +86,7 @@ def gate_decision(
         wins=wins,
         losses=losses,
         draws=draws,
-        games=wins + losses + draws,
+        games=games,
         non_draw_games=non_draw_games,
         win_rate=rate,
         wilson_low=low,

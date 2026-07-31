@@ -43,6 +43,28 @@ def test_draws_are_reported_but_not_used_in_win_rate() -> None:
     assert decision.win_rate == pytest.approx(0.58)
 
 
+@pytest.mark.parametrize(
+    ("wins", "losses", "draws"),
+    [
+        (1523, 1461, 16),
+        (1486, 1490, 24),
+    ],
+)
+def test_total_game_cap_produces_final_decision_with_draws(
+    wins: int,
+    losses: int,
+    draws: int,
+) -> None:
+    from src.rl.selfplay_gate import gate_decision
+
+    decision = gate_decision(wins, losses, draws, games_cap=3000)
+
+    assert decision.games == 3000
+    assert decision.status == "reject"
+    assert decision.reason == "final_rate_or_wilson_gate_failed"
+    assert decision.next_non_draw_target is None
+
+
 def test_gate_rejects_invalid_counts() -> None:
     from src.rl.selfplay_gate import gate_decision
 
