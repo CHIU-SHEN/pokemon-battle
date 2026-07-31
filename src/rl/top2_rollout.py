@@ -144,6 +144,7 @@ class Top2RolloutAgent:
                 "global_features": global_vec,
                 "option_features": option_vecs,
                 "legal_mask": [],
+                "player_deck": list(self.deck),
             }
         option_count = len(option_vecs)
         batch = {
@@ -163,6 +164,7 @@ class Top2RolloutAgent:
             "global_features": global_vec,
             "option_features": option_vecs,
             "legal_mask": [True] * option_count,
+            "player_deck": list(self.deck),
         }
 
     def __call__(self, obs_dict: dict | None) -> list[int]:
