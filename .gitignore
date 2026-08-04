@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.pytest_*/
 .mypy_cache/
 .ruff_cache/
 .venv/
@@ -57,6 +58,8 @@ artifacts/top10-adapters-*.tar.gz
 artifacts/top10-adapters-*.tar.gz.sha256
 artifacts/archive/server-results/**/*.tar.gz
 artifacts/archive/server-results/**/*.tar.gz.sha256
+artifacts/top2-mcts-complete-results-*.tar.gz
+artifacts/top2-mcts-complete-results-*.tar.gz.sha256
 
 # Adapter trainers may write these conventional output roots. Keep lightweight
 # configs, sampling views and reviewed reports elsewhere in the repository.
