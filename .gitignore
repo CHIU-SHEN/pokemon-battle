@@ -66,6 +66,9 @@ artifacts/top2-mcts-complete-results-*.tar.gz.sha256
 adapter_runs/
 adapter_checkpoints/
 server_uploads/
+!server_uploads/
+server_uploads/*
+!server_uploads/README.md
 server_results/
 
 # Local trainer and profiler state.
@@ -133,3 +136,4 @@ data/external/ptcg_bench/
 
 # Local Git worktrees
 .worktrees/
+.local_cache/

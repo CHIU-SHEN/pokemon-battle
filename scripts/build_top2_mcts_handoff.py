@@ -18,7 +18,7 @@ SOURCE_FILES = (
     "config/top2_rl_policy.json",
     "requirements-train.txt",
     "requirements-eval.txt",
-    "TOP2_MCTS_SERVER_HANDOFF.md",
+    "docs/operations/TOP2_MCTS_SERVER_HANDOFF.md",
     "scripts/collect_top2_mcts.py",
     "scripts/train_top2_mcts.py",
     "scripts/evaluate_top2_mcts.py",
