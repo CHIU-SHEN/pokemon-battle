@@ -12,7 +12,7 @@ import tarfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE_BASENAME = "pokemon-tcg-top2-mcts-pilot-v1"
+PACKAGE_BASENAME = "pokemon-tcg-top2-mcts-pilot-v2"
 SOURCE_DIRECTORIES = ("src", "eval", "submission/agent", "submission/cg")
 SOURCE_FILES = (
     "config/top2_rl_policy.json",
@@ -26,6 +26,7 @@ SOURCE_FILES = (
     "scripts/build_top2_mcts_handoff.py",
     "scripts/verify_top2_mcts_handoff.py",
     "jobs/top2_mcts_pilot_single_node.sh",
+    "jobs/top2_mcts_pilot_resilient.sh",
     "data/cards.json",
     "data/card_tags.json",
     "data/high_score_decks/crustle_kangaskhan_cage/deck.csv",
@@ -87,7 +88,7 @@ def build(output_dir: Path, code_root: Path = ROOT, frozen_root: Path = ROOT):
         if not copied:
             missing.append(relative)
     manifest = {
-        "schema_version": "top2_mcts_handoff_v1",
+        "schema_version": "top2_mcts_handoff_v2",
         "branches": ["primary", "reserve"],
         "smoke_games_per_branch": 10,
         "pilot_games_per_branch": 200,

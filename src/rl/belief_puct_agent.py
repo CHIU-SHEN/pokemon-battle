@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import time
 from typing import Any, Callable
 
 import numpy as np
@@ -27,10 +28,33 @@ class SearchConfig:
     dirichlet_alpha: float = 0.3
     dirichlet_epsilon: float = 0.25
     seed: int = 20260731
+    time_budget_seconds: float = 0.030
+    game_budget_seconds: float = 2.0
 
     def __post_init__(self) -> None:
         if min(self.simulations, self.particles, self.max_depth) <= 0:
             raise ValueError("search budgets must be positive")
+        if self.time_budget_seconds <= 0.0 or self.game_budget_seconds <= 0.0:
+            raise ValueError("time budgets must be positive")
+
+
+@dataclass
+class SearchBudgetTracker:
+    per_decision_seconds: float
+    per_game_seconds: float
+    used_seconds: float = 0.0
+
+    def reset(self) -> None:
+        self.used_seconds = 0.0
+
+    def deadline(self, started: float) -> float | None:
+        remaining = self.per_game_seconds - self.used_seconds
+        if remaining <= 0.0:
+            return None
+        return started + min(self.per_decision_seconds, remaining)
+
+    def consume(self, elapsed: float) -> None:
+        self.used_seconds += max(0.0, float(elapsed))
 
 
 @dataclass(frozen=True)
@@ -89,10 +113,12 @@ class BeliefPUCTSearch:
         backend: Any,
         evaluator: Callable[[Any], NodeEvaluation],
         config: SearchConfig | None = None,
+        clock: Callable[[], float] = time.perf_counter,
     ) -> None:
         self.backend = backend
         self.evaluator = evaluator
         self.config = config or SearchConfig()
+        self.clock = clock
         self.rng = np.random.default_rng(self.config.seed)
 
     def _make_node(self, state_id: int, observation: Any, *, root: bool) -> _TreeNode:
@@ -124,11 +150,14 @@ class BeliefPUCTSearch:
         root_id: int,
         nodes: dict[int, _TreeNode],
         root_player: int,
+        deadline: float | None = None,
     ) -> tuple[float, int]:
         node = nodes[root_id]
         path: list[tuple[_TreeNode, Action]] = []
         depth = 0
         while node.edges and depth < self.config.max_depth:
+            if deadline is not None and self.clock() >= deadline:
+                break
             action = select_puct_action(node.edges, c_puct=self.config.c_puct)
             path.append((node, action))
             child_id = node.children.get(action)
@@ -152,12 +181,33 @@ class BeliefPUCTSearch:
             )
         return value, depth
 
-    def search(self, observation: Any, ledger: Any, *, temperature: float) -> SearchDecision:
+    def search(
+        self,
+        observation: Any,
+        ledger: Any,
+        *,
+        temperature: float,
+        deadline: float | None = None,
+    ) -> SearchDecision:
         roots = []
         trees: list[dict[int, _TreeNode]] = []
         root_values = []
         max_depth_reached = 0
+        simulations_completed = 0
         try:
+            if deadline is not None and self.clock() >= deadline:
+                return SearchDecision(
+                    action=None,
+                    visit_counts={},
+                    policy_target={},
+                    root_value=0.0,
+                    simulations=0,
+                    particles_requested=self.config.particles,
+                    particles_valid=0,
+                    max_depth_reached=0,
+                    fallback_reason="deadline_exhausted",
+                    backend_report=self.backend.report(),
+                )
             roots = self.backend.begin_particles(
                 observation,
                 ledger,
@@ -181,14 +231,31 @@ class BeliefPUCTSearch:
                 node = self._make_node(root.state_id, root.observation, root=True)
                 trees.append({root.state_id: node})
             for simulation in range(self.config.simulations):
+                if deadline is not None and self.clock() >= deadline:
+                    break
                 particle_index = simulation % len(roots)
                 value, depth = self._simulate(
                     root_id=roots[particle_index].state_id,
                     nodes=trees[particle_index],
                     root_player=root_player,
+                    deadline=deadline,
                 )
                 root_values.append(value)
                 max_depth_reached = max(max_depth_reached, depth)
+                simulations_completed += 1
+            if simulations_completed == 0:
+                return SearchDecision(
+                    action=None,
+                    visit_counts={},
+                    policy_target={},
+                    root_value=0.0,
+                    simulations=0,
+                    particles_requested=self.config.particles,
+                    particles_valid=len(roots),
+                    max_depth_reached=0,
+                    fallback_reason="deadline_exhausted",
+                    backend_report=self.backend.report(),
+                )
             actions = sorted(
                 {
                     action
@@ -214,7 +281,7 @@ class BeliefPUCTSearch:
                 visit_counts=visits,
                 policy_target=target,
                 root_value=float(np.mean(root_values)) if root_values else 0.0,
-                simulations=self.config.simulations,
+                simulations=simulations_completed,
                 particles_requested=self.config.particles,
                 particles_valid=len(roots),
                 max_depth_reached=max_depth_reached,
@@ -268,6 +335,10 @@ class Top2BeliefPUCTAgent:
         self.search_records: list[dict[str, Any]] = []
         self._last_source = "initialized"
         self.searchable_decisions = 0
+        self.budget = SearchBudgetTracker(
+            per_decision_seconds=self.config.time_budget_seconds,
+            per_game_seconds=self.config.game_budget_seconds,
+        )
 
     def action_source(self) -> str:
         return self._last_source
@@ -275,6 +346,7 @@ class Top2BeliefPUCTAgent:
     def reset_trajectory(self) -> None:
         self.search_records.clear()
         self.searchable_decisions = 0
+        self.budget.reset()
 
     def __call__(self, obs_dict: dict | None) -> list[int]:
         if obs_dict is None or obs_dict.get("select") is None:
@@ -302,18 +374,36 @@ class Top2BeliefPUCTAgent:
         _, _, _, root_features = self.policy.evaluate_policy_value(obs)
         backend = SearchBackend(sampler=self.sampler)
         temperature = 1.0 if self.searchable_decisions < 20 else 0.25
-        decision = BeliefPUCTSearch(
-            backend=backend,
-            evaluator=evaluator,
-            config=self.config,
-        ).search(obs, self.ledger, temperature=temperature)
+        started = time.perf_counter()
+        deadline = self.budget.deadline(started)
+        if deadline is None:
+            self.last_decision = None
+            self._last_source = "mcts_game_budget_fallback"
+            return self.policy(obs_dict)
+        try:
+            decision = BeliefPUCTSearch(
+                backend=backend,
+                evaluator=evaluator,
+                config=self.config,
+            ).search(obs, self.ledger, temperature=temperature, deadline=deadline)
+        except Exception:
+            self.budget.consume(time.perf_counter() - started)
+            self.last_decision = None
+            self._last_source = "mcts_exception_fallback"
+            return self.policy(obs_dict)
+        self.budget.consume(time.perf_counter() - started)
         self.last_decision = decision
         if decision.action is None:
-            self._last_source = "mcts_fallback"
+            self._last_source = (
+                "mcts_deadline_fallback"
+                if decision.fallback_reason == "deadline_exhausted"
+                else "mcts_fallback"
+            )
             return self.policy(obs_dict)
         action = list(decision.action)
         if not is_legal_action(select, action):
-            raise ValueError(f"MCTS returned illegal action: {action}")
+            self._last_source = "mcts_illegal_fallback"
+            return self.policy(obs_dict)
         self.searchable_decisions += 1
         self.search_records.append(
             {

@@ -101,3 +101,36 @@ def test_depth_cap_stops_expansion() -> None:
 
     assert decision.max_depth_reached <= 1
     assert backend.step_calls == 1
+
+
+def test_expired_deadline_returns_structured_fallback_without_expansion() -> None:
+    from src.rl.belief_puct_agent import BeliefPUCTSearch, NodeEvaluation, SearchConfig
+
+    backend = FakeBackend([FakeRef(1, {"id": 1})], {})
+    decision = BeliefPUCTSearch(
+        backend=backend,
+        evaluator=lambda obs: NodeEvaluation(((0,),), (0.0,), 0.0, 0, -1),
+        config=SearchConfig(simulations=8, particles=1, max_depth=3),
+        clock=lambda: 10.0,
+    ).search(object(), None, temperature=0.0, deadline=10.0)
+
+    assert decision.action is None
+    assert decision.simulations == 0
+    assert decision.fallback_reason == "deadline_exhausted"
+    assert backend.step_calls == 0
+    assert backend.closed
+
+
+def test_game_budget_tracker_resets_and_caps_decision_deadline() -> None:
+    from src.rl.belief_puct_agent import SearchBudgetTracker
+
+    tracker = SearchBudgetTracker(per_decision_seconds=0.03, per_game_seconds=0.05)
+    assert tracker.deadline(10.0) == 10.03
+
+    tracker.consume(0.04)
+    assert tracker.deadline(20.0) == 20.01
+    tracker.consume(0.02)
+    assert tracker.deadline(30.0) is None
+
+    tracker.reset()
+    assert tracker.deadline(40.0) == 40.03
