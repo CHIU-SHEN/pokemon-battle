@@ -61,6 +61,9 @@ def with_deck(agent: Agent, deck: list[int] | None) -> Agent:
             return list(deck)
         return agent(obs_dict)
 
+    if hasattr(agent, "action_source"):
+        wrapped.action_source = agent.action_source
+
     return wrapped
 
 

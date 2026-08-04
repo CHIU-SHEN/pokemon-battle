@@ -113,7 +113,10 @@ class Top2RolloutAgent:
 
     def _load_ppo_checkpoint(self, path: Path) -> None:
         checkpoint = torch.load(path, map_location="cpu", weights_only=False)
-        if checkpoint.get("schema_version") != "top2_ppo_checkpoint_v1":
+        if checkpoint.get("schema_version") not in {
+            "top2_ppo_checkpoint_v1",
+            "top2_mcts_checkpoint_v1",
+        }:
             raise ValueError("unsupported PPO checkpoint schema")
         if checkpoint.get("candidate_id") != self.candidate_id:
             raise ValueError("PPO checkpoint candidate mismatch")
@@ -130,6 +133,42 @@ class Top2RolloutAgent:
 
     def action_source(self) -> str:
         return self._last_source
+
+    def evaluate_policy_value(self, obs_or_dict: Any) -> tuple[Any, list[float], float, dict[str, Any]]:
+        """Evaluate one public observation without sampling an action."""
+
+        from agent.parser import parse_observation
+        from src.train.features import sample_features
+
+        parsed = parse_observation(obs_or_dict)
+        global_vec, option_vecs, _, _ = sample_features(parsed, self.base_agent.tags)
+        if not option_vecs:
+            return parsed, [], 0.0, {
+                "global_features": global_vec,
+                "option_features": option_vecs,
+                "legal_mask": [],
+                "player_deck": list(self.deck),
+            }
+        option_count = len(option_vecs)
+        batch = {
+            "global_features": torch.tensor([global_vec], dtype=torch.float32, device=self.device),
+            "option_features": torch.tensor([option_vecs], dtype=torch.float32, device=self.device),
+            "legal_mask": torch.ones((1, option_count), dtype=torch.bool, device=self.device),
+            "player_deck": torch.tensor([self.deck], dtype=torch.long, device=self.device),
+            "player_deck_mask": torch.ones((1, len(self.deck)), dtype=torch.bool, device=self.device),
+            "opponent_deck": torch.zeros((1, 1), dtype=torch.long, device=self.device),
+            "opponent_deck_mask": torch.zeros((1, 1), dtype=torch.bool, device=self.device),
+        }
+        with torch.inference_mode():
+            output = self.model(batch)
+        return parsed, output["policy_logits"][0].detach().cpu().tolist(), float(
+            output["value"][0].item()
+        ), {
+            "global_features": global_vec,
+            "option_features": option_vecs,
+            "legal_mask": [True] * option_count,
+            "player_deck": list(self.deck),
+        }
 
     def __call__(self, obs_dict: dict | None) -> list[int]:
         if obs_dict is None or obs_dict.get("select") is None:
