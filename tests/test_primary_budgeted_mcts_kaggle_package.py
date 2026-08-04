@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tarfile
+import tempfile
 
 
 def test_kaggle_archive_has_required_files_at_root(tmp_path: Path) -> None:
@@ -27,6 +28,7 @@ def test_kaggle_archive_has_required_files_at_root(tmp_path: Path) -> None:
         names = set(bundle.getnames())
     assert "main.py" in names
     assert "deck.csv" in names
+    assert "data/high_score_decks/crustle_kangaskhan_cage/deck.csv" in names
     assert "cg/api.py" in names
     assert "KAGGLE_MANIFEST.json" in names
     assert "artifacts/sl0_shared_full/best.pt" in names
@@ -54,7 +56,7 @@ def test_verifier_checks_hashes_and_top_level_deck(tmp_path: Path) -> None:
         "ok": True,
         "candidate_id": "crustle_kangaskhan_cage",
         "deck_cards": 60,
-        "verified_files": 39,
+        "verified_files": 40,
     }
 
     (extracted / "deck.csv").write_text("1\n", encoding="utf-8")
@@ -101,3 +103,25 @@ def test_packaged_agent_supports_kaggle_raw_exec_without_file(
     deck = environment["agent"](None)
     assert len(deck) == 60
     assert all(isinstance(card_id, int) for card_id in deck)
+    runtime = environment["_get_runtime"]()
+    assert type(runtime).__name__ == "Top2BeliefPUCTAgent"
+
+
+def test_kaggle_initial_deck_request_only_requires_top_level_deck(
+    monkeypatch,
+) -> None:
+    code_root = Path(__file__).resolve().parents[1]
+    source = code_root / "candidates/primary_budgeted_mcts/main.py"
+    deck_source = code_root / "data/high_score_decks/crustle_kangaskhan_cage/deck.csv"
+    with tempfile.TemporaryDirectory(prefix="kaggle-agent-") as directory:
+        isolated = Path(directory)
+        (isolated / "main.py").write_bytes(source.read_bytes())
+        (isolated / "deck.csv").write_bytes(deck_source.read_bytes())
+
+        with monkeypatch.context() as context:
+            context.chdir(isolated)
+            environment = {"__builtins__": __builtins__}
+            exec((isolated / "main.py").read_text(encoding="utf-8"), environment)
+
+            deck = environment["agent"](None)
+            assert len(deck) == 60

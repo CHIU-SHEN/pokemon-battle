@@ -11,6 +11,7 @@ from typing import Any
 PRIMARY_CANDIDATE_ID = "crustle_kangaskhan_cage"
 PRIMARY_DECK_ID = "top2-primary-crustle-kangaskhan-cage-v1"
 PRIMARY_DECK_RELATIVE = Path("data/high_score_decks/crustle_kangaskhan_cage/deck.csv")
+PRIMARY_DECK_CANDIDATES = (Path("deck.csv"), PRIMARY_DECK_RELATIVE)
 _RUNTIME: Any | None = None
 
 
@@ -26,11 +27,9 @@ def find_project_root() -> Path:
             if candidate in checked:
                 continue
             checked.add(candidate)
-            if (candidate / PRIMARY_DECK_RELATIVE).is_file() and (
-                candidate / "artifacts/sl0_shared_full/best.pt"
-            ).is_file():
+            if any((candidate / relative).is_file() for relative in PRIMARY_DECK_CANDIDATES):
                 return candidate
-    raise FileNotFoundError("primary budgeted MCTS assets not found")
+    raise FileNotFoundError("primary deck assets not found")
 
 
 def runtime_config_from_env() -> dict[str, int | float]:
@@ -44,13 +43,16 @@ def runtime_config_from_env() -> dict[str, int | float]:
 
 
 def read_primary_deck() -> list[int]:
-    return [
-        int(line)
-        for line in (find_project_root() / PRIMARY_DECK_RELATIVE)
-        .read_text(encoding="utf-8")
-        .splitlines()
-        if line.strip()
-    ]
+    root = find_project_root()
+    for relative in PRIMARY_DECK_CANDIDATES:
+        path = root / relative
+        if path.is_file():
+            return [
+                int(line)
+                for line in path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+    raise FileNotFoundError("primary deck assets not found")
 
 
 def _get_runtime() -> Any:

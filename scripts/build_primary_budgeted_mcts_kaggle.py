@@ -25,13 +25,13 @@ from scripts.build_primary_budgeted_mcts_candidate import (
 
 
 PACKAGE_BASENAME = "primary_budgeted_mcts_v1"
+TOP_LEVEL_DECK_SOURCE = "data/high_score_decks/crustle_kangaskhan_cage/deck.csv"
 FILE_MAP = {
     **{
         source: destination
         for source, destination in CANDIDATE_FILE_MAP.items()
         if destination not in {"README.md", "verify_candidate.py"}
     },
-    "data/high_score_decks/crustle_kangaskhan_cage/deck.csv": "deck.csv",
     "candidates/primary_budgeted_mcts/README.md": "README.md",
     "scripts/verify_primary_budgeted_mcts_kaggle.py": "verify_submission.py",
 }
@@ -48,6 +48,7 @@ def build(output_dir: Path, *, code_root: Path = ROOT, frozen_root: Path = ROOT)
         copy_directory(code_root / source, staging / destination)
     for source, destination in FILE_MAP.items():
         copy_file(code_root / source, staging / destination)
+    copy_file(code_root / TOP_LEVEL_DECK_SOURCE, staging / "deck.csv")
 
     missing = []
     for relative in FROZEN_FILES:
