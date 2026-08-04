@@ -11,7 +11,7 @@ final_submissions/primary_budgeted_mcts_v1.tar.gz
 SHA-256：
 
 ```text
-bda42787976b8ee73c312bb52d3712f442a8f584711b670fd8b2c53a7cf41985
+6e118e346a405229eef114b142d21f429fcbdd0836eb1a6e66ccb340e375b5f6
 ```
 
 旁车文件：`final_submissions/primary_budgeted_mcts_v1.tar.gz.sha256`。
@@ -57,6 +57,7 @@ bda42787976b8ee73c312bb52d3712f442a8f584711b670fd8b2c53a7cf41985
 - 独立解压验证：39 个 manifest 文件哈希全部通过。
 - 顶层 `deck.csv`：60 张。
 - `agent(None)`：返回 60 张。
+- Kaggle raw-exec（globals 中不提供 `__file__`）：返回 60 张。
 - 运行时懒加载：成功创建 `Top2BeliefPUCTAgent`。
 - reserve/Petrel、原始 MCTS 对局、训练数据和 JSONL：未包含。
 

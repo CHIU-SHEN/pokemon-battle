@@ -79,3 +79,25 @@ def test_builder_cli_runs_from_project_root() -> None:
 
     assert result.returncode == 0, result.stderr
     assert "--output-dir" in result.stdout
+
+
+def test_packaged_agent_supports_kaggle_raw_exec_without_file(
+    tmp_path: Path, monkeypatch,
+) -> None:
+    from scripts.build_primary_budgeted_mcts_kaggle import build
+
+    code_root = Path(__file__).resolve().parents[1]
+    frozen_root = Path(os.environ.get("PTCG_FROZEN_SOURCE_ROOT", code_root))
+    archive, _, _ = build(tmp_path, code_root=code_root, frozen_root=frozen_root)
+    extracted = tmp_path / "raw-exec"
+    extracted.mkdir()
+    with tarfile.open(archive, "r:gz") as bundle:
+        bundle.extractall(extracted)
+
+    monkeypatch.chdir(extracted)
+    environment = {"__builtins__": __builtins__}
+    exec((extracted / "main.py").read_text(encoding="utf-8"), environment)
+
+    deck = environment["agent"](None)
+    assert len(deck) == 60
+    assert all(isinstance(card_id, int) for card_id in deck)

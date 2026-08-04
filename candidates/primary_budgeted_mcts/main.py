@@ -15,12 +15,21 @@ _RUNTIME: Any | None = None
 
 
 def find_project_root() -> Path:
-    start = Path(__file__).resolve().parent
-    for candidate in (start, *start.parents):
-        if (candidate / PRIMARY_DECK_RELATIVE).is_file() and (
-            candidate / "artifacts/sl0_shared_full/best.pt"
-        ).is_file():
-            return candidate
+    module_file = globals().get("__file__")
+    starts = [Path.cwd(), Path("/kaggle_simulations/agent")]
+    if module_file:
+        starts.append(Path(module_file).resolve().parent)
+    checked: set[Path] = set()
+    for start in starts:
+        for candidate in (start, *start.parents):
+            candidate = candidate.resolve()
+            if candidate in checked:
+                continue
+            checked.add(candidate)
+            if (candidate / PRIMARY_DECK_RELATIVE).is_file() and (
+                candidate / "artifacts/sl0_shared_full/best.pt"
+            ).is_file():
+                return candidate
     raise FileNotFoundError("primary budgeted MCTS assets not found")
 
 
