@@ -1,5 +1,28 @@
 # Pokémon TCG AI Battle Agent
 
+## 当前 Kaggle 提交候选（2026-08-04）
+
+当前建议上传验证的学习型候选是：
+
+```text
+final_submissions/primary_budgeted_mcts_v1.tar.gz
+```
+
+该归档符合当前 Kaggle Simulation 竞赛的 `.tar.gz` 结构要求：归档顶层直接包含
+`main.py`、`deck.csv` 和 `cg/`，没有外层包装目录。它使用 primary
+`crustle_kangaskhan_cage` 的冻结共享模型、Adapter 和预算型 belief-PUCT；默认配置为
+8 simulations、1 particle、depth 4、单决策 30ms、整局累计搜索 2s。
+
+本地正式门为 400 局 261:139，胜率 65.25%，Wilson 95% 下界 60.46%；平均决策
+20.96ms、p95 30.09ms，0 异常、0 非法动作。完整记录见
+`reports/primary_budgeted_mcts_v1_submission_report.md`。首次上传仍应观察 Kaggle 的
+self-play Validation Episode，确认线上环境具备 PyTorch 运行依赖。
+
+不要上传 `server_uploads/pokemon-tcg-primary-budgeted-mcts-v1.tar.gz`：它是带外层目录的
+服务器交接包，不是 Kaggle 顶层提交包。历史安全基线
+`final_submissions/submission_flat_safe_v0.zip` 保留用于回滚，但当前 Kaggle 官方格式已是
+`.tar.gz`，不应把旧 ZIP 当作本次 MCTS 候选上传。
+
 ## 本地运行环境
 
 Windows 本地开发统一使用现有 Conda 环境 `pokemon-tcg`，不创建或依赖项目内 `.venv`。该环境当前使用 Python 3.11。
