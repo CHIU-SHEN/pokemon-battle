@@ -119,3 +119,53 @@ def collate_mcts_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "policy_targets": [row["policy_target"] for row in rows],
         "value_targets": torch.tensor([row["value_target"] for row in rows], dtype=torch.float32),
     }
+
+
+def evaluate_mcts_rows(
+    model: torch.nn.Module,
+    reference: torch.nn.Module,
+    rows: list[dict[str, Any]],
+    *,
+    device: torch.device,
+    batch_size: int,
+    value_coef: float,
+    kl_coef: float,
+    entropy_coef: float,
+) -> dict[str, float]:
+    """Evaluate frozen MCTS rows without constructing an autograd graph."""
+    if not rows:
+        raise ValueError("holdout rows must not be empty")
+    if batch_size <= 0:
+        raise ValueError("batch_size must be positive")
+    sums = {key: 0.0 for key in ("loss", "policy_loss", "value_loss", "reference_kl", "entropy")}
+    batches = 0
+    model.eval()
+    reference.eval()
+    with torch.no_grad():
+        for offset in range(0, len(rows), batch_size):
+            raw = collate_mcts_rows(rows[offset: offset + batch_size])
+            actions = raw.pop("actions")
+            policy_targets = raw.pop("policy_targets")
+            value_targets = raw.pop("value_targets").to(device)
+            batch = {
+                key: value.to(device) if isinstance(value, torch.Tensor) else value
+                for key, value in raw.items()
+            }
+            output = model(batch)
+            reference_output = reference(batch)
+            losses = mcts_loss(
+                logits=output["policy_logits"],
+                values=output["value"],
+                reference_logits=reference_output["policy_logits"],
+                actions=actions,
+                policy_targets=policy_targets,
+                value_targets=value_targets,
+                legal_mask=batch["legal_mask"],
+                value_coef=value_coef,
+                kl_coef=kl_coef,
+                entropy_coef=entropy_coef,
+            )
+            for key in sums:
+                sums[key] += float(losses[key].item())
+            batches += 1
+    return {key: value / batches for key, value in sums.items()}

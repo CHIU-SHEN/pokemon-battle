@@ -20,8 +20,46 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.arena.adapter_agent import AdapterArenaAgent  # noqa: E402
-from src.rl.mcts_train import collate_mcts_rows, load_mcts_rows, mcts_loss  # noqa: E402
+from src.rl.mcts_teacher import (  # noqa: E402
+    TeacherConvergenceConfig,
+    ema,
+    evaluate_teacher_stop,
+    gradient_norm,
+    relative_parameter_update,
+    snapshot_parameters,
+)
+from src.rl.mcts_train import (  # noqa: E402
+    collate_mcts_rows,
+    evaluate_mcts_rows,
+    load_mcts_rows,
+    mcts_loss,
+)
 from src.train.shared_data import move_batch  # noqa: E402
+
+
+def configure_teacher_parameters(
+    model: torch.nn.Module,
+) -> tuple[list[str], list[torch.nn.Parameter]]:
+    for parameter in model.parameters():
+        parameter.requires_grad = False
+    allowed = ("adapter", "policy_delta", "value_delta")
+    for module_name in allowed:
+        module = getattr(model, module_name)
+        for parameter in module.parameters():
+            parameter.requires_grad = True
+    named = sorted(
+        (name, parameter)
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    )
+    if not named:
+        raise ValueError("teacher has no trainable parameters")
+    return [name for name, _ in named], [parameter for _, parameter in named]
+
+
+def validate_resume_identity(checkpoint: dict, expected: dict[str, str]) -> None:
+    if any(checkpoint.get(key) != value for key, value in expected.items()):
+        raise ValueError("teacher checkpoint identity mismatch")
 
 
 def parse_args() -> argparse.Namespace:
@@ -32,10 +70,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--samples", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--initial-checkpoint", type=Path)
+    parser.add_argument("--resume", type=Path)
     parser.add_argument("--device", default="auto")
     parser.add_argument("--epochs", type=int, default=6)
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--learning-rate", type=float, default=1e-4)
+    parser.add_argument("--value-coef", type=float, default=1.0)
+    parser.add_argument("--kl-coef", type=float, default=0.02)
+    parser.add_argument("--entropy-coef", type=float, default=0.005)
+    parser.add_argument("--max-grad-norm", type=float, default=0.5)
+    parser.add_argument("--max-wall-seconds", type=float, default=21600.0)
+    parser.add_argument("--checkpoint-interval-seconds", type=float, default=1800.0)
+    parser.add_argument("--max-batches", type=int, default=0)
+    parser.add_argument("--relative-update-max", type=float, default=1e-5)
+    parser.add_argument("--policy-improvement-max", type=float, default=0.002)
+    parser.add_argument("--value-worsening-max", type=float, default=0.01)
+    parser.add_argument("--reference-kl-max", type=float, default=0.03)
+    parser.add_argument("--convergence-patience", type=int, default=3)
     parser.add_argument("--seed", type=int, default=20260731)
     return parser.parse_args()
 
@@ -45,6 +96,7 @@ def load_adapter_state(model: torch.nn.Module, path: Path) -> None:
     if checkpoint.get("schema_version") not in {
         "top2_ppo_checkpoint_v1",
         "top2_mcts_checkpoint_v1",
+        "top2_mcts_teacher_checkpoint_v2",
     }:
         raise ValueError("unsupported initial checkpoint")
     state = checkpoint["adapter_state"]
@@ -53,8 +105,16 @@ def load_adapter_state(model: torch.nn.Module, path: Path) -> None:
     model.value_delta.load_state_dict(state["value_delta"], strict=True)
 
 
+def atomic_torch_save(payload: dict, path: Path) -> None:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    torch.save(payload, temporary)
+    temporary.replace(path)
+
+
 def main() -> int:
     args = parse_args()
+    if args.resume and args.initial_checkpoint:
+        raise ValueError("resume and initial-checkpoint are mutually exclusive")
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     config = json.loads(args.config.read_text(encoding="utf-8"))
@@ -74,21 +134,76 @@ def main() -> int:
     reference = copy.deepcopy(model).to(device).eval()
     for parameter in reference.parameters():
         parameter.requires_grad = False
+    identity = {
+        "branch": args.branch,
+        "candidate_id": branch["candidate_id"],
+        "deck_id": branch["deck_id"],
+    }
+    resume_checkpoint = None
+    if args.resume:
+        resume_checkpoint = torch.load(args.resume.resolve(), map_location=device, weights_only=False)
+        if resume_checkpoint.get("schema_version") != "top2_mcts_teacher_checkpoint_v2":
+            raise ValueError("unsupported teacher resume checkpoint")
+        validate_resume_identity(resume_checkpoint, identity)
+        load_adapter_state(model, args.resume.resolve())
+        reference_state = resume_checkpoint["reference_adapter_state"]
+        reference.adapter.load_state_dict(reference_state["adapter"], strict=True)
+        reference.policy_delta.load_state_dict(reference_state["policy_delta"], strict=True)
+        reference.value_delta.load_state_dict(reference_state["value_delta"], strict=True)
     train_rows = load_mcts_rows(
         args.samples.resolve(),
         branch=args.branch,
         deck_id=branch["deck_id"],
         split="train",
     )
-    parameters = [parameter for parameter in model.parameters() if parameter.requires_grad]
+    valid_rows = load_mcts_rows(
+        args.samples.resolve(),
+        branch=args.branch,
+        deck_id=branch["deck_id"],
+        split="valid",
+    )
+    trainable_names, parameters = configure_teacher_parameters(model)
     optimizer = torch.optim.AdamW(parameters, lr=args.learning_rate)
+    if resume_checkpoint:
+        optimizer.load_state_dict(resume_checkpoint["optimizer_state"])
+        random.setstate(resume_checkpoint["python_random_state"])
+        torch.set_rng_state(resume_checkpoint["torch_random_state"].cpu())
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    metrics = []
+    metrics = list(resume_checkpoint.get("history", [])) if resume_checkpoint else []
+    start_epoch = int(resume_checkpoint.get("epoch", 0)) + 1 if resume_checkpoint else 1
+    prior_elapsed = float(resume_checkpoint.get("elapsed_seconds", 0.0)) if resume_checkpoint else 0.0
     started = time.perf_counter()
-    for epoch in range(1, args.epochs + 1):
+    last_checkpoint_at = started
+    relative_update_ema = (
+        float(metrics[-1]["relative_update_ema"])
+        if metrics and "relative_update_ema" in metrics[-1]
+        else None
+    )
+    convergence = TeacherConvergenceConfig(
+        relative_update_max=args.relative_update_max,
+        policy_improvement_max=args.policy_improvement_max,
+        value_worsening_max=args.value_worsening_max,
+        reference_kl_max=args.reference_kl_max,
+        patience=args.convergence_patience,
+        max_wall_seconds=args.max_wall_seconds,
+    )
+    stop_decision = evaluate_teacher_stop(metrics, convergence, elapsed_seconds=prior_elapsed)
+    last_epoch = start_epoch - 1
+    for epoch in range(start_epoch, args.epochs + 1):
+        if stop_decision.stop:
+            break
         random.Random(args.seed + epoch).shuffle(train_rows)
-        sums = {"loss": 0.0, "policy_loss": 0.0, "value_loss": 0.0, "reference_kl": 0.0, "entropy": 0.0}
+        sums = {
+            "loss": 0.0,
+            "policy_loss": 0.0,
+            "value_loss": 0.0,
+            "reference_kl": 0.0,
+            "entropy": 0.0,
+            "raw_grad_norm": 0.0,
+            "clipped_grad_norm": 0.0,
+            "relative_update": 0.0,
+        }
         batches = 0
         model.train()
         for offset in range(0, len(train_rows), args.batch_size):
@@ -108,45 +223,103 @@ def main() -> int:
                 policy_targets=policy_targets,
                 value_targets=value_targets,
                 legal_mask=batch["legal_mask"],
-                value_coef=1.0,
-                kl_coef=0.02,
-                entropy_coef=0.005,
+                value_coef=args.value_coef,
+                kl_coef=args.kl_coef,
+                entropy_coef=args.entropy_coef,
             )
             optimizer.zero_grad(set_to_none=True)
             loss_doc["loss"].backward()
-            torch.nn.utils.clip_grad_norm_(parameters, 0.5)
+            sums["raw_grad_norm"] += gradient_norm(parameters)
+            before = snapshot_parameters(parameters)
+            torch.nn.utils.clip_grad_norm_(parameters, args.max_grad_norm)
+            sums["clipped_grad_norm"] += gradient_norm(parameters)
             optimizer.step()
-            for key in sums:
+            sums["relative_update"] += relative_parameter_update(before, parameters)
+            for key in ("loss", "policy_loss", "value_loss", "reference_kl", "entropy"):
                 sums[key] += float(loss_doc[key].detach().item())
             batches += 1
+            elapsed = prior_elapsed + time.perf_counter() - started
+            if args.max_batches and batches >= args.max_batches:
+                break
+            if args.max_wall_seconds > 0.0 and elapsed >= args.max_wall_seconds:
+                break
+            if (
+                args.checkpoint_interval_seconds > 0.0
+                and time.perf_counter() - last_checkpoint_at >= args.checkpoint_interval_seconds
+            ):
+                last_checkpoint_at = time.perf_counter()
+        if batches == 0:
+            raise ValueError("teacher epoch produced no batches")
+        averaged = {key: value / batches for key, value in sums.items()}
+        relative_update_ema = ema(relative_update_ema, averaged["relative_update"])
+        holdout = evaluate_mcts_rows(
+            model,
+            reference,
+            valid_rows,
+            device=device,
+            batch_size=args.batch_size,
+            value_coef=args.value_coef,
+            kl_coef=args.kl_coef,
+            entropy_coef=args.entropy_coef,
+        )
+        elapsed = prior_elapsed + time.perf_counter() - started
         record = {
             "epoch": epoch,
-            **{key: value / max(1, batches) for key, value in sums.items()},
+            **averaged,
+            "relative_update_ema": relative_update_ema,
+            **{f"holdout_{key}": value for key, value in holdout.items()},
             "batches": batches,
             "samples": len(train_rows),
-            "elapsed_seconds": time.perf_counter() - started,
+            "holdout_samples": len(valid_rows),
+            "elapsed_seconds": elapsed,
         }
         metrics.append(record)
+        last_epoch = epoch
+        stop_decision = evaluate_teacher_stop(metrics, convergence, elapsed_seconds=elapsed)
+        checkpoint = {
+            "schema_version": "top2_mcts_teacher_checkpoint_v2",
+            **identity,
+            "adapter_state": model.adapter_state_dict(),
+            "reference_adapter_state": reference.adapter_state_dict(),
+            "optimizer_state": optimizer.state_dict(),
+            "python_random_state": random.getstate(),
+            "torch_random_state": torch.get_rng_state(),
+            "epoch": epoch,
+            "elapsed_seconds": elapsed,
+            "history": metrics,
+            "trainable_parameter_names": trainable_names,
+            "effective_parameters": {
+                "learning_rate": args.learning_rate,
+                "value_coef": args.value_coef,
+                "kl_coef": args.kl_coef,
+                "entropy_coef": args.entropy_coef,
+                "max_grad_norm": args.max_grad_norm,
+            },
+        }
+        atomic_torch_save(checkpoint, output / "last.pt")
         print(json.dumps(record), flush=True)
+        if stop_decision.stop:
+            break
+    if not metrics:
+        raise ValueError("teacher training produced no metrics")
     final = metrics[-1]
-    eligible = all(math.isfinite(float(value)) for key, value in final.items() if isinstance(value, float))
-    checkpoint = {
-        "schema_version": "top2_mcts_checkpoint_v1",
-        "branch": args.branch,
-        "candidate_id": branch["candidate_id"],
-        "deck_id": branch["deck_id"],
-        "adapter_state": {
-            "adapter": model.adapter.state_dict(),
-            "policy_delta": model.policy_delta.state_dict(),
-            "value_delta": model.value_delta.state_dict(),
-        },
-        "metrics": final,
-    }
-    torch.save(checkpoint, output / "last.pt")
+    eligible = not stop_decision.unsafe and all(
+        math.isfinite(float(value))
+        for value in final.values()
+        if isinstance(value, float)
+    )
     summary = {
-        "schema_version": "top2_mcts_train_summary_v1",
+        "schema_version": "top2_mcts_teacher_train_summary_v2",
         "eligible": eligible,
         "checkpoint": str(output / "last.pt"),
+        **identity,
+        "epochs_requested": args.epochs,
+        "epochs_completed": last_epoch,
+        "converged": stop_decision.converged,
+        "time_limit_reached": stop_decision.reason == "wall_time_limit",
+        "stop_reason": stop_decision.reason,
+        "trainable_parameter_names": trainable_names,
+        "wall_seconds": prior_elapsed + time.perf_counter() - started,
         "epochs": metrics,
     }
     (output / "summary.json").write_text(
