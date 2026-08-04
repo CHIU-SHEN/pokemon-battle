@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 import tempfile
 
@@ -24,7 +25,7 @@ def test_mcts_handoff_is_non_promoting_and_contains_single_node_job() -> None:
     from scripts.build_top2_mcts_handoff import build
 
     root = Path(__file__).resolve().parents[1]
-    frozen = root.parents[1]
+    frozen = Path(os.environ.get("PTCG_FROZEN_SOURCE_ROOT", root))
     with tempfile.TemporaryDirectory(prefix="mcts_handoff_") as tmp:
         archive, checksum, manifest = build(Path(tmp), root, frozen)
 

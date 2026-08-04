@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 import tarfile
 
@@ -8,8 +9,8 @@ def test_package_contains_only_primary_runtime_and_frozen_assets(tmp_path: Path)
     from scripts.build_primary_budgeted_mcts_candidate import PACKAGE_BASENAME, build
 
     code_root = Path(__file__).resolve().parents[1]
-    frozen_root = code_root.parents[1]
-    formal_main = frozen_root / "submission/main.py"
+    frozen_root = Path(os.environ.get("PTCG_FROZEN_SOURCE_ROOT", code_root))
+    formal_main = code_root / "submission/main.py"
     before = formal_main.read_bytes()
 
     archive, checksum, manifest = build(tmp_path, code_root=code_root, frozen_root=frozen_root)
