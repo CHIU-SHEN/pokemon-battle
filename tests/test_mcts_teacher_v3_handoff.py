@@ -38,6 +38,7 @@ def test_v3_handoff_builds_and_verifies_complete_quality_gated_archive(
         archived_manifest = json.load(bundle.extractfile(f"{package}/HANDOFF_MANIFEST.json"))
     assert b"\r" not in job
     assert f"{package}/docs/MCTS_TEACHER_V3_SERVER_RUNBOOK.md" in names
+    assert f"{package}/docs/MCTS_HYBRID_POLICY_DECISION.md" in names
     assert f"{package}/scripts/gate_mcts_teacher.py" in names
     assert f"{package}/scripts/verify_mcts_teacher_v3_handoff.py" in names
     assert not any(name.endswith(".DS_Store") for name in names)

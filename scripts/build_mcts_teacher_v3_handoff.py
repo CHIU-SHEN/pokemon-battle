@@ -29,6 +29,7 @@ FILES = (
     "scripts/verify_mcts_teacher_v3_handoff.py",
     "jobs/mcts_teacher_v3_quality_gated.sh",
     "docs/MCTS_TEACHER_V3_SERVER_RUNBOOK.md",
+    "docs/MCTS_HYBRID_POLICY_DECISION.md",
     "data/cards.json",
     "data/card_tags.json",
     "data/high_score_decks/crustle_kangaskhan_cage/deck.csv",

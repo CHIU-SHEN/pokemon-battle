@@ -104,3 +104,17 @@ experiments/mcts_teacher_v3/primary/teacher-gate.json
 ```
 
 流水线不会自动替换或晋级任何现有模型。
+
+## 8. 结果返回后的混合策略评估
+
+`best_safe.pt` 不只用于纯策略评估。下载结果后，必须用相同 swapped-seat 种子依次比较：
+
+- 纯学生：0 simulations
+- 混合学生 S8：8 simulations
+- 混合学生 S16：16 simulations
+- 强教师：128 simulations
+
+先各跑 100 局筛选，再对保留方案跑 400 局。除胜率和 Wilson 区间外，同时记录平均/P95
+决策耗时、搜索超时比例、异常、非法动作和安全回退。优先选择达到 53% 且 P95 延迟最低的
+方案，不再要求纯学生必须完全取代搜索。完整决策见
+`docs/MCTS_HYBRID_POLICY_DECISION.md`。

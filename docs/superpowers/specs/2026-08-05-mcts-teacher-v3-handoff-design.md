@@ -90,3 +90,19 @@ identity or search configuration is rejected rather than reused.
 
 The package never automatically promotes a model. Arena evaluation and an
 explicit promotion decision remain separate after the result is downloaded.
+
+## Post-training hybrid evaluation decision
+
+The distilled policy is not required to be the only deployment form. After
+the v3 result returns, evaluate the same policy/value checkpoint in four
+matched configurations: pure policy (0 simulations), policy-guided MCTS with
+8 simulations, policy-guided MCTS with 16 simulations, and the 128-simulation
+teacher. Use identical swapped-seat seeds and report both Arena strength and
+decision latency.
+
+This follows the useful part of the Kaggle AlphaZero-style sample: the network
+provides priors and leaf values while a small online search remains available
+to correct distribution-shift errors. The 53% promotion target remains, but
+selection is now a strength-latency decision. Prefer the lowest-search option
+that passes all safety gates and reaches the target. See
+`docs/MCTS_HYBRID_POLICY_DECISION.md` for the authoritative evaluation matrix.
