@@ -33,12 +33,26 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--simulations", type=int, default=32)
     parser.add_argument("--particles", type=int, default=3)
     parser.add_argument("--max-depth", type=int, default=8)
+    parser.add_argument("--time-budget-seconds", type=float, default=0.25)
+    parser.add_argument("--game-budget-seconds", type=float, default=120.0)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--seed", type=int, default=20260731)
     parser.add_argument("--max-steps", type=int, default=1000)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--resume", action="store_true")
     return parser.parse_args()
+
+
+def build_search_config(args: argparse.Namespace) -> SearchConfig:
+    return SearchConfig(
+        simulations=args.simulations,
+        particles=args.particles,
+        max_depth=args.max_depth,
+        root_noise=True,
+        seed=args.seed,
+        time_budget_seconds=args.time_budget_seconds,
+        game_budget_seconds=args.game_budget_seconds,
+    )
 
 
 def atomic_json(path: Path, value: dict) -> None:
@@ -73,13 +87,7 @@ def main() -> int:
     )
     learner = Top2BeliefPUCTAgent(
         policy,
-        config=SearchConfig(
-            simulations=args.simulations,
-            particles=args.particles,
-            max_depth=args.max_depth,
-            root_noise=True,
-            seed=args.seed,
-        ),
+        config=build_search_config(args),
         selfplay=True,
     )
     opponent = AdapterArenaAgent(

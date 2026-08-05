@@ -8,6 +8,15 @@ import pytest
 from src.rl.mcts_collection import audit_collection, choose_worker_candidates, plan_shards
 
 
+def test_offline_collector_uses_explicit_non_online_budgets() -> None:
+    from argparse import Namespace
+    from scripts.collect_top2_mcts import build_search_config
+
+    config = build_search_config(Namespace(simulations=32, particles=3, max_depth=8, seed=7, time_budget_seconds=0.25, game_budget_seconds=120.0))
+    assert config.time_budget_seconds == 0.25
+    assert config.game_budget_seconds == 120.0
+
+
 def _game(path: Path, game_id: str, *, split: str = "train", **extra: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     document = {

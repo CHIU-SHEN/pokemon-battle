@@ -29,6 +29,7 @@ run_worker_stage() {
       --project-root "$ROOT" --branch primary \
       --iteration-id "primary-10k-w$(printf '%02d' "$worker")" \
       --games "$games" --device cpu --seed "$((20260805 + worker * 1000003))" \
+      --time-budget-seconds 0.25 --game-budget-seconds 120 \
       --output-root "$shard" --resume \
       > "$shard/collector.log" 2>&1 &
     pids+=("$!")
@@ -46,7 +47,8 @@ run_worker_stage() {
 if [[ ! -f "$RUN_ROOT/smoke.complete" ]]; then
   "$PYTHON_BIN" scripts/collect_top2_mcts.py \
     --project-root "$ROOT" --branch primary --iteration-id primary-smoke \
-    --games 10 --device cpu --output-root "$RUN_ROOT/smoke"
+    --games 10 --device cpu --time-budget-seconds 0.25 --game-budget-seconds 120 \
+    --output-root "$RUN_ROOT/smoke"
   touch "$RUN_ROOT/smoke.complete"
 fi
 
