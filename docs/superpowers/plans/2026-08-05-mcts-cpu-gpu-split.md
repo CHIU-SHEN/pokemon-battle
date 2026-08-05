@@ -1,4 +1,6 @@
-# MCTS CPU Collector and GPU Trainer Split Implementation Plan
+# MCTS CPU Collector and GPU Trainer Split Implementation Plan (Superseded)
+
+> Superseded by `2026-08-05-mcts-all-in-one-pipeline.md`. Retained for historical traceability; do not execute this plan for the current single-server target.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
