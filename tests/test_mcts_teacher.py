@@ -116,3 +116,21 @@ def test_wall_time_stop_is_not_convergence() -> None:
     assert decision.converged is False
     assert decision.unsafe is False
     assert decision.reason == "wall_time_limit"
+
+
+def test_convergence_waits_for_minimum_elapsed_time() -> None:
+    from src.rl.mcts_teacher import TeacherConvergenceConfig, evaluate_teacher_stop
+
+    history = [_window(1e-6, value) for value in (1.0, 0.999, 0.9985, 0.998)]
+    config = TeacherConvergenceConfig(min_convergence_seconds=1800.0)
+    assert not evaluate_teacher_stop(history, config, elapsed_seconds=1799).stop
+    assert evaluate_teacher_stop(history, config, elapsed_seconds=1800).converged
+
+
+def test_safe_checkpoint_requires_policy_improvement_and_value_tolerance() -> None:
+    from src.rl.mcts_teacher import is_safe_checkpoint
+
+    best = {"holdout_policy_loss": 1.0, "holdout_value_loss": 0.5}
+    assert is_safe_checkpoint(_window(1e-4, 0.9, value_loss=0.504, reference_kl=0.02), best)
+    assert not is_safe_checkpoint(_window(1e-4, 1.1, value_loss=0.5), best)
+    assert not is_safe_checkpoint(_window(1e-4, 0.9, value_loss=0.51), best)

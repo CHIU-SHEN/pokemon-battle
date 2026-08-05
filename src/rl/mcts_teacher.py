@@ -18,6 +18,7 @@ class TeacherConvergenceConfig:
     patience: int = 3
     policy_worsening_patience: int = 2
     max_wall_seconds: float = 21_600.0
+    min_convergence_seconds: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -46,6 +47,26 @@ def adapt_kl_coefficient(
     if holdout_kl <= 0.025:
         return current
     return min(maximum, current * 2.0)
+
+
+def is_safe_checkpoint(
+    metrics: dict[str, float],
+    best_metrics: dict[str, float] | None,
+    *,
+    reference_kl_max: float = 0.03,
+    value_worsening_max: float = 0.01,
+) -> bool:
+    required = ("holdout_policy_loss", "holdout_value_loss", "holdout_reference_kl")
+    if not all(math.isfinite(float(metrics[key])) for key in required):
+        return False
+    if float(metrics["holdout_reference_kl"]) > reference_kl_max:
+        return False
+    if best_metrics is None:
+        return True
+    if float(metrics["holdout_policy_loss"]) >= float(best_metrics["holdout_policy_loss"]):
+        return False
+    allowed_value = float(best_metrics["holdout_value_loss"]) * (1.0 + value_worsening_max)
+    return float(metrics["holdout_value_loss"]) <= allowed_value
 
 
 def _parameters(parameters: Iterable[torch.nn.Parameter]) -> list[torch.nn.Parameter]:
@@ -144,7 +165,7 @@ def evaluate_teacher_stop(
             ) <= config.value_worsening_max
             for previous, current in comparisons
         )
-        if plateau:
+        if plateau and elapsed_seconds >= config.min_convergence_seconds:
             return TeacherStopDecision(True, "converged", converged=True)
 
     if config.max_wall_seconds > 0.0 and elapsed_seconds >= config.max_wall_seconds:

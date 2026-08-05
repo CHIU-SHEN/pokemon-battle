@@ -22,9 +22,11 @@ if str(ROOT) not in sys.path:
 from src.arena.adapter_agent import AdapterArenaAgent  # noqa: E402
 from src.rl.mcts_teacher import (  # noqa: E402
     TeacherConvergenceConfig,
+    adapt_kl_coefficient,
     ema,
     evaluate_teacher_stop,
     gradient_norm,
+    is_safe_checkpoint,
     relative_parameter_update,
     snapshot_parameters,
 )
@@ -72,11 +74,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--initial-checkpoint", type=Path)
     parser.add_argument("--resume", type=Path)
     parser.add_argument("--device", default="auto")
-    parser.add_argument("--epochs", type=int, default=6)
+    parser.add_argument("--epochs", type=int, default=1000)
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--learning-rate", type=float, default=1e-4)
     parser.add_argument("--value-coef", type=float, default=1.0)
-    parser.add_argument("--kl-coef", type=float, default=0.02)
+    parser.add_argument("--kl-coef", type=float, default=0.05)
     parser.add_argument("--entropy-coef", type=float, default=0.005)
     parser.add_argument("--max-grad-norm", type=float, default=0.5)
     parser.add_argument("--max-wall-seconds", type=float, default=21600.0)
@@ -86,7 +88,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--policy-improvement-max", type=float, default=0.002)
     parser.add_argument("--value-worsening-max", type=float, default=0.01)
     parser.add_argument("--reference-kl-max", type=float, default=0.03)
-    parser.add_argument("--convergence-patience", type=int, default=3)
+    parser.add_argument("--convergence-patience", type=int, default=5)
+    parser.add_argument("--min-convergence-seconds", type=float, default=1800.0)
     parser.add_argument("--seed", type=int, default=20260731)
     return parser.parse_args()
 
@@ -166,6 +169,8 @@ def main() -> int:
     optimizer = torch.optim.AdamW(parameters, lr=args.learning_rate)
     if resume_checkpoint:
         optimizer.load_state_dict(resume_checkpoint["optimizer_state"])
+        for group in optimizer.param_groups:
+            group["lr"] = args.learning_rate
         random.setstate(resume_checkpoint["python_random_state"])
         torch.set_rng_state(resume_checkpoint["torch_random_state"].cpu())
     output = args.output.resolve()
@@ -180,6 +185,11 @@ def main() -> int:
         if metrics and "relative_update_ema" in metrics[-1]
         else None
     )
+    current_kl_coef = float(
+        resume_checkpoint.get("adaptive_kl_coef", args.kl_coef)
+        if resume_checkpoint else args.kl_coef
+    )
+    best_safe_metrics = resume_checkpoint.get("best_safe_metrics") if resume_checkpoint else None
     convergence = TeacherConvergenceConfig(
         relative_update_max=args.relative_update_max,
         policy_improvement_max=args.policy_improvement_max,
@@ -187,6 +197,7 @@ def main() -> int:
         reference_kl_max=args.reference_kl_max,
         patience=args.convergence_patience,
         max_wall_seconds=args.max_wall_seconds,
+        min_convergence_seconds=args.min_convergence_seconds,
     )
     stop_decision = evaluate_teacher_stop(metrics, convergence, elapsed_seconds=prior_elapsed)
     last_epoch = start_epoch - 1
@@ -224,7 +235,7 @@ def main() -> int:
                 value_targets=value_targets,
                 legal_mask=batch["legal_mask"],
                 value_coef=args.value_coef,
-                kl_coef=args.kl_coef,
+                kl_coef=current_kl_coef,
                 entropy_coef=args.entropy_coef,
             )
             optimizer.zero_grad(set_to_none=True)
@@ -259,7 +270,7 @@ def main() -> int:
             device=device,
             batch_size=args.batch_size,
             value_coef=args.value_coef,
-            kl_coef=args.kl_coef,
+            kl_coef=current_kl_coef,
             entropy_coef=args.entropy_coef,
         )
         elapsed = prior_elapsed + time.perf_counter() - started
@@ -272,6 +283,7 @@ def main() -> int:
             "samples": len(train_rows),
             "holdout_samples": len(valid_rows),
             "elapsed_seconds": elapsed,
+            "kl_coef": current_kl_coef,
         }
         metrics.append(record)
         last_epoch = epoch
@@ -296,10 +308,24 @@ def main() -> int:
                 "max_grad_norm": args.max_grad_norm,
             },
         }
+        checkpoint["adaptive_kl_coef"] = current_kl_coef
+        checkpoint["best_safe_metrics"] = best_safe_metrics
         atomic_torch_save(checkpoint, output / "last.pt")
+        if is_safe_checkpoint(record, best_safe_metrics, reference_kl_max=args.reference_kl_max):
+            best_safe_metrics = {
+                key: float(record[key])
+                for key in ("holdout_policy_loss", "holdout_value_loss", "holdout_reference_kl")
+            }
+            checkpoint["best_safe_metrics"] = best_safe_metrics
+            atomic_torch_save(checkpoint, output / "best_safe.pt")
         print(json.dumps(record), flush=True)
         if stop_decision.stop:
             break
+        current_kl_coef = adapt_kl_coefficient(
+            float(record["holdout_reference_kl"]),
+            current_kl_coef,
+            hard_limit=args.reference_kl_max,
+        )
     if not metrics:
         raise ValueError("teacher training produced no metrics")
     final = metrics[-1]
@@ -311,7 +337,8 @@ def main() -> int:
     summary = {
         "schema_version": "top2_mcts_teacher_train_summary_v2",
         "eligible": eligible,
-        "checkpoint": str(output / "last.pt"),
+        "checkpoint": str(output / "best_safe.pt") if (output / "best_safe.pt").is_file() else None,
+        "last_checkpoint": str(output / "last.pt"),
         **identity,
         "epochs_requested": args.epochs,
         "epochs_completed": last_epoch,

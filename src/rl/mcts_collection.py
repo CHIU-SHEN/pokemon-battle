@@ -67,7 +67,14 @@ def plan_shards(
 
 
 def _fallback_count(sources: dict[str, int]) -> int:
-    return sum(int(count) for source, count in sources.items() if "fallback" in source)
+    unsafe = {
+        "mcts_game_budget_fallback",
+        "mcts_exception_fallback",
+        "mcts_deadline_fallback",
+        "mcts_fallback",
+        "mcts_illegal_fallback",
+    }
+    return sum(int(count) for source, count in sources.items() if source in unsafe)
 
 
 def audit_collection(

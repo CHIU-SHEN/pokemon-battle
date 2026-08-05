@@ -63,6 +63,12 @@ def test_audit_rebuilds_cumulative_totals_and_action_sources(tmp_path: Path) -> 
     assert report["fallback_rate"] == 0.0
 
 
+def test_policy_fallback_is_not_counted_as_failed_search(tmp_path: Path) -> None:
+    _game(tmp_path / "a/games/game.json", "a", action_sources={"mcts": 2, "policy_fallback": 4})
+    report = audit_collection(tmp_path, {"branch": "primary", "deck_id": "deck"})
+    assert report["fallbacks"] == 0
+
+
 def test_audit_rejects_duplicate_identity_and_hidden_fields(tmp_path: Path) -> None:
     _game(tmp_path / "a/games/game.json", "duplicate")
     _game(tmp_path / "b/games/game.json", "duplicate")
