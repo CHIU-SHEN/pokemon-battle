@@ -1,4 +1,6 @@
-# MCTS CPU 采集与 GPU 训练拆分设计
+# MCTS CPU 采集与 GPU 训练拆分设计（已被取代）
+
+> 本方案已被 `2026-08-05-mcts-all-in-one-pipeline-design.md` 取代。保留本文仅用于历史追踪；当前目标是在一台 48 vCPU + Tesla V100 服务器上串行完成采集与训练。
 
 ## 目标
 
