@@ -28,6 +28,26 @@ class TeacherStopDecision:
     unsafe: bool = False
 
 
+def adapt_kl_coefficient(
+    holdout_kl: float,
+    current: float,
+    *,
+    hard_limit: float = 0.03,
+    minimum: float = 0.01,
+    maximum: float = 1.0,
+) -> float:
+    """Return the next epoch's KL coefficient or reject an unsafe epoch."""
+    if not math.isfinite(holdout_kl) or not math.isfinite(current) or current <= 0:
+        raise ValueError("KL values must be finite and the coefficient positive")
+    if holdout_kl > hard_limit:
+        raise ValueError("holdout KL exceeded the hard limit")
+    if holdout_kl < 0.015:
+        return max(minimum, current * 0.8)
+    if holdout_kl <= 0.025:
+        return current
+    return min(maximum, current * 2.0)
+
+
 def _parameters(parameters: Iterable[torch.nn.Parameter]) -> list[torch.nn.Parameter]:
     return list(parameters)
 

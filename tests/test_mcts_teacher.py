@@ -6,6 +6,16 @@ import pytest
 import torch
 
 
+def test_adaptive_kl_uses_all_four_regions() -> None:
+    from src.rl.mcts_teacher import adapt_kl_coefficient
+
+    assert adapt_kl_coefficient(0.01, 0.05) == pytest.approx(0.04)
+    assert adapt_kl_coefficient(0.02, 0.05) == pytest.approx(0.05)
+    assert adapt_kl_coefficient(0.027, 0.05) == pytest.approx(0.1)
+    with pytest.raises(ValueError, match="hard limit"):
+        adapt_kl_coefficient(0.031, 0.05)
+
+
 def _window(
     relative_update: float,
     policy_loss: float,
