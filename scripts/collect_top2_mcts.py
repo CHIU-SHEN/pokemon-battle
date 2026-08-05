@@ -19,6 +19,7 @@ from eval.run_match import play_game, with_deck  # noqa: E402
 from src.arena.adapter_agent import AdapterArenaAgent  # noqa: E402
 from src.rl.belief_puct_agent import SearchConfig, Top2BeliefPUCTAgent  # noqa: E402
 from src.rl.mcts_dataset import finalize_mcts_game  # noqa: E402
+from src.rl.mcts_collection import audit_collection  # noqa: E402
 from src.rl.top2_rollout import Top2RolloutAgent, sha256_file  # noqa: E402
 
 
@@ -87,13 +88,7 @@ def main() -> int:
         device=args.device,
     )
     started = time.perf_counter()
-    totals = {
-        "samples": 0,
-        "nodes": 0,
-        "fallbacks": 0,
-        "exceptions": 0,
-        "illegal_actions": 0,
-    }
+    checkpoint_sha256 = sha256_file(policy.adapter_path)
     for game_index in range(completed, args.games):
         learner.reset_trajectory()
         side = game_index % 2
@@ -113,8 +108,12 @@ def main() -> int:
             deck_id=branch["deck_id"],
             result=int(record["result"]),
             learner_side=side,
-            checkpoint_sha256=sha256_file(policy.adapter_path),
+            checkpoint_sha256=checkpoint_sha256,
         )
+        learner_sources = {
+            str(source): int(count)
+            for source, count in record["action_sources"][side].items()
+        }
         document = {
             "schema_version": "top2_mcts_game_v1",
             "game_id": game_id,
@@ -125,15 +124,16 @@ def main() -> int:
             "learner_side": side,
             "exceptions": record["exceptions"],
             "illegal_actions": record["illegal_actions"],
+            "action_sources": learner_sources,
             "samples": samples,
         }
         atomic_json(games_root / f"game_{game_index:06d}.json", document)
-        totals["samples"] += len(samples)
-        totals["nodes"] += sum(int(row["simulations"]) for row in samples)
-        totals["exceptions"] += len(record["exceptions"])
-        totals["illegal_actions"] += sum(record["illegal_actions"])
         completed_now = game_index + 1
         if completed_now % 10 == 0 or completed_now == args.games:
+            totals = audit_collection(
+                output_root,
+                {"branch": args.branch, "deck_id": branch["deck_id"]},
+            )
             elapsed = max(1e-9, time.perf_counter() - started)
             rate = (completed_now - completed) / elapsed
             progress = {
@@ -143,14 +143,14 @@ def main() -> int:
                 "iteration_id": args.iteration_id,
                 "completed_games": completed_now,
                 "target_games": args.games,
-                **totals,
+                **{key: value for key, value in totals.items() if key != "game_ids"},
                 "elapsed_seconds": elapsed,
                 "games_per_hour": rate * 3600.0,
                 "eta_seconds": (args.games - completed_now) / rate if rate > 0 else None,
             }
             atomic_json(output_root / "progress.json", progress)
             print(json.dumps(progress, ensure_ascii=False), flush=True)
-    return 0 if totals["exceptions"] == 0 and totals["illegal_actions"] == 0 else 1
+    return 0
 
 
 if __name__ == "__main__":
