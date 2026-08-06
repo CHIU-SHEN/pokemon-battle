@@ -7,10 +7,12 @@
 以 V3 epoch 44 `best_safe_arena.pt` 为唯一学生权重，同时产出两个互不覆盖的候选：
 
 1. 权威 S16：16 simulations、3 particles、depth 10、单决策 0.25 秒、整局 120 秒。
-2. Kaggle S16-60ms：16 simulations、3 particles、depth 10、单决策 0.06 秒、整局 3 秒。
+2. Kaggle S16-60ms：16 simulations、3 particles、depth 10、单决策 0.06 秒、整局 5 秒。
 
 权威版本严格复现 400 局 295/105、73.75% 胜率的配置。低预算版本只收紧 deadline，
 不减少 simulations、particles 或 depth；其依据是权威评估平均决策 36.25 ms、P95 50.16 ms。
+最初的 3 秒整局预算在 10 局 smoke 中产生 15 次 `mcts_game_budget_fallback`，因此经确认提高到
+5 秒，并要求评估器统计所有 `mcts_*fallback` 来源。
 
 ## 构建边界
 

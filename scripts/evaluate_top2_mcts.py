@@ -60,6 +60,15 @@ def atomic_write_json(path: Path, payload: dict) -> None:
             temporary.unlink()
 
 
+def count_mcts_fallbacks(action_sources: dict[str, int]) -> int:
+    return sum(
+        int(count)
+        for source, count in action_sources.items()
+        if source == "mcts_fallback"
+        or (source.startswith("mcts_") and source.endswith("_fallback"))
+    )
+
+
 def evaluation_identity(
     *,
     branch: str,
@@ -229,7 +238,7 @@ def main() -> int:
             tested_side=tested_side,
             exceptions=len(record["exceptions"]),
             illegal_actions=sum(record["illegal_actions"]),
-            fallbacks=int(action_sources.get("mcts_fallback", 0)),
+            fallbacks=count_mcts_fallbacks(action_sources),
             decisions=sum(int(value) for value in action_sources.values()),
             latencies=record["agent_decision_times"][tested_side],
             action_sources=action_sources,

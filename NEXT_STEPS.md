@@ -47,3 +47,12 @@ checkpoint 恢复。旧操作命令见 `docs/operations/TOP2_MCTS_SERVER_HANDOFF
 - 晋级仍要求安全指标全零和至少 53% 有效胜率；在通过者中选择 P95 延迟最低的方案。
 - 后续多对手/DAgger 数据迭代必须在教师门控通过之后进行。
 - 权威说明：`docs/MCTS_HYBRID_POLICY_DECISION.md`。
+
+## 2026-08-06 V3 S16 冻结结果
+
+- V3 epoch 44 `best_safe` 已冻结；S16 正式 400 局为 295/105/0，胜率 73.75%，P95 50.16 ms，安全指标全零。
+- 权威 S16 包固定使用 16 simulations、3 particles、depth 10、250 ms/决策、120 s/局。
+- Kaggle 低预算包使用相同权重与搜索结构，只收紧为 60 ms/决策、5 s/局。
+- 低预算 10 局 smoke 为 7/3/0、P95 53.65 ms、安全指标全零；这不是晋级证据。
+- 唯一下一操作是将 `final_submissions/pokemon-tcg-v3-s16-kaggle-60ms.tar.gz` 上传服务器跑 100 局低预算门控；通过后再跑 400 局。
+- 低预算 400 局通过前，不上传 Kaggle，不修改 `kaggle_upload_ready=false`。

@@ -1,0 +1,28 @@
+{
+  "schema_version": "top2_mcts_eval_v1",
+  "branch": "primary",
+  "kind": "search",
+  "wins": 295,
+  "losses": 105,
+  "draws": 0,
+  "exceptions": 0,
+  "illegal_actions": 0,
+  "fallback_rate": 0.0,
+  "mean_decision_seconds": 0.036250436701339435,
+  "p95_decision_seconds": 0.050161970080807805,
+  "action_sources": {
+    "mcts": 20918,
+    "policy_fallback": 2536
+  },
+  "gate": {
+    "status": "pass",
+    "reason": "search_rate_at_least_55_percent",
+    "wins": 295,
+    "losses": 105,
+    "draws": 0,
+    "games": 400,
+    "win_rate": 0.7375,
+    "wilson_low": 0.6922684601360929,
+    "wilson_high": 0.7782132000551163
+  }
+}

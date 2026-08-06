@@ -73,3 +73,18 @@ def test_non_resume_starts_fresh_even_when_progress_exists(tmp_path: Path) -> No
 
     fresh = load_progress(progress_path, _identity(), resume=False)
     assert fresh["completed_games"] == 0
+
+
+def test_all_mcts_fallback_sources_are_counted() -> None:
+    from scripts.evaluate_top2_mcts import count_mcts_fallbacks
+
+    sources = {
+        "mcts": 20,
+        "policy_fallback": 3,
+        "mcts_fallback": 1,
+        "mcts_deadline_fallback": 2,
+        "mcts_game_budget_fallback": 4,
+        "mcts_exception_fallback": 8,
+        "mcts_illegal_fallback": 16,
+    }
+    assert count_mcts_fallbacks(sources) == 31
