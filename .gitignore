@@ -5,6 +5,12 @@ __pycache__/
 .pytest_*/
 .mypy_cache/
 .ruff_cache/
+.cache/*
+!.cache/pytest/
+.cache/pytest/*
+!.cache/pytest/.gitkeep
+.test-tmp-*/
+.kaggle-notebook-inspect/
 .venv/
 venv/
 
@@ -60,6 +66,9 @@ artifacts/archive/server-results/**/*.tar.gz
 artifacts/archive/server-results/**/*.tar.gz.sha256
 artifacts/top2-mcts-complete-results-*.tar.gz
 artifacts/top2-mcts-complete-results-*.tar.gz.sha256
+artifacts/*-results.tar.gz
+artifacts/*-results.tar.gz.sha256
+artifacts/mcts_teacher_v2/
 
 # Adapter trainers may write these conventional output roots. Keep lightweight
 # configs, sampling views and reviewed reports elsewhere in the repository.
@@ -113,6 +122,10 @@ logs/adapter_*/
 logs/**/*.log
 *.stdout.log
 *.stderr.log
+
+# Runtime evaluation state; keep final JSON reports visible for review.
+reports/*.log
+reports/*.progress.json
 
 # Local stage-gate match outputs are summarized in the tracked report.
 experiments/sl0_stage1_vs_safe_v0_*/
