@@ -39,6 +39,8 @@
 - Modify `scripts/build_v3_s16_candidates.py`: generalize shared-checkpoint packaging to S16 and S128 runtime variants.
 - Modify `scripts/verify_v3_s16_candidate.py`: verify arbitrary approved simulation count and shared checkpoint identity.
 - Create `jobs/budget_multideck_15h.sh`: single-server Level 1 entrypoint with explicit budget environment.
+- Create `scripts/build_budget_multideck_handoff.py`: allowlisted reproducible server archive builder.
+- Create `tests/test_budget_multideck_handoff.py`: archive membership, hash, extraction, and dry-run tests.
 - Create tests matching every new or modified module.
 
 ---
@@ -421,6 +423,8 @@ git commit -m "feat: evaluate and package direct s128 candidate"
 
 **Files:**
 - Modify: `NEXT_STEPS.md`
+- Create: `scripts/build_budget_multideck_handoff.py`
+- Create: `tests/test_budget_multideck_handoff.py`
 - Create at runtime: `server_uploads/budget-multideck-run-v1.tar.gz`
 - Create at runtime: `server_uploads/budget-multideck-run-v1.tar.gz.sha256`
 
