@@ -14,6 +14,7 @@ import tarfile
 ROOT = Path(__file__).resolve().parents[1]
 AUTHORITY_NAME = "pokemon-tcg-v3-s16-authority"
 KAGGLE_NAME = "pokemon-tcg-v3-s16-kaggle-60ms"
+TEACHER_S128_NAME = "pokemon-tcg-v3-teacher-s128"
 DIRECTORY_MAP = {"submission/agent": "agent", "submission/cg": "cg"}
 FILE_MAP = {
     "candidates/v3_s16/main.py": "main.py",
@@ -46,6 +47,10 @@ VARIANTS = {
     "kaggle-60ms": {
         "package": KAGGLE_NAME,
         "runtime": {"simulations": 16, "particles": 3, "max_depth": 10, "time_budget_seconds": 0.06, "game_budget_seconds": 5.0},
+    },
+    "teacher-s128": {
+        "package": TEACHER_S128_NAME,
+        "runtime": {"simulations": 128, "particles": 3, "max_depth": 10, "time_budget_seconds": 2.0, "game_budget_seconds": 120.0},
     },
 }
 
@@ -121,15 +126,21 @@ def build_all(output_dir: Path, *, code_root: Path = ROOT, frozen_root: Path = R
     work.mkdir()
     authority_root = work / AUTHORITY_NAME
     kaggle_root = work / KAGGLE_NAME
+    teacher_s128_root = work / TEACHER_S128_NAME
     authority_manifest = _stage(authority_root, variant="authority", code_root=Path(code_root), frozen_root=Path(frozen_root))
     kaggle_manifest = _stage(kaggle_root, variant="kaggle-60ms", code_root=Path(code_root), frozen_root=Path(frozen_root))
+    teacher_s128_manifest = _stage(teacher_s128_root, variant="teacher-s128", code_root=Path(code_root), frozen_root=Path(frozen_root))
     authority_archive = output_dir / f"{AUTHORITY_NAME}.tar.gz"
     kaggle_archive = output_dir / f"{KAGGLE_NAME}.tar.gz"
+    teacher_s128_archive = output_dir / f"{TEACHER_S128_NAME}.tar.gz"
     with tarfile.open(authority_archive, "w:gz") as bundle:
         bundle.add(authority_root, arcname=AUTHORITY_NAME)
     with tarfile.open(kaggle_archive, "w:gz") as bundle:
         for path in sorted(kaggle_root.rglob("*")):
             bundle.add(path, arcname=path.relative_to(kaggle_root).as_posix(), recursive=False)
+    with tarfile.open(teacher_s128_archive, "w:gz") as bundle:
+        for path in sorted(teacher_s128_root.rglob("*")):
+            bundle.add(path, arcname=path.relative_to(teacher_s128_root).as_posix(), recursive=False)
     result = {
         "authority_archive": authority_archive,
         "authority_checksum": _checksum(authority_archive),
@@ -137,6 +148,9 @@ def build_all(output_dir: Path, *, code_root: Path = ROOT, frozen_root: Path = R
         "kaggle_archive": kaggle_archive,
         "kaggle_checksum": _checksum(kaggle_archive),
         "kaggle_manifest": kaggle_manifest,
+        "teacher_s128_archive": teacher_s128_archive,
+        "teacher_s128_checksum": _checksum(teacher_s128_archive),
+        "teacher_s128_manifest": teacher_s128_manifest,
     }
     shutil.rmtree(work)
     return result
@@ -148,7 +162,8 @@ def main() -> int:
     args = parser.parse_args()
     result = build_all(args.output_dir, code_root=ROOT, frozen_root=ROOT)
     print(json.dumps({key: str(value) if isinstance(value, Path) else value for key, value in result.items()}, indent=2))
-    return 0 if not result["authority_manifest"]["missing_frozen_files"] and not result["kaggle_manifest"]["missing_frozen_files"] else 1
+    manifests = (result["authority_manifest"], result["kaggle_manifest"], result["teacher_s128_manifest"])
+    return 0 if all(not manifest["missing_frozen_files"] for manifest in manifests) else 1
 
 
 if __name__ == "__main__":

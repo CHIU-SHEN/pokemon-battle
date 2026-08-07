@@ -14,6 +14,7 @@ import torch
 EXPECTED_RUNTIME = {
     "authority": {"simulations": 16, "particles": 3, "max_depth": 10, "time_budget_seconds": 0.25, "game_budget_seconds": 120.0},
     "kaggle-60ms": {"simulations": 16, "particles": 3, "max_depth": 10, "time_budget_seconds": 0.06, "game_budget_seconds": 5.0},
+    "teacher-s128": {"simulations": 128, "particles": 3, "max_depth": 10, "time_budget_seconds": 2.0, "game_budget_seconds": 120.0},
 }
 
 
