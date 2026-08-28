@@ -10,6 +10,8 @@ __pycache__/
 .cache/pytest/*
 !.cache/pytest/.gitkeep
 .test-tmp-*/
+.eval-tmp/
+.tmp/
 .kaggle-notebook-inspect/
 .venv/
 venv/
@@ -49,6 +51,12 @@ data/adapter_views/**/*.jsonl
 # Local smoke tests and one-off training artifacts must not mix with formal data.
 artifacts/dev_smoke/
 
+# Generated experiment summaries remain local until deliberately promoted into reports/archive/.
+artifacts/deck*-stage*-summary.json
+artifacts/final-gate-*-report.json
+artifacts/specialist-league-*-manifest.json
+artifacts/specialist-league-*-report.json
+
 # Model checkpoints and recovered server bundles are binary experiment outputs.
 # Publish selected frozen weights through a Release or model registry, not Git history.
 artifacts/**/*.pt
@@ -58,6 +66,8 @@ artifacts/**/*.safetensors
 artifacts/**/*.onnx
 artifacts/**/*.npz
 artifacts/*.zip
+artifacts/**/*.tar.gz
+artifacts/**/*.tar.gz.sha256
 artifacts/_server_results_*/
 artifacts/adapter_*/
 artifacts/top10-adapters-*.tar.gz
@@ -80,6 +90,9 @@ server_uploads/
 server_uploads/*
 !server_uploads/README.md
 server_results/
+
+# Local server snapshots are large recovery copies, not source artifacts.
+server_backups/
 
 # Local trainer and profiler state.
 runs/
@@ -127,6 +140,24 @@ logs/**/*.log
 # Runtime evaluation state; keep final JSON reports visible for review.
 reports/*.log
 reports/*.progress.json
+reports/**/*.pt
+reports/**/*.pth
+reports/**/*.ckpt
+reports/**/*.safetensors
+reports/**/*.onnx
+reports/**/*.npz
+reports/**/*.tar.gz
+reports/**/*.tar.gz.sha256
+
+# Complete dated deck-league campaigns are reproducible run directories. Promote only
+# reviewed conclusions into reports/archive/ instead of committing every deck hash.
+reports/deck_league_*/
+
+# Expanded server-run configuration with machine-specific workspace paths.
+config/family-retrain-s128-20260815.json
+
+# Cleanup audit notes are local operational records.
+docs/cleanup-reports/
 
 # Local stage-gate match outputs are summarized in the tracked report.
 experiments/sl0_stage1_vs_safe_v0_*/
